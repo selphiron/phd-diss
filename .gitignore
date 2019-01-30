@@ -1,0 +1,24 @@
+# Latex
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.lof
+*.toc
+*.lol
+*.lot
+
+# System
+.DS_Store
+.dropbox
+~$*
+Icon?
+
+# ACM
+comment.cut
