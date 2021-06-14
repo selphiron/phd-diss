@@ -71,58 +71,6 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 \let\Chapter\chapter
 \def\chapter{\addtocontents{lol}{\protect\addvspace{10pt}}\Chapter}
 
-% Code definition JSON
-\definecolor{numberColor}{RGB}{24,118,129}
-\newcommand\JSONnumbervaluestyle{\color{numberColor}}
-\newcommand\JSONstringvaluestyle{\color{signalColor}}
-
-\newif\ifcolonfoundonthisline
-
-\makeatletter
-
-\lstdefinestyle{json}{
-  showstringspaces    = false,
-  keywords            = {false,true},
-  alsoletter          = 0123456789.,
-  morestring          = [s]{"}{"},
-  stringstyle         = \ifcolonfoundonthisline\JSONstringvaluestyle\fi,
-  MoreSelectCharTable =%
-    \lst@DefSaveDef{`:}\colon@json{\processColon@json},
-  basicstyle          = \ttfamily,
-  keywordstyle        = \ttfamily\bfseries
-}
-
-\lstset{
-  numbers=left,
-  lineskip={-1.5pt},
-  captionpos=b,
-  basicstyle=\footnotesize\ttfamily,
-  xleftmargin=1cm,
-  breaklines=true
-}
-
-\newcommand\processColon@json{%
-  \colon@json%
-  \ifnum\lst@mode=\lst@Pmode%
-    \global\colonfoundonthislinetrue%
-  \fi
-}
-
-\lst@AddToHook{Output}{%
-  \ifcolonfoundonthisline%
-    \ifnum\lst@mode=\lst@Pmode%
-      \def\lst@thestyle{\JSONnumbervaluestyle}%
-    \fi
-  \fi
-  \lsthk@DetectKeywords% 
-}
-
-\lst@AddToHook{EOL}%
-  {\global\colonfoundonthislinefalse}
-
-\makeatother
-% End code definition JSON
-
 % Rename listings and toc
 \renewcommand{\contentsname}{Table of Contents}
 \renewcommand{\lstlistlistingname}{List of Listings}
