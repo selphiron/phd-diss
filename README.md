@@ -8,3 +8,4 @@ A short, incomplete list of hints to help you write your Bachelor's/Master's the
 - use our [LaTeX template](https://github.com/pfandzelter/MT-Template) to get up to speed quickly
 - avoid weasel words and using too much passive voice (you can use our [proof tool](https://github.com/pfandzelter/proof) to check your text)
 - use "we" instead of "I" (weird at first but you'll get used to it)
+- read [this post by Prof. Leitner](https://philippleitner.medium.com/some-frequent-writing-tips-i-give-software-engineering-thesis-students-da2acab30381)
