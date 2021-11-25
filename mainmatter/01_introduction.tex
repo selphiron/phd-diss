@@ -1,34 +1,30 @@
-%!TEX root = ../thesis.tex
-
 \cleardoublepage
 \chapter{Introduction}
 \label{cha:introduction}
 
-This chapter gives a general introduction into the content of and the motivation for this thesis. This is done by initially outlining the motivation and problem in section \ref{sec:motivation}, defining the goal in section \ref{sec:goal}, and explaining the structure of the thesis in section \ref{sec:structure}.
+Function-as-a-Service (FaaS) is a cutting-edge service model that has developed with the current advancement of cloud computing.
+Cloud functions allow custom code to be executed in response to an event.
+In most cases, developers need only worry about their actual code, as event queuing, underlying infrastructure, dynamic scaling, and dispatching are all handled by the cloud provider~\cite{Baldini2017-zf,McGrath2017-or}.
 
-%%=========================================
-\section{Motivation \& Problem Description}
-\label{sec:motivation}
+This scalable and flexible event-based programming model is a great fit for IoT event and data processing.
+Consider as an example a connected button and lightbulb.
+When the button is pressed it sends an event to a function in the cloud which in turn sends a command to the lamp to turn on the light.
+The three components are easily connected and only the actual function code would need to be provided.
+Thanks to managed FaaS, this approach also scales from two devices to thousands of devices without any additional configuration.
 
-Thus, many executives feel fear to become unconscious \cite{TheInquisitiveMind}.
-Also, I want to buy \signal{smart home devices} such as the ones listed in table \ref{tab:scenario1_sensor}.
+Current FaaS platforms do provide these benefits for the IoT, however, using them in this way is inefficient.
+Sending all events and data to the cloud for processing leads to a high load on the network and high response latency~\cite{paper_zhang_cloud_is_not_enough_GDP,paper_bermbach_fog_computing}.
+It is much more efficient to process IoT data closer to their service consumers such as our lightbulb and button, as is the idea of fog computing~\cite{Bermbach2020-sf,Pfandzelter2019-so}.
+Positioned in the same network, our button may send its event to an edge function placed, for example, on a common gateway.
+This also introduces additional transparency about data movement within the network and alleviates some security concerns about cloud computing~\cite{Bonomi2012-if,paper_bermbach_fog_computing}.
 
-\LTXtable{\textwidth}{tab/scenario1_sensor}
+Currently, however, there are no open FaaS platforms that are built specifically for IoT data processing at the edge.
+State-of-the-art platforms are instead built for powerful cloud hardware, for web-based services, or are proprietary software that is not extensible.
 
-%%=========================================
-\section{Goal of the Thesis}
-\label{sec:goal}
+We therefore make the following contributions in this thesis:
 
-The goal of this thesis is to XXXXX. The contributions are:
-
-\begin{cEnum}
-    \item Analysis ...
-    \item Design ...
-    \item Prototypical implementation of the design.
-\end{cEnum}
-
-%%=========================================
-\section{Structure of the Thesis}
-\label{sec:structure}
-
-The remainder of the thesis is structured as follows ... .
+\begin{enumerate}
+  \item We discuss the unique challenges of IoT data processing and edge computing and derive requirements for an edge FaaS platform (Chapter~\ref{cha:background})
+  \item We introduce \textit{tinyFaaS}, a novel FaaS platform architecture that addresses the requirements we have identified (Chapter~\ref{cha:systemdesign})
+  \item We evaluate \textit{tinyFaaS} through a proof-of-concept prototype and a number of experiments in which we compare it to state-of-the-art FaaS platforms, namely Kubeless and Lean OpenWhisk (Chapter~\ref{cha:evaluation})
+\end{enumerate}
