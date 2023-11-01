@@ -1,4 +1,4 @@
-\documentclass[12pt]{report}
+\documentclass[12pt]{book}
 
 \usepackage{url}
 \usepackage[utf8]{inputenc} % This defines the font-encoding you prefer to use
@@ -103,18 +103,16 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 %%=========================================
 % Mainmatter
 
-\cleardoublepage
+%\cleardoublepage
 \setcounter{page}{0}
 \pagenumbering{arabic}
 \part{Foundations}
 \include{mainmatter/01_introduction.tex}
-%\include{mainmatter/02_background.tex}
-%\include{mainmatter/03_systemdesign.tex}
-%\include{mainmatter/04_evaluation.tex}
+\include{mainmatter/02_background.tex}
+\include{mainmatter/03_contributions.tex}
+\include{mainmatter/04_conclusions.tex}
 %\include{mainmatter/05_relatedwork.tex}
 %\include{mainmatter/06_conclusion.tex}
-
-% Include more chapters as required.
 
 %%=========================================
 %Backmatter
