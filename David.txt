@@ -1,0 +1,42 @@
+02.11.23
+Ahmet
+  15:23 Uhr
+Hey David ich habe mir etwas mehr Gedanken über meine Forschungsfrage gemacht. Dabei habe ich zwei so formuliert (die exakte Formulierung wird bestimmt noch variieren):
+How can we identify near miss incident hotspots in bicycle traffic? (-> SimRa)
+How can we use recorded bicycle ride data to help a) cyclists, b) city planners and c) decision makers to make cycling more popular (a-> routing, visualizations, b->SUMO and c->Visualizations and analysis)
+Was denkst du darüber?
+
+
+David
+  17:47 Uhr
+sollte die frage nicht vlt. noch eine ebene höher sein? also im sinne von "wie können wir radfahren komfortabler und sicherer machen?"?
+17:47 Uhr
+hängt so ein bisschen davon ab, an welcher stelle
+17:48 Uhr
+aber ansonsten klingt das erstmal sinnvoll
+17:48 Uhr
+vlt. sind es ja auch große fragen, die sich in kleinere unterfragen runterbrechen
+
+
+Ahmet
+  18:59 Uhr
+Ja diese Frage hätte ich auch im Sinn aber dachte dass diese zu abstrakt ist. Vielleicht mache ich eine Hierarchie an Forschungsfragen wo dann mehrere in einer beantwortet werden um die eine Frage eine Ebene darüber zu beantworten
+
+
+David
+  19:08 Uhr
+klingt sinnvoll
+19:08 Uhr
+deine arbeit beginnt motivationstechnisch ja ohnehin beim klimawandel und den verkehrsprobleme, vermute ich
+
+
+Ahmet
+  19:08 Uhr
+Genau
+
+
+David
+  19:08 Uhr
+dann wäre es für mich auch schlüssig, die eigentliche frage nach "wie bekommen wir das hin" zu stellen und das dann runterzubrechen als ein "wir brauchen...."
+19:09 Uhr
+und es wäre übrigens auch völlig valide, da zu sagen, dass man dafür auch noch weitere fragen braucht, die aber nicht gegenstand der arbeit sind

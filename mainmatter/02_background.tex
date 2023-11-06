@@ -2,17 +2,59 @@
 \chapter{Background (rename?)}
 \label{cha:background}
 
-\section{SUMO}
-\label{sec:sumo}
-
-\section{Surface Quality}
-\label{sec:surface_quality}
-
-\section{Deep Learning}
-\label{sec:deep_learning}
+\section{Crowdsensing}
+\label{sec:crowdsensing_background}
 
 \section{Citizen Science}
-\label{sec:citizen_science}
+\label{sec:citizen_science_background}
 
-\section{Crowdsensing}
-\label{sec:crowdsensing}
+\section{Deep Learning}
+\label{sec:deep_learning_background}
+
+\section{SUMO}
+\label{sec:sumo_background}
+% sumo in general
+SUMO is an open source traffic simulation tool that offers macroscopic as well as microscopic simulation of vehicle mobility~\cite{lopez2018microscopic}.
+SUMO includes models for different types of ``vehicles'', including, among others, cars, bicycles, and even pedestrians.
+Due to its large feature set, it has become the de-facto standard for traffic simulation and is used even beyond the transport community, e.g., \cite{beilharz2021towards}.
+
+% network
+Traffic scenarios are, among other things, defined by road networks and vehicle traffic.
+The road network includes roads and their (sub-)lanes as well as exclusive lanes for cyclists and pedestrians, or road-side infrastructure such as traffic lights.
+Furthermore, connections between these lanes and traffic lights can be configured.
+
+% vtypes
+When modeling vehicle traffic, users specify demand for a specific road segment per vehicle type and can adjust vehicle-specific parameters of SUMO's simulation model to control their respective behavior.
+In general, vehicle parameters are usually specified in the vehicle type declaration (\textit{vType}), applying the changes to all instances of the respective \textit{vType}, e.g., to all cars.
+An alternative, however, is to obtain multiple \textit{vType} realizations which typically differ in at least one parameter by using so-called \textit{vTypeDistributions}.
+This way, when spawning a new vehicle, SUMO randomly picks a specific \textit{vType} from the \textit{vTypeDistribution} and instantiates the vehicle's parameters accordingly, e.g., cars can thus have individual maximum velocities.
+
+% vehicle behavior
+In SUMO, vehicle behavior is, among other things, defined by
+\textit{Car Following (CF) models} for the longitudinal kinematic behavior,
+\textit{Lane Change (LC) models} for the lateral kinematic behaviour,
+and \textit{junction models} for the behavior at junctions and intersections.
+
+% bicycles
+Despite including several of these models for cars and trucks, SUMO does not provide a dedicated movement model for cyclists.
+Instead, cyclists are simulated by modeling them either as slow cars or fast pedestrians.
+Both of these approaches use movement models of the corresponding vehicle type and adapt their respective shape and kinematic characteristics (e.g., velocity and acceleration profiles) to match cyclists.
+While this is obviously a rough approximation, it is unlikely to reflect the behavior of real-world cyclists~\cite{grigoropoulos2019modelling}.
+
+\section{Surface Quality}
+\label{sec:surface_quality_background}
+Traffic departments frequently analyze the road surface quality to find out road segments that need to be repaired to increase the traffic safety.
+There are mainly three types of methods used for, which we briefly introduce here.
+\textit{Profilographs} are one of the oldest devices used to measure road surface quality.
+They consist of a profiling wheel in the center and multiple support wheels held together by a rigid frame.
+They measure the road quality by tracking the vertical movement of the profiling wheel.
+The higher the vertical movement of that wheel, the worse the surface quality of the road.
+This method of measuring surface quality is very slow, since the profilograph has to be pulled very slowly by another vehicle.
+\textit{Scanner-based systems} are more sophisticated and rely either on accelerometers measuring the vibrations caused by driving on a specific surface, lasers scanning the surface in front or beneath the vehicle, cameras making photos later to be analyzed with the help of computer vision and photogrammetry, or a combination of the aforementioned methods.
+This system provides the highest resolution and accuracy, however it is also the most costly and complex one.
+More recently, \textit{smartphone-based systems} are gaining traction due to their cost-efficiency.
+A smartphone is being attached inside the car and the vibrations caused by the road surface are recorded.
+This is the least accurate system, since the measured vibrations are very indirect, due to car tires and suspension.
+
+However, these systems are impractical for measuring bicycle road surface quality, because cars are not suited to drive on bicycle roads and these systems are too costly.
+Hence, we propose a novel system using crowdsourced smartphone bicycle ride data.
