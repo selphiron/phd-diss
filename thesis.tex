@@ -1,9 +1,11 @@
 \documentclass[12pt]{book}
+\DeclareUnicodeCharacter{0300}{\`}
+\DeclareUnicodeCharacter{0301}{\'}
 
 \usepackage{url}
 \usepackage[utf8]{inputenc} % This defines the font-encoding you prefer to use
 \usepackage[pdftex]{graphicx}
-\usepackage[bindingoffset=1cm,centering,includeheadfoot,margin=2cm]{geometry}
+\usepackage[centering,includeheadfoot]{geometry}
 
 \usepackage[
     citestyle=numeric-comp,
@@ -47,6 +49,15 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 
 \usepackage[all]{nowidow} % prevents overhanging paragraphs
 \usepackage{acronym} % allow acronyms
+
+% The "num", "si", and "SI" commands for typesetting numbers, units, and numbers-with-units
+%\usepackage[range-phrase=--,per-mode=symbol-or-fraction,binary-units=true,range-units=single,list-units=single,detect-all]{siunitx}
+\usepackage[per-mode=symbol-or-fraction]{siunitx}
+\usepackage{silence}\WarningsOff[latexfont]
+\AtBeginDocument{
+    \DeclareSIUnit\decibel{dB}
+}
+
 
 %%===================================
 % Custom definitions
@@ -138,7 +149,6 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 \addcontentsline{toc}{chapter}{Bibliography}
 \defbibheading{notonline}{\chapter*{Bibliography}}
 \printbibliography[heading=notonline]
-
 %%=============================================
 
 \end{document}
