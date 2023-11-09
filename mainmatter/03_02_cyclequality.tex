@@ -1,4 +1,4 @@
-\section{CycleQuality}
+\section{Deriving Road Surface Quality from Bicycle Ride Data}
 \label{sec:cyclequality}
 
 
@@ -117,7 +117,7 @@ With such an output file, it is very easy to create a simple visualization\footn
 Using a visualization like this, also non-tech-savvy users can easily monitor the bicycle road surface quality of a large area and take action where needed.
 
 
-\subsection{Evaluation of CycleQuality}
+\subsection{Evaluation}
 \label{subsec:evaluation_cyclequality}
 In this section, we evaluate the surface quality analysis by comparing the calculated surface quality of selected street segments across Berlin with their surface type in the real world, which we get from OpenStreetMap (OSM).
 As data input, we use the existing SimRa datasets~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} (almost 90,000 rides with more than 650,000km in total).
@@ -277,7 +277,7 @@ Goethestraße       & Cobblestone & 52.508889,13.308333 & 1    & 1      & 0\\%
 }
 \end{table}
 
-\subsection{Discussion of CycleQuality}
+\subsection{Discussion}
 \label{subsec:discussion_cyclequality}
 Overall, the results presented in this paper show, that our approach can derive surface quality information using data recorded in the SimRa app.
 Nevertheless, it still has a number of limitations which we discuss in this section.
@@ -323,7 +323,7 @@ On rainy, windy or snowy days, the surface quality of the road, especially with 
 However, adding this factor to the analysis, would in our dataset reduce the validity of the results, since it would reduce the number of considered rides.
 
 
-\subsection{Related Work of CycleQuality}
+\subsection{Alternative Approaches}
 \label{subsec:related_work_cyclequality}
 Surface quality is usually quantified based on the International Roughness Index (IRI), e.g.,~\cite{sayers1986The}.
 Traditionally, this was done using so-called profilographs (approximately resembling a large ladder with wheels) which are towed by a car or pushed manually.
@@ -354,7 +354,7 @@ This approach will always give more precise results than our approach but again 
 Beyond these, there are several car-centric approaches which either use dedicated hardware, e.g.,~\cite{chen2013crsm}, have very specific phone placement requirements, e.g.,~\cite{daraghmi2020crowdsourcing}, or focus on detecting the transients, i.e., individual pot holes, e.g.,~\cite{alam2020crowdsourcing,li2014crowdsourcing,lima2016using}.
 
 
-\subsection{Summary of CycleQuality}
+\subsection{Summary}
 \label{subsec:summary_cyclequality}
 Cities all over the world aim to increase the modal share of bicycle traffic, e.g., to address emission problems, frequent traffic jams, but also to improve the citizens' health through more daily activity.
 Aside from safety, a key influence factor for this is comfort, particularly in the form of the surface quality of cycling infrastructure.

@@ -288,7 +288,7 @@ In order to make a decision whether to do a direct or an indirect left-turn, we 
 
 Thus, this group-based model enables the user to simulate bicycle traffic in SUMO more realistically.
 
-\subsection{Evaluation of the Cyclist Model for SUMO}
+\subsection{Evaluation}
 \label{subsec:evaluation_sumo}
 In this section, we evaluate the new cyclist models from \cref{sec:concept} by comparing them to each other and to SUMO's default simulation model and the real-world data taken from the SimRa data set.
 We start by introducing the simulation setup (\cref{sec:eval_setup}) which we used to create and run the scenarios with.
@@ -579,7 +579,7 @@ Fourth, creating three cyclist models based on their average velocity also revea
 This becomes clear when looking at \cref{fig:im_warschauer,fig:im_mehringdamm,fig:im_alex}, since the lines representing the cyclists modeled with our fast cyclist model are the closes to the red line representing SUMO default.
 
 
-\subsection{Discussion of the Cyclist Model for SUMO}
+\subsection{Discussion}
 \label{subsec:discussion_sumo}
 Overall, the results presented in this paper show a significant improvement over the state-of-the-art.
 Nevertheless, they still have a number of shortcomings.
@@ -635,8 +635,8 @@ As a result, individual users will be overrepresented in some intersections and 
 Furthermore, based on the data collection method using smartphones, the user group of SimRa is likely to have a slight gender bias towards males and an age group bias towards cyclists between the ages \num{20} and \num{50}.
 These biases will, of course, be reflected in our analysis results and cannot be compensated unless other cycling datasets become available in non-aggregated form.
 
-\subsection{Generalizability}%
-\label{sec:problem_general}
+\subsubsection{Generalizability}%
+\label{subsubsec:problem_general}
 The SimRa dataset which we used to analyse the longitudinal kinematic behavior contains rides from almost \num{100} regions from Germany, Switzerland and Austria, which increases the generalizability.
 However, to derive and evaluate the left-turn model, we need data from intersections with many left-turns, with the same orientation, e.g., entering the intersection from the south and leaving it to the west.
 Mind, that we also split the rides into three groups: slow, medium and fast.
@@ -655,7 +655,7 @@ We redid the analyses of the three cyclist groups and found out, that the change
 And there are not enough e-bike rides to create a dedicated e-bike model with a high credibility.
 
 
-\subsection{Related Work of Bicycle Simulation for SUMO}
+\subsection{Alternative Approaches}
 \label{subsec:related_work_sumo}
 % this section is about how people have been trying to improve sumo
 In this section, we give an overview of related work on improving intersection behavior (\cref{sec:rw_intersection}) and longitudinal (\cref{sec:rw_longitudinal}) behavior of cyclists in SUMO's simulation models.
@@ -701,7 +701,7 @@ Although their approach produces trajectories from cyclists created with an actu
 Furthermore, deriving a realistic set of trajectories requires a large number of test persons.
 
 
-\subsection{Summary of Bicycle Simulation for SUMO}
+\subsection{Summary}
 \label{subsec:summary_sumo}
 
 

@@ -1,4 +1,4 @@
-\section{CycleSense}
+\section{Gathering Bicycle Ride Data and Detecting Near Miss Incidents in Bicycle Traffic}
 \label{sec:cyclesense}
 In recent years, more and more cities worldwide aim to reduce the modal share of car traffic in favor of bicycle traffic to reduce NO\textsubscript{x}, CO\textsubscript{2}, and particulate matter emissions, to reduce traffic jams, and to free up space that is urgently needed for other purposes ranging from vegetation that provides natural cooling in a heating world to new flats for a growing population.
 
@@ -29,7 +29,104 @@ We hope, that it will lead to more reported incidents due to an easier reporting
 \end{itemize}
 
 
-\subsection{Detecting Near Miss Incidents}
+\subsection{SimRa - A Platform for Gathering Bicycle Rides and Near Miss Incidents in Bicycle Traffic}
+\label{subsec:simra}
+
+\subsubsection{The SimRa platform}
+\label{subsubsec:simra}
+In this section, we give a general overview of the SimRa platform which comprises all things related to the collection, storage, and analysis of crowdsourced cycling data which we will focus on in the following sections.
+
+For data acquisition we rely on an app installed on the smartphones of participating cyclists.
+This app collects data and detects incidents during rides, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see section~\ref{sec:data_acquisition}).
+The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated ride statistics (see section~\ref{sec:data}).
+Finally, we continuously process and analyze collected data to gain insights into dangerous street segments and intersections.
+For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection (see section~\ref{sec:analysis}).
+
+\subsubsection{Data Acquisition}
+\label{subsubsec:data_acquisition}
+Our approach relies on crowdsourcing to collect necessary data; in fact, SimRa is a citizen science project.
+For data acquisition, we could either rely on dedicated hardware or use commonly available hardware such as smartphones.
+While dedicated hardware has certain benefits, e.g., higher measurement precision, such projects are inherently limited in scale:
+\begin{figure}
+    \center
+    \includegraphics[width=0.5\columnwidth]{fig/data_acquisition_process.pdf}
+    \caption{In the data acquisition process, collected data is manually annotated and anonymized before being uploaded to our backend servers.}
+    \label{fig:data_acquisition_process}
+\end{figure}
+%An example of this is the Radmesser project~\cite{ndw_2019} which built custom sensors to track close pass incidents.
+%While the data quality is indeed rather high, the project was limited to a total of 100 cyclists (only partly in parallel).
+%As a result, the project could not achieve full coverage of Berlin streets.
+%For example, one of the incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single ride in the Radmesser data.
+We decided for project scalability and collect data with smartphones only.
+Our goal is to collect data in a way that allows us (i) to identify incident hotspots as well as the kind of incidents and (ii) to identify the routes of cyclists (in which unnecessary detours are likely to identify severe incident hotspots).
+%, and (iii) to collect additional data with the goal of improving automated incident detection.
+
+
+Overall, our data acquisition process has five steps and follows the structure shown in figure~\ref{fig:data_acquisition_process} (we describe the steps in the following sections in detail).
+This process runs continuously and in parallel as cyclists may create data for individual rides at any time.
+During a ride, we first record sensor data using the built-in sensors of a cyclist's smartphone.
+Upon completion of a ride, we analyze the raw data to automatically detect incidents.
+Afterwards, the cyclist can enrich collected data with labels and annotations, use a number of anonymization measures, and upload the data to our backend servers.
+
+\paragraph{Data Recording}
+During a ride, we track three sensors at varying rates per minute.
+First, we query the GPS sensor every three seconds; this returns the current location and a radius with an accuracy confidence value of 68\%.
+Second, we query the smartphone's accelerometer at 50Hz.
+%These values include the effects of gravity and are in $m/s^2$.
+While such a high sampling rate allows us to detect sudden peaks, this also leads to an unnecessary large data set which typically needs to be uploaded via mobile networks.
+Thus, we aggregate the data based on a moving average across 30 values of which we only consider every sixth value.
+This reduces the amount of data while still retaining all peaks in sensor readings.
+Third, we store the device orientation based on the smartphone's gyroscope sensor every three seconds.
+%These values describe the rate of rotation around the X/Y/Z axis in rad/s and allow us to correctly interpret the direction of the acceleration values.
+Each sensor measurement, together with a timestamp, is stored locally on the device.
+
+We chose these rate settings based on initial experiments in which we identified the data collection rates and aggregation schemes as a sweet spot between system overload and information loss.
+
+
+
+\paragraph{Automated Incident Detection - Naive Approach}
+After a ride, as soon as the cyclist stops the recording, we analyze the recorded data to identify incidents.
+The challenge, here, is to reliably detect incidents -- initially, without any training data.
+
+For this reason, we developed a heuristic for incident detection that relies on the assumption that incidents will often materialize as sudden acceleration spikes.
+Now, that we have over 10,000 labeled rides, we started to explore alternative detection methods ranging from machine learning to signals processing.
+In our heuristic, we group the acceleration time series in three-second buckets to differentiate incidents and poor road conditions (e.g., potholes result in high vertical acceleration).
+In each bucket, we identify the minimum and maximum value for every dimension and calculate the difference between those two.
+In a second step, we categorize the six highest difference values across all buckets as likely incidents.
+This allows us to separate high acceleration values based on poor road conditions (which usually have low difference values) from incident-related peaks.
+
+In practice, this heuristic works well for cyclists with a ``relaxed'' cycling style.
+For cyclists with a more ``rapid'' style of cycling, our heuristic usually identifies either accidents, severe bumps, or traffic lights but usually not incidents.
+The heuristic is also inherently limited as it cannot detect close passes and similar incidents which do not materialize as acceleration spikes.
+
+\paragraph{Data Labeling and Annotation}
+
+Even though we plan to improve the automated detection of incidents, some incident types cannot be automatically detected based on the sensor data alone.
+For example, while being tailgated might make the cyclist ride faster, this kind of observable activity can also be related to other, non-dangerous events.
+Thus, we do not think that a fully automated detection, also based on our hardware limitations, is a realistic option for SimRa -- neither now nor in the future.
+Instead, we ask the cyclist to edit the pre-detected set of incidents (i.e., add false negatives and ignore false positives) and to label and annotate the correct set of incidents (see also section~\ref{sec:data} which describes the resulting data in detail).
+
+\paragraph{Data Anonymization}
+
+One of our side goals in SimRa is to preserve the privacy of our users, which is mainly achieved through three mechanisms: \emph{Delayed recording} allows users to define a time and a distance threshold after which a recording will start, \emph{ride cropping} allows users to crop their ride manually to hide where they started or arrived, and \emph{per-record pseudonymization} stores demographic and ride data separately so that rides cannot be connected to individual users. Furthermore, each ride is pseudonymized separately.
+
+
+%\begin{itemize}
+    %\item Delayed recording: Users can define a time and a distance threshold after which a recording will start
+    %\item Ride cropping: Users can crop their ride manually to hide where they started/arrived
+	%\item Per-record pseudonymization: Demographic data and ride data of users is stored separately, so that rides cannot be connected to individual users. Furthermore, each ride is pseudonymized separately.
+%\end{itemize}
+
+
+\paragraph{Data Upload and Storage}
+Finally, and only when explicitly triggered by the cyclist, the ride data is uploaded to our backend.
+For authentication, we calculate an access key based on the current timestamp and a random salt which we update with new app versions.
+This is necessary to avoid automated attacks on our backend as we do not have a notion of user accounts.
+So far, this has sufficed as extracting the salt from the app binary requires enough manual effort to make this infeasible for automated attacks.
+Note, that we store rides and user data per region so that we can analyze (geographic) regions separately (we describe our concept of regions in section~\ref{sec:data}).
+
+
+\subsection{Detecting Near Miss Incidents with Deep Learning}
 \label{subsec:detecting_near_miss_incidents}
 This section describes the process of automatically detecting incidents. 
 Please note that the SimRa data are not optimized for automated processing and \ac{ml} but rather for aggregated statistics and review by humans.
@@ -169,7 +266,7 @@ This is the case, as the meta-learner does not get any classification output of 
 Thereby, the weights of the submodel layers that have been pretrained individually are loaded and frozen, so they are not updated during the training of the whole CycleSense model.
 This learning procedure further improved our results as shown in Section~\ref{sec:disc}.
 
-\subsection{Evaluation of CycleSense}
+\subsection{Evaluation}
 \label{subsec:evaluation_cyclesense}
 To evaluate CycleSense' training results, we have to put them into context. 
 For this purpose, we compare them to the two detection methods currently used in the app as discussed in Section~\ref{sec:background}.
@@ -308,7 +405,7 @@ Nevertheless, the \ac{auc} \ac{roc} for Berlin is still the highest and clearly 
 	\caption{Comparison of the performance of CycleSense trained on Berlin and trained on the other regions combined.}
 \end{figure}
 
-\subsection{Discussion of CycleSense}
+\subsection{Discussion}
 \label{subsec:discussion_cyclesense}
 Our results demonstrate that the proposed CycleSense model outperforms every other model that we have compared to.
 While improving the model's architecture and other components, we identified a number of challenges inherent to the problem setting that we discuss in the following.
@@ -404,7 +501,7 @@ This further complicates the matter.
 A major challenge in the context of crowdsourced data are data set shifts. Depending on the device (see also \autoref{subsec:technical_limitations}), but also on other factors, such as the city of origin of the recorded data (see also \autoref{subsec:eval-results}), there could be non-stationarities in the data that violate the assumptions underlying almost all ML models and thus could impact the generalization performance of the trained models. Several types of data set shifts can be distinguished, including \textit{covariate shifts}, meaning shifts in the input data \cite{sugiyama_machine_2012}, \textit{label shifts}, meaning shifts in the distribution of targets \cite{lipton_detecting_2018}, or mixtures thereof. Detecting these shifts \cite{polyzotis_data_2018, rabanser_failing_2018, breck_data_2019, abdar_review_2021, bates_testing_2021} and predicting \cite{schelter_learning_2020} or reducing their impact on the generalization performance is an active field of research \cite{schelter_challenges_2018, biessmann_automated_2021}. Some approaches aim at model specific improvements to alleviate data set shift \cite{sugiyama_machine_2012}. These approaches have a decisive disadvantage, most of these approaches only work for one model class and require access to the inner workings of the ML pipeline, often after the feature extraction step. More promising and easier to build and maintain are model agnostic solutions that focus on the data, rather than the models, to detect and counteract data set shifts \cite{biessmann_automated_2021}. Extending the training data sets to account for all variation and shifts in the data that the ML model should be invariant to, often called \textit{augmentation}, is a popular and effective way of counteracting data set shift, see for instance \cite{cubuk_autoaugment_2019}. In our work we follow this line of thought of a data centric AI approach. 
 
 
-\subsection{Related Work of CycleSense}
+\subsection{Alternative Approaches}
 \label{subsec:subsec:related_work_cyclesense}
 One of the most common tasks for \ac{tsc} are Natural Language Processing, speech recognition, and audio recognition in general.
 Another field that deals with this problem is \acf{har} which is concerned with identifying the specific activity of a human based on sensory time series data.
@@ -414,7 +511,7 @@ While various feature extraction and pattern recognition methods have been succe
 Also, implementations of \acp{rnn} such as \ac{lstm}~\cite{tao2016multicolumn,yao2017deepsense} have proven to be successful.
 Yao et al.\ \cite{yao2017deepsense} use a combination of \acp{rnn} and \acp{cnn} on top of a \ac{sf} approach after preprocessing their input data using a \ac{dft}.
 
-\subsection{Summary of CycleSense}
+\subsection{Summary}
 \label{subsec:summary_cyclesense}
 An increased modal share of bicycles is necessary for solving emission and traffic related urban problems.
 A key challenge for this, is the lack of (perceived) safety for cyclists.
