@@ -1,6 +1,7 @@
 \cleardoublepage
 \chapter{Background and Related Work}
 \label{cha:background}
+In this chapter, we go through fundamental topics that are needed to better understand the remainder of this work.
 
 \section{Crowdsensing and Citizen Science}
 \label{sec:crowdsensing_background}
@@ -8,79 +9,3 @@ Other edge-assisted data analysis work includes Mei et al.~\cite{mei2017ultravio
 Cao et al.~\cite{cao2015fast} who use motion sensors to detect strokes in patients falling to the ground, and
 Pham et al.~\cite{pham2015a} implement a smart parking system by equipping parking spots with RFID chips to track their occupancy state.
 There are also multiple publications on placing different components of an edge-to-cloud data processing pipeline in various use cases, e.g.,~\cite{lujic2021increasing,pfandzelter2021zero,hattab2019optimized}.
-
-\section{Deep Learning}
-\label{sec:deep_learning_background}
-One of the most common tasks for \ac{tsc} are Natural Language Processing, speech recognition, and audio recognition in general.
-Another field that deals with this problem is \acf{har} which is concerned with identifying the specific activity of a human based on sensory time series data.
-Time windows of a few seconds are classified into activity categories (e.g., walking, sitting, running, lying).
-While various feature extraction and pattern recognition methods have been successfully applied in the past in this context~\cite{bulling2014tutorial}, those approaches have constraints such as hand-crafted feature extraction, being able to only learn shallow features~\cite{yang2015deep}, or the requirement for large amounts of well-labeled data for model training~\cite{wang2019deep}.
-\acl{dl} techniques and more specifically \acp{cnn} have recently proven to overcome these issues and deliver convincing results in the context of \ac{har}~\cite{wang2019deep,ronao2015deep}.
-Also, implementations of \acp{rnn} such as \ac{lstm}~\cite{tao2016multicolumn,yao2017deepsense} have proven to be successful.
-Yao et al.\ \cite{yao2017deepsense} use a combination of \acp{rnn} and \acp{cnn} on top of a \ac{sf} approach after preprocessing their input data using a \ac{dft}.
-
-\section{SUMO}
-\label{sec:sumo_background}
-% sumo in general
-SUMO is an open source traffic simulation tool that offers macroscopic as well as microscopic simulation of vehicle mobility~\cite{lopez2018microscopic}.
-SUMO includes models for different types of ``vehicles'', including, among others, cars, bicycles, and even pedestrians.
-Due to its large feature set, it has become the de-facto standard for traffic simulation and is used even beyond the transport community, e.g., \cite{beilharz2021towards}.
-
-% network
-Traffic scenarios are, among other things, defined by road networks and vehicle traffic.
-The road network includes roads and their (sub-)lanes as well as exclusive lanes for cyclists and pedestrians, or road-side infrastructure such as traffic lights.
-Furthermore, connections between these lanes and traffic lights can be configured.
-
-% vtypes
-When modeling vehicle traffic, users specify demand for a specific road segment per vehicle type and can adjust vehicle-specific parameters of SUMO's simulation model to control their respective behavior.
-In general, vehicle parameters are usually specified in the vehicle type declaration (\textit{vType}), applying the changes to all instances of the respective \textit{vType}, e.g., to all cars.
-An alternative, however, is to obtain multiple \textit{vType} realizations which typically differ in at least one parameter by using so-called \textit{vTypeDistributions}.
-This way, when spawning a new vehicle, SUMO randomly picks a specific \textit{vType} from the \textit{vTypeDistribution} and instantiates the vehicle's parameters accordingly, e.g., cars can thus have individual maximum velocities.
-
-% vehicle behavior
-In SUMO, vehicle behavior is, among other things, defined by
-\textit{Car Following (CF) models} for the longitudinal kinematic behavior,
-\textit{Lane Change (LC) models} for the lateral kinematic behaviour,
-and \textit{junction models} for the behavior at junctions and intersections.
-
-% bicycles
-Despite including several of these models for cars and trucks, SUMO does not provide a dedicated movement model for cyclists.
-Instead, cyclists are simulated by modeling them either as slow cars or fast pedestrians.
-Both of these approaches use movement models of the corresponding vehicle type and adapt their respective shape and kinematic characteristics (e.g., velocity and acceleration profiles) to match cyclists.
-While this is obviously a rough approximation, it is unlikely to reflect the behavior of real-world cyclists~\cite{grigoropoulos2019modelling}.
-
-\section{Surface Quality}
-\label{sec:surface_quality_background}
-Traffic departments frequently analyze the road surface quality to find out road segments that need to be repaired to increase the traffic safety.
-There are mainly three types of methods used for, which we briefly introduce here.
-\textit{Profilographs} are one of the oldest devices used to measure road surface quality.
-They consist of a profiling wheel in the center and multiple support wheels held together by a rigid frame.
-They measure the road quality by tracking the vertical movement of the profiling wheel.
-The higher the vertical movement of that wheel, the worse the surface quality of the road.
-This method of measuring surface quality is very slow, since the profilograph has to be pulled very slowly by another vehicle.
-\textit{Scanner-based systems} are more sophisticated and rely either on accelerometers measuring the vibrations caused by driving on a specific surface, lasers scanning the surface in front or beneath the vehicle, cameras making photos later to be analyzed with the help of computer vision and photogrammetry, or a combination of the aforementioned methods.
-This system provides the highest resolution and accuracy, however it is also the most costly and complex one.
-More recently, \textit{smartphone-based systems} are gaining traction due to their cost-efficiency.
-A smartphone is being attached inside the car and the vibrations caused by the road surface are recorded.
-This is the least accurate system, since the measured vibrations are very indirect, due to car tires and suspension.
-
-However, these systems are impractical for measuring bicycle road surface quality, because cars are not suited to drive on bicycle roads and these systems are too costly.
-Hence, we propose a novel system using crowdsourced smartphone bicycle ride data.
-
-\section{Bicycle Traffic Safety}
-\label{sec:bicycle_traffic_safety_background}
-Studies on safety in bicycle traffic often rely on crowdsourcing, e.g., using Strava\footnote{https://www.strava.com/} as a data source.
-While the Strava data are heavily biased towards recreational trips, some studies rely on them for analyzing various aspects of safety in bicycle traffic, e.g.,~\cite{hochmair2019estimating,ferster2021strava}.
-Blanc and Figliozzi~\cite{blanc2016modeling, blanc2017safety} study the perceived comfort levels of cyclists based on routes taken.
-Wu et al.~\cite{wu2018predicting} predict perceived bicycle safety by combining data from, e.g., OpenStreetMap\footnote{https://www.openstreetmap.com/}, crime statistics, and parking volumes.
-Similarly, Yasmin and Eluru~\cite{yasmin2016latent} use various open data sources to characterize and provide estimates for bicycle safety in urban areas.
-He et al.~\cite{he2018detecting} analyze trajectories of a bike sharing service to detect events of illegally parked vehicles which frequently affect cycling safety.
-Figliozzi et al.~\cite{figliozzi2019evaluation} evaluate video recordings to identify safety and delay related problems in bicycle and bus traffic.
-Unsurprisingly, bicycles crossing bus lanes can cause slight delays for the buses.
-
-In addition, Kobana et al.~\cite{kobana2014detection} focus on the detection of road damage via smartphone data, and Candefjord et al.~\cite{candefjord2014using} evaluate the development of a crash detection algorithm for cycling accidents.
-
-Most closely related to our work, Aldred and Goodman~\cite{aldred2018predictors} analyze near-miss incidents using road diaries of cyclists and our previous work~\cite{karakaya2020simra} proposed the SimRa platform as well as the heuristic for detecting (near-miss) incidents.
-A first extension of our own detection approach~\cite{sanchez2020detecting} developed an \ac{ann} to solve the problem of incident detection on the SimRa data set.
-While offering some improvement over the original heuristic, CycleSense clearly outperforms that approach.
-Furthermore, Ibrahim et al.~\cite{ibrahim2021cycling} discuss the potential of detecting incidents using image and video data in combination with computer vision techniques.

@@ -28,11 +28,21 @@ We hope, that it will lead to more reported incidents due to an easier reporting
 	\item We discuss to which degree our approach can automate incident detection and which additional sensors are needed for full automation (Section~\ref{sec:disc}).
 \end{itemize}
 
+\subsection{Deep Learning}
+\label{subsec:deep_learning_background}
+One of the most common tasks for \ac{tsc} are Natural Language Processing, speech recognition, and audio recognition in general.
+Another field that deals with this problem is \acf{har} which is concerned with identifying the specific activity of a human based on sensory time series data.
+Time windows of a few seconds are classified into activity categories (e.g., walking, sitting, running, lying).
+While various feature extraction and pattern recognition methods have been successfully applied in the past in this context~\cite{bulling2014tutorial}, those approaches have constraints such as hand-crafted feature extraction, being able to only learn shallow features~\cite{yang2015deep}, or the requirement for large amounts of well-labeled data for model training~\cite{wang2019deep}.
+\acl{dl} techniques and more specifically \acp{cnn} have recently proven to overcome these issues and deliver convincing results in the context of \ac{har}~\cite{wang2019deep,ronao2015deep}.
+Also, implementations of \acp{rnn} such as \ac{lstm}~\cite{tao2016multicolumn,yao2017deepsense} have proven to be successful.
+Yao et al.\ \cite{yao2017deepsense} use a combination of \acp{rnn} and \acp{cnn} on top of a \ac{sf} approach after preprocessing their input data using a \ac{dft}.
+
 
 \subsection{SimRa - A Platform for Gathering Bicycle Rides and Near Miss Incidents in Bicycle Traffic}
 \label{subsec:simra}
 
-\subsubsection{The SimRa platform}
+\subsubsection{Goal of the SimRa platform}
 \label{subsubsec:simra}
 In this section, we give a general overview of the SimRa platform which comprises all things related to the collection, storage, and analysis of crowdsourced cycling data which we will focus on in the following sections.
 

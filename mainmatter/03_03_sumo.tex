@@ -42,6 +42,37 @@ The main new contributions are:
 \end{itemize}
 
 
+\subsection{SUMO - Simulation of Urban Mobility}
+\label{sec:sumo_background}
+% sumo in general
+SUMO is an open source traffic simulation tool that offers macroscopic as well as microscopic simulation of vehicle mobility~\cite{lopez2018microscopic}.
+SUMO includes models for different types of ``vehicles'', including, among others, cars, bicycles, and even pedestrians.
+Due to its large feature set, it has become the de-facto standard for traffic simulation and is used even beyond the transport community, e.g., \cite{beilharz2021towards}.
+
+% network
+Traffic scenarios are, among other things, defined by road networks and vehicle traffic.
+The road network includes roads and their (sub-)lanes as well as exclusive lanes for cyclists and pedestrians, or road-side infrastructure such as traffic lights.
+Furthermore, connections between these lanes and traffic lights can be configured.
+
+% vtypes
+When modeling vehicle traffic, users specify demand for a specific road segment per vehicle type and can adjust vehicle-specific parameters of SUMO's simulation model to control their respective behavior.
+In general, vehicle parameters are usually specified in the vehicle type declaration (\textit{vType}), applying the changes to all instances of the respective \textit{vType}, e.g., to all cars.
+An alternative, however, is to obtain multiple \textit{vType} realizations which typically differ in at least one parameter by using so-called \textit{vTypeDistributions}.
+This way, when spawning a new vehicle, SUMO randomly picks a specific \textit{vType} from the \textit{vTypeDistribution} and instantiates the vehicle's parameters accordingly, e.g., cars can thus have individual maximum velocities.
+
+% vehicle behavior
+In SUMO, vehicle behavior is, among other things, defined by
+\textit{Car Following (CF) models} for the longitudinal kinematic behavior,
+\textit{Lane Change (LC) models} for the lateral kinematic behaviour,
+and \textit{junction models} for the behavior at junctions and intersections.
+
+% bicycles
+Despite including several of these models for cars and trucks, SUMO does not provide a dedicated movement model for cyclists.
+Instead, cyclists are simulated by modeling them either as slow cars or fast pedestrians.
+Both of these approaches use movement models of the corresponding vehicle type and adapt their respective shape and kinematic characteristics (e.g., velocity and acceleration profiles) to match cyclists.
+While this is obviously a rough approximation, it is unlikely to reflect the behavior of real-world cyclists~\cite{grigoropoulos2019modelling}.
+
+
 \subsection{Cycling Behavior in SimRa and SUMO}
 \label{subsec:cycling_behavior_in_simra_and_sumo}
 In this section, we analyze real-world cyclists' behavior extracted from the SimRa dataset and compare it to the behavior of SUMO's default bicycle model.

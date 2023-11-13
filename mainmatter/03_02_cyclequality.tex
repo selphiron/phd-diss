@@ -27,6 +27,25 @@ For this, we make the following contributions:
 \end{itemize}
 
 
+\subsection{Bicycle Surface Quality}
+\label{subsec:surface_quality_background}
+Traffic departments frequently analyze the road surface quality to find out road segments that need to be repaired to increase the traffic safety.
+There are mainly three types of methods used for, which we briefly introduce here.
+\textit{Profilographs} are one of the oldest devices used to measure road surface quality.
+They consist of a profiling wheel in the center and multiple support wheels held together by a rigid frame.
+They measure the road quality by tracking the vertical movement of the profiling wheel.
+The higher the vertical movement of that wheel, the worse the surface quality of the road.
+This method of measuring surface quality is very slow, since the profilograph has to be pulled very slowly by another vehicle.
+\textit{Scanner-based systems} are more sophisticated and rely either on accelerometers measuring the vibrations caused by driving on a specific surface, lasers scanning the surface in front or beneath the vehicle, cameras making photos later to be analyzed with the help of computer vision and photogrammetry, or a combination of the aforementioned methods.
+This system provides the highest resolution and accuracy, however it is also the most costly and complex one.
+More recently, \textit{smartphone-based systems} are gaining traction due to their cost-efficiency.
+A smartphone is being attached inside the car and the vibrations caused by the road surface are recorded.
+This is the least accurate system, since the measured vibrations are very indirect, due to car tires and suspension.
+
+However, these systems are impractical for measuring bicycle road surface quality, because cars are not suited to drive on bicycle roads and these systems are too costly.
+Hence, we propose a novel system using crowdsourced smartphone bicycle ride data.
+
+
 \subsection{Data Processing Pipeline}
 \label{subsec:data_processing_pipeline}
 In this section, we start by giving a high-level overview of our data processing pipeline for deriving surface quality \cref{sec:overview} before describing the individual steps in the process (\cref{sec:data_acq} to \cref{sec:surface_quality}).
