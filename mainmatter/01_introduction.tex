@@ -1,7 +1,7 @@
 \cleardoublepage
 \chapter{Introduction}
 \label{cha:introduction}
-The global climate crisis is and will be one of mankind's most vital challenges in the first half of the 21st century and the effects thereof are already observable.
+The global climate crisis is and will be one of mankind's most vital challenges in the first half of the 21\textsuperscript{st} century and the effects thereof are already observable.
 The frequency of extreme weather conditions and natural disasters such as long periods of precipitation leading to floods, or a lack of precipitation leading to droughts as well as heavy winds leading to storms is rising.
 Such disasters have short and long term effects on the agricultural production of the affected areas leading to famine, conflicts and mass migration.
 To prevent further aggravation of the effects, and stop or at least slow down the global warming, it is important to understand the root cause, so possible solutions can be derived and implemented. 
@@ -15,7 +15,7 @@ More and more societies worldwide are aware of this problem and search for solut
 This is why cities worldwide try to increase the modal share of bicycle traffic and by doing so, decrease the usage of motorized private transport.
 The heavy usage of motorized private transport in urban areas also cause other problems.
 
-First, there are the motor vehicle traffic crashes with an annual death toll of over 1.3 million and an annual injury toll of over 78.2 million.~\cite{bhalla2014transport}.
+First, there are the motor vehicle traffic crashes with an annual death toll of over 1.3 million and an annual injury toll of over 78.2 million world wide~\cite{bhalla2014transport}.
 Additionally, these crashes can cause long-lasting psychological traumas for everyone involved, such as witnesses or police officers, health workers and firefighters that have to document the crash, help injured people and rescue people who are stuck in the car wreck.
 
 Second, there are health issues that are indirectly caused by motorized private transport.
@@ -33,21 +33,60 @@ Other problems of motorized private transport in urban areas and car-centric cit
 \label{sec:problem}
 Since cities were developed with the motorized private transport as the main transportation mode in mind, the traffic infrastructure highly favors the usage of cars.
 Because of that, cyclists often have a hard time commuting, since they have to cycle on roads that were made for cars, which often puts them into dangerous and stressful situations.
-Although crash statistics do not convey an increased danger for cyclists (CITATION NEEDED), studies have shown, that the perceived safety of commuting with a bicycle is very low (CITATION NEEDED) and one of the main reasons why people prefer other transportation modes to cycling (CITATION NEEDED).
-This poses a challenge to people who want to cycle, city planners and politicians alike.
+Although crash statistics do not convey an increased danger for cyclists~\cite{juhra2012bicycle}, studies have shown, that the perceived safety of commuting with a bicycle is very low and one of the main reasons why people prefer other transportation modes to cycling~\cite{horton2016fear}.
+This poses a challenge to people who want to cycle, city planners, and politicians alike.
 People who want to cycle have to overcome their (perceived) lack of safety and comfort while commuting by bicycle to not feel forced to travel by car. 
 It is up to city planners to improve the traffic infrastructure for cyclists, but it is not easy to pinpoint the most problematic areas, that need to be prioritized for them to be fixed, which is needed because of the limited resources available to the city planning department.
-Besides, city planners are bound by city planning codes and rules, which oftentimes also reflect the car-centric approach.
+Besides, city planners are bound by city planning codes and rules, which oftentimes also reflect the car-centric approach and hinders them to change the traffic infrastructure in such a way that would benefit cyclists.
 This passes the responsibility to the politicians, who need to change the city planning codes and rules and also increase the funds for bicycle infrastructure.
 For this, however, they need more than anecdotal evidence, that the perceived safety in bicycle traffic is low, so that they can change the legislation and increase funding in favor of bicycle infrastructure.
 
-To enable city planners and politicians to do evidence-based decision-making, they need a) to be aware of the problems in bicycle traffic and b) to know where and how to improve the bicycle infrastructure.
+To enable city planners and politicians to do evidence-based decision-making, they need a) to be aware of the problems in bicycle traffic, b) that a lot of people are interested in an improved bicycle traffic safety and c) to know where and how to improve the bicycle infrastructure.
 Cyclists need good bicycle infrastructure that increase both safety and comfort of cycling, so that more and more people choose the bicycle over other modes of transport.
 If the existing bicycle infrastructure is not good enough, they need to know which street sections are dangerous so that they can avoid them or be extra vigilant, when they have to pass through them.
 Additionally, it would motivate cyclists to know that the problem is worked on and to keep the demand for a good bicycle infrastructure high. 
 
 \section{Contributions of this Thesis}
 \label{sec:contributions}
+In this thesis we addresses the problems mentioned above by fulfilling three needs:
+First, we conceptualize and implement a bicycle ride data gathering platform, that also collects information about near miss incidents.
+Second, we derive the surface quality of bicycle roads.
+Third, we improve the bicycle simulation of a widely used traffic simulation software.
+
+\subsection{SimRa: A Platform for Gathering Bicycle Ride Data and Detecting Near Miss Incidents in Bicycle Traffic}
+\label{subsec:simra_contribution}
+The SimRa\footnote{SimRa is a German acronym for ``Sicherheit im Radverkehr´´, which translates to Safety in Bicycle Traffic.} platform comprises all things related to the collection, storage, and analysis of crowdsensed cycling data.
+The data acquisition relies on a free app, which is available on both major smartphone operating systems Android and iOS, installed on the smartphones of participating cyclists.
+This app collects data and detects near miss incidents during rides, lets users add comments or labels, and anonymizes the data before uploading it to the SimRa servers.
+Initially, the detection of near miss incidents used a heuristic, where the accelerometer data of the recorded ride were analyzed and the biggest differences in consecutive values were considered a near miss incident.
+We then built a second near miss incident detection option that relies on deep learning model.
+The anonymized data comprises information on cyclist routes, near miss incidents, user demographics, as well as some aggregated ride statistics.
+Finally the collected data gets processed and analyzed continuously to gain insights into dangerous street segments and intersections.
+For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis which automatically derives a ‘‘dangerousness’’ score per street segment and intersection. 
+
+We have published this contribution in~\cite{karakaya2020simra,karakaya2022cyclesense}.
+
+\subsection{Deriving Road Surface Quality from Bicycle Ride Data}
+\label{subsec:road_surface_contribution}
+Deriving road surface quality is one way how we leverage the bicycle ride data gathered with SimRa.
+The inclusion of the accelerometer sensor readings into the ride data recordings was mainly to be able to detect near miss incidents based on that data, since the main idea behind that is, that near miss incidents trigger sudden movements of the cyclists and thus can be recognized in the motion sensor readings.
+However, a byproduct of this approach is, that the SimRa dataset also contains information about the surface quality of the roads the ride was recorded on.
+While the automatic detection of near miss incidents views the vibrations stemming from the uneven surface of the roads as noise data, here we can use them to derive the ``bumpiness´´ of the road.
+One major challenge, though, is the heterogeneity  of the user base who contribute to the SimRa dataset.
+Different bicycle types and the place of the smartphone during the ride have both a big impact on how intensive the vibrations caused by the road surface are detected by the accelerometer sensors.
+The ride data contain information about the bicycle type and the position of the smartphone during the ride, however, these information can be given voluntarily by the user.
+Heterogeneous cyclists means also different styles of cycling.
+While some may cycle rather quiet and relaxed, others may tend to cycle fast and sporty, which can also influence the resulting motion sensor readings.
+Additionally, a big variety of different smartphone models result in many different hard- and software, when it comes to reading motion sensor data.
+The aforementioned aspects can result in different ``bumpiness´´ values, from many rides that go through the same road.
+This is why our approach considers the relative road surface quality that makes it possible to compare different streets with each other.
+
+We have published this contribution in~\cite{karakaya2023crowdsensing}.
+
+\subsection{Cyclist Model for SUMO}
+\label{subsec:sumo_contribution}
+
+We have published this contribution in~\cite{karakaya2022realistic,karakaya2023achieving}.
 
 \section{Structure of this Thesis}
 \label{sec:structure}
