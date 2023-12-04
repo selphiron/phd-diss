@@ -79,16 +79,24 @@ Heterogeneous cyclists means also different styles of cycling.
 While some may cycle rather quiet and relaxed, others may tend to cycle fast and sporty, which can also influence the resulting motion sensor readings.
 Additionally, a big variety of different smartphone models result in many different hard- and software, when it comes to reading motion sensor data.
 The aforementioned aspects can result in different ``bumpiness´´ values, from many rides that go through the same road.
-This is why our approach considers the relative road surface quality that makes it possible to compare different streets with each other.
+This is why our approach considers the relative road surface quality that makes it possible to successfully compare different streets with each other.
 
 We have published this contribution in~\cite{karakaya2023crowdsensing}.
 
 \subsection{Cyclist Model for SUMO}
 \label{subsec:sumo_contribution}
+The SimRa dataset contains the GPS trace of the ride as well as the timestamp for each tracked GPS point.
+The main reasoning to include that data is to be able to show the recorded ride to the user and to place near miss incidents at the correct position.
+Additionally, by knowing where the ride has been through, we can identify dangerous and safe areas in bicycle traffic.
+However, we can also extract the longitudinal movement profile, that is the acceleration, deceleration and maximum velocity of cyclists, as well as their behavior at intersections.
+With this, we improve the bicycle simulation model of SUMO~\cite{lopez2018microscopic}, which simulates bicycles as slower cars or faster pedestrians by default, which is obviously far from being realistic.
+To do so, we first separate the rides into slow, medium and fast rides to distinguish between slow, medium and fast cyclists.
+A comparison of the longitudinal movement and the left-turn behavior at intersections shows how unrealistic the default bicycle simulation of SUMO is.
+Based on the three groups of rides, we each create a model for slow, medium and fast cyclists in SUMO and show the improvement compared to the default bicycle model of SUMO.
 
 We have published this contribution in~\cite{karakaya2022realistic,karakaya2023achieving}.
 
 \section{Structure of this Thesis}
 \label{sec:structure}
 
-This thesis consists of four parts. Part I: Foundations begins with this chapter and proceeds with background information on the topics of  and an overview of the related work that are needed for a better understanding of the rest of this thesis. 
+This thesis consists of three parts. Part I: Foundations begins with this chapter and proceeds with background information on the topics of  and an overview of the related work that are needed for a better understanding of the rest of this thesis. 
