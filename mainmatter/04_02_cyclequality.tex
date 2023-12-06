@@ -29,21 +29,43 @@ For this, we make the following contributions:
 
 \subsection{Bicycle Surface Quality}
 \label{subsec:surface_quality_background}
-Traffic departments frequently analyze the road surface quality to find out road segments that need to be repaired to increase the traffic safety.
-There are mainly three types of methods used for, which we briefly introduce here.
-\textit{Profilographs} are one of the oldest devices used to measure road surface quality.
-They consist of a profiling wheel in the center and multiple support wheels held together by a rigid frame.
-They measure the road quality by tracking the vertical movement of the profiling wheel.
-The higher the vertical movement of that wheel, the worse the surface quality of the road.
-This method of measuring surface quality is very slow, since the profilograph has to be pulled very slowly by another vehicle.
-\textit{Scanner-based systems} are more sophisticated and rely either on accelerometers measuring the vibrations caused by driving on a specific surface, lasers scanning the surface in front or beneath the vehicle, cameras making photos later to be analyzed with the help of computer vision and photogrammetry, or a combination of the aforementioned methods.
-This system provides the highest resolution and accuracy, however it is also the most costly and complex one.
-More recently, \textit{smartphone-based systems} are gaining traction due to their cost-efficiency.
-A smartphone is being attached inside the car and the vibrations caused by the road surface are recorded.
-This is the least accurate system, since the measured vibrations are very indirect, due to car tires and suspension.
+The idea to use smartphones and crowdsensing for tracking surface quality is not new.
+For this reason, we use this dedicated section to briefly discuss the specific goals of our work and the unique constraints of the scenarios we target.
+We do this to clarify why existing approaches, which we discuss in the next section, cannot solve the problem we target.
 
-However, these systems are impractical for measuring bicycle road surface quality, because cars are not suited to drive on bicycle roads and these systems are too costly.
-Hence, we propose a novel system using crowdsourced smartphone bicycle ride data.
+\begin{figure}[t]
+    %\vspace{-3em}
+    \centering
+    \subfloat[Smooth cobblestones]{\includegraphics{fig/cobblestone.jpg}}
+    \hfill
+    \subfloat[Rough asphalt]{\includegraphics{fig/asphalt.jpg}}
+    \caption{%
+        Smooth cobblestones can provide a good surface quality while bad asphalt can result in a bumpy ride (Source: Flickr.com).
+    }%
+    \label{fig:cobblestone_vs_asphalt}
+\end{figure}
+
+First, our work focuses on the experience in terms of ``bumpiness'' for cyclists.
+Therefore, we try to quantify the roughness of a road surface and not its type.
+As an example, a ride on asphalt will usually be smoother than one on a cobblestone road.
+In practice, though, an asphalt road might have lots of (small) potholes and repair patches while a cobblestone road might use relatively flat (instead of rounded) stones  with mostly filled-in gaps between the stones.
+See \cref{fig:cobblestone_vs_asphalt} for an example.
+In such a setup, a ride on the cobblestone road can be much smoother.
+Quantifying the surface \emph{quality} and not the surface \emph{type} will thus yield different results -- a large body of related work is hence not applicable to the problem we target.
+
+Second, due to the width of bicycle tires, a single ride on a street segment will only cover a very small percentage of the surface.
+Furthermore, cyclists are likely to swerve around the worst potholes and tree roots.
+Both aspects combined show that it is crucial to base the roughness measurements on a large number of rides, thus, following a ``wisdom of the crowds'' approach.
+We hence have to attract a large user group -- this has a number of implications.
+\begin{enumerate}
+	\item The approach needs to go easy on the phone's resources (battery, data transmission, compute power, app size) as users will otherwise uninstall or not use the corresponding app. As a result, the approach will have to prefilter data on the phone but is unlikely to run on the phone completely, machine learning-based approaches may be problematic, and the approach cannot expect high resolution raw data.
+	\item The approach should not have physical setup requirements. Some cyclists mount their phones on the handlebar (which usually will yield the best results for using accelerometer sensors), others keep it in pockets, backpacks, etc. Any approach that \emph{requires} cyclists to use a certain setup will deter a large number of potential users. As an implication, many approaches that work under lab conditions will not work on the street.
+	\item The approach needs to easily integrate into existing cycling apps. As we have seen in SimRa~\cite{karakaya2020simra}, many cyclists will not use more than one cycling app in parallel. To maximize the potential user base, the approach hence needs to be designed in a way that it can easily be integrated into existing cycling apps. In general, this means that the approach needs to run as an independent background job and may not involve manual labeling and similar activities. They may also be subject to privacy-related restrictions.
+\end{enumerate}
+
+The approach we present in this paper was designed around these constraints.
+We retrofitted it to the SimRa app~\cite{karakaya2020simra} but it could easily be integrated as a plugin in, e.g., Strava or BikeCitizens.
+As a soft constraint, we tried (and succeeded) to design our approach in a way that it can also process our existing datasets~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3}.
 
 
 \subsection{Data Processing Pipeline}
