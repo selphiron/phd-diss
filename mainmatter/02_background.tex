@@ -30,19 +30,20 @@ There are also multiple publications on placing different components of an edge-
 Crowdsourcing and crowdsensing have emerged as successful approaches to solve tasks in a fast and cost-efficient way and gather big amounts of data in a short time respectively.
 
 \subsection*{Crowdsourcing}
-``Crowdsourcing'' is a combination of the words \textit{crowd} and \textit{outsourcing}.
+``Crowdsourcing'' is a combination of the words \textit{crowd} and \textit{outsourcing}~\cite{howe2006rise}.
 \textit{Crowd} refers to an often larger group of individuals, to which a task is transferred to, whereas outsourcing refers to a practice where an entity does not fulfill a task in-house on it's own, but hires people from outside to solve a task for them.
 Crowdsourcing comes in many shapes and forms and can be found in many different areas, from transportation, to financing, from social media to natural crisis relief, etc.
 A very common form of crowdsourcing is the so called mobile crowdsourcing.
-The difference is that in mobile crowdsourcing the the people fulfilling the task usually do not have to be stationary, but rather mobile, because the task at hand demands movement or being in a specific location to be fulfilled.
-In the latter case, a smartphone or a hardware device containing some sort of sensors has to be used by the participants to fulfill the task.
+The difference is that in mobile crowdsourcing the the people fulfilling the task usually do not have to be stationary, but rather mobile, because the task at hand demands movement or being in a specific location to be fulfilled~\cite{phuttharak2018review}.
+In the latter case, a smartphone or a hardware device fitted with sensors has to be used by the participants to fulfill the task.
 For the remainder of this work, we will use the terms crowdsourcing and mobile crowdsourcing interchangeably.
 
 Figure~\ref{fig:crowdsourcing} shows the key elements of crowdsourcing.
-In the top layer, the application (e.g., a ride-hailing app) requests a task (e.g., a ride from location A to location B).
-The data processing layer receives this task and determines to whom (e.g., which taxi drivers) to allocate it to.
+In the top layer, the application user (e.g., a ride-hailing app user) requests a task (e.g., a ride from location A to location B).
+The data processing platform layer receives this task and determines to whom (e.g., which taxi drivers) to allocate it to.
 Then, the crowd (e.g., the taxi driver, that accepts the task) carries it out.
 After that, the data processing layer receives the result (e.g., the arrival of the customer at the destination), processes and aggregates it and the sends the end result to the application (e.g., invoice).
+In crowdsourcing, it is also possible and sometimes even necessary that the crowd has to collaborate to fulfill the task (e.g., multiple taxi drivers transporting a large group of customers from A to B).
 
 \begin{figure}[htbp]
   \centering
@@ -51,7 +52,7 @@ After that, the data processing layer receives the result (e.g., the arrival of 
 \end{figure}
 \label{fig:crowdsourcing}
 
-There are different aspects that characterize a crowdsourcing application: \textit{degree of human involvement}, \textit{location relevance}, \textit{knowledge requirement}, \textit{participation incentive} and \textit{data flow}.
+There are different aspects that characterize a crowdsourcing application: \textit{degree of human involvement}, \textit{location relevance}, \textit{knowledge requirement}, \textit{participation incentive} and \textit{data flow}~\cite{ray2023survey,kong2019mobile}.
 
 There are two types of \textit{degree of human involvement}: Opportunistic and Participatory.
 The former describes that the participant does not actively operate the smartphone or device, while in the latter, he/she has to give further input on the smartphone or device.
@@ -83,15 +84,27 @@ A hybrid form is also possible, where the crowd or the crowd's devices process t
 As in ``crowdsourcing'' the crowd in ``crowdsensing'' refers to a group of people, who voluntarily take over a task.
 However, in crowd\textit{sensing}, the task at hand is mainly gathering data for the client, or in other words, \textit{sensing}.
 Due to the similar nature of both, the architecture of crowdsensing projects is usually very similar to that of crowdsourcing projects (see figure~\ref{fig:crowdsourcing}).
-The main difference from a software architectural view is that the participants do not collaborate and thus there is no need for the smartphones and devices in the crowd to communicate with each other.
+The main difference from a software architectural view is that the participants usually do not collaborate and thus there is no need for the smartphones and devices in the crowd to communicate with each other.
 
 The characterization is also very similar, although there is usually no \textit{knowledge requirement} aspect in \textit{crowdsensing} projects.
-However, there are two additional aspects, where it makes more sense to consider them: \textit{application type} and \textit{data collection}.
+However, there are two additional aspects, that can be used to characterize: \textit{application type} and \textit{data collection}.
 
 There are mainly three \textit{application types}: environmental applications, infrastructure applications and social applications~\cite{ganti2011mobile}.
-In \textit{environmental applications}, the goal of the crowdsensing project is to gather data about the \textit{natural} environment.
-Thanks to these applications, it is possible to gain insights about natural parks, forests, seas, where individuals  
 
+In \textit{environmental applications}, the goal of the crowdsensing project is to gather data about the \textit{natural} environment.
+Examples of \textit{environmental applications} are projects to measure air pollution~\cite{hasenfratz2012participatory,sivaraman2013hazewatch,liu2018third} or monitor water quality~\cite{minkman2015citizen,rapousis2016performance,shang2023crowdwatersens}.
+
+\textit{infrastructure applications} are about gaining insights into the state of public infrastructure.
+Common use cases are gathering data about car parking spaces~\cite{villanueva2015crowdsensing,coric2013crowdsensing,rinne2014mobile} or traffic flow~\cite{wang2018city,li2019privacy,mei2020towards}.
+
+As the name suggests, \textit{social applications} gather information about persons and social interactions.
+With the help of social media networks, it is possible to extract information from the communications of the crowd~\cite{grasso2017public,cecilia2020mobile,phan2019drinks}, while there is also a focus on mass events~\cite{rahman2017location,cardone2014crowdsensing,jarvis2013ubicomp}.
+
+The \textit{data collection} can come in two forms: \textit{mobile sensing} and \textit{user generated}~\cite{pietschmann2008croco}.
+
+In \textit{mobile sensing} the smartphone or sensing device collects the data automatically.
+The participant may need to start an app or turn on a device to start a recording of the sensor data.
+When the smartphone or device that collects the data sends the collected data to the data processing platform autonomously, the data collection is \textit{push based}, otherwise, if the data processing platform requests the collected data from an endpoint it is called \textit{pull based}. 
 
 \section{Citizen Science}
 \label{sec:citizen_science_background}
