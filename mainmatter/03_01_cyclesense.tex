@@ -8,7 +8,7 @@ Hence, city planners urgently require an overview of safety and perceived safety
 
 Aside from actual accidents, an often overlooked aspect of cycling safety are near miss incidents\footnote{In the remainder of this paper, we will also refer to them as ``incidents''.} such as close passes or near dooring~\cite{aldred2018predictors, karakaya2020simra}.
 Information on these have previously not been available or have not been easily accessible as they are distributed over private video recordings, social media posts, public CCTV footage, and other sources.
-In 2019, we therefore launched the SimRa\footnote{SimRa is a German acronym for safety in bicycle traffic.} project in which cyclists record their rides and annotate them with incident information via a smartphone app~\cite{karakaya2020simra}.
+In 2019, we therefore launched the SimRa\footnote{SimRa is a German acronym for safety in bicycle traffic.} project in which cyclists record their trips and annotate them with incident information via a smartphone app~\cite{karakaya2020simra}.
 
 While our previous approach~\cite{karakaya2020simra} already used a rudimentary heuristic for automatically detecting incidents based on acceleration sensors, it is inherently limited resulting in significant manual annotation efforts which makes it unattractive for some groups of cyclists -- in particular, elderly cyclists who have problems using smartphone apps and cyclists with significant daily mileage for whom the labeling approach is too much effort.
 To increase participation, it is hence crucial to decrease manual efforts through an improved pre-detection of incidents.
@@ -17,7 +17,7 @@ As a first step towards this goal, we supervised a master's thesis which develop
 Both detection methods are currently used in the live version of the app, hence, we will later use them as baseline in our evaluation.
 Besides that, there are alternative approaches for quantifying the perceived safety of bicycle traffic, e.g.,~\cite{blanc2016modeling, blanc2017safety, wu2018predicting}, but to the best of our knowledge no other methods are based on mobile motion sensory data.
 
-Since its start in 2019, the SimRa data set has grown to more than 65,000 rides with almost 30,000 reported incidents.
+Since its start in 2019, the SimRa data set has grown to more than 65,000 cycling trips with almost 30,000 reported incidents.
 These amounts of data now enable the application of much more sophisticated methods, namely \ac{ml} and/or \ac{dl}, for automatic incident detection.
 Therefore, we here propose CycleSense -- a \ac{dl} model trained on smartphone sensory data from the SimRa data set to detect incidents in the SimRa app.
 We hope, that it will lead to more reported incidents due to an easier reporting, and make the following contributions:
@@ -39,7 +39,7 @@ Also, implementations of \acp{rnn} such as \ac{lstm}~\cite{tao2016multicolumn,ya
 Yao et al.\ \cite{yao2017deepsense} use a combination of \acp{rnn} and \acp{cnn} on top of a \ac{sf} approach after preprocessing their input data using a \ac{dft}.
 
 
-\section{SimRa - A Platform for Gathering Bicycle Rides and Near Miss Incidents in Bicycle Traffic}
+\section{SimRa - A Platform for Gathering Cycling Trips and Near Miss Incidents in Bicycle Traffic}
 \label{sec:simra}
 
 \subsection{Goal of the SimRa platform}
@@ -47,8 +47,8 @@ Yao et al.\ \cite{yao2017deepsense} use a combination of \acp{rnn} and \acp{cnn}
 In this section, we give a general overview of the SimRa platform which comprises all things related to the collection, storage, and analysis of crowdsourced cycling data which we will focus on in the following sections.
 
 For data acquisition we rely on an app installed on the smartphones of participating cyclists.
-This app collects data and detects incidents during rides, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see section~\ref{sec:data_acquisition}).
-The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated ride statistics (see section~\ref{sec:data}).
+This app collects data and detects incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see section~\ref{sec:data_acquisition}).
+The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated trip statistics (see section~\ref{sec:data}).
 Finally, we continuously process and analyze collected data to gain insights into dangerous street segments and intersections.
 For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection (see section~\ref{sec:analysis}).
 
@@ -66,20 +66,20 @@ While dedicated hardware has certain benefits, e.g., higher measurement precisio
 %An example of this is the Radmesser project~\cite{ndw_2019} which built custom sensors to track close pass incidents.
 %While the data quality is indeed rather high, the project was limited to a total of 100 cyclists (only partly in parallel).
 %As a result, the project could not achieve full coverage of Berlin streets.
-%For example, one of the incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single ride in the Radmesser data.
+%For example, one of the incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single bicyle trip in the Radmesser data.
 We decided for project scalability and collect data with smartphones only.
 Our goal is to collect data in a way that allows us (i) to identify incident hotspots as well as the kind of incidents and (ii) to identify the routes of cyclists (in which unnecessary detours are likely to identify severe incident hotspots).
 %, and (iii) to collect additional data with the goal of improving automated incident detection.
 
 
 Overall, our data acquisition process has five steps and follows the structure shown in figure~\ref{fig:data_acquisition_process} (we describe the steps in the following sections in detail).
-This process runs continuously and in parallel as cyclists may create data for individual rides at any time.
-During a ride, we first record sensor data using the built-in sensors of a cyclist's smartphone.
-Upon completion of a ride, we analyze the raw data to automatically detect incidents.
+This process runs continuously and in parallel as cyclists may create data for individual bicycle trips at any time.
+During a trip, we first record sensor data using the built-in sensors of a cyclist's smartphone.
+Upon completion of a trip, we analyze the raw data to automatically detect incidents.
 Afterwards, the cyclist can enrich collected data with labels and annotations, use a number of anonymization measures, and upload the data to our backend servers.
 
 \paragraph{Data Recording}
-During a ride, we track three sensors at varying rates per minute.
+During a cycling trip, we track three sensors at varying rates per minute.
 First, we query the GPS sensor every three seconds; this returns the current location and a radius with an accuracy confidence value of 68\%.
 Second, we query the smartphone's accelerometer at 50Hz.
 %These values include the effects of gravity and are in $m/s^2$.
@@ -95,11 +95,11 @@ We chose these rate settings based on initial experiments in which we identified
 
 
 \paragraph{Automated Incident Detection - Naive Approach}
-After a ride, as soon as the cyclist stops the recording, we analyze the recorded data to identify incidents.
+After a cycling trip, as soon as the cyclist stops the recording, we analyze the recorded data to identify incidents.
 The challenge, here, is to reliably detect incidents -- initially, without any training data.
 
 For this reason, we developed a heuristic for incident detection that relies on the assumption that incidents will often materialize as sudden acceleration spikes.
-Now, that we have over 10,000 labeled rides, we started to explore alternative detection methods ranging from machine learning to signals processing.
+Now, that we have over 10,000 labeled trips, we started to explore alternative detection methods ranging from machine learning to signals processing.
 In our heuristic, we group the acceleration time series in three-second buckets to differentiate incidents and poor road conditions (e.g., potholes result in high vertical acceleration).
 In each bucket, we identify the minimum and maximum value for every dimension and calculate the difference between those two.
 In a second step, we categorize the six highest difference values across all buckets as likely incidents.
@@ -112,13 +112,13 @@ The heuristic is also inherently limited as it cannot detect close passes and si
 \paragraph{Data Labeling and Annotation}
 
 Even though we plan to improve the automated detection of incidents, some incident types cannot be automatically detected based on the sensor data alone.
-For example, while being tailgated might make the cyclist ride faster, this kind of observable activity can also be related to other, non-dangerous events.
+For example, while being tailgated might make the cyclist increase speed, this kind of observable activity can also be related to other, non-dangerous events.
 Thus, we do not think that a fully automated detection, also based on our hardware limitations, is a realistic option for SimRa -- neither now nor in the future.
 Instead, we ask the cyclist to edit the pre-detected set of incidents (i.e., add false negatives and ignore false positives) and to label and annotate the correct set of incidents (see also section~\ref{sec:data} which describes the resulting data in detail).
 
 \paragraph{Data Anonymization}
 
-One of our side goals in SimRa is to preserve the privacy of our users, which is mainly achieved through three mechanisms: \emph{Delayed recording} allows users to define a time and a distance threshold after which a recording will start, \emph{ride cropping} allows users to crop their ride manually to hide where they started or arrived, and \emph{per-record pseudonymization} stores demographic and ride data separately so that rides cannot be connected to individual users. Furthermore, each ride is pseudonymized separately.
+One of our side goals in SimRa is to preserve the privacy of our users, which is mainly achieved through three mechanisms: \emph{Delayed recording} allows users to define a time and a distance threshold after which a recording will start, \emph{trip cropping} allows users to crop their bicycle trip manually to hide where they started or arrived, and \emph{per-record pseudonymization} stores demographic and trip data separately so that they cannot be connected to individual users. Furthermore, each trip is pseudonymized separately.
 
 
 %\begin{itemize}
@@ -129,11 +129,11 @@ One of our side goals in SimRa is to preserve the privacy of our users, which is
 
 
 \paragraph{Data Upload and Storage}
-Finally, and only when explicitly triggered by the cyclist, the ride data is uploaded to our backend.
+Finally, and only when explicitly triggered by the cyclist, the cycling trip data is uploaded to our backend.
 For authentication, we calculate an access key based on the current timestamp and a random salt which we update with new app versions.
 This is necessary to avoid automated attacks on our backend as we do not have a notion of user accounts.
 So far, this has sufficed as extracting the salt from the app binary requires enough manual effort to make this infeasible for automated attacks.
-Note, that we store rides and user data per region so that we can analyze (geographic) regions separately (we describe our concept of regions in section~\ref{sec:data}).
+Note, that we store trips and user data per region so that we can analyze (geographic) regions separately (we describe our concept of regions in section~\ref{sec:data}).
 
 
 \section{Detecting Near Miss Incidents with Deep Learning}
@@ -146,19 +146,19 @@ We describe our \ac{ml} model in Section~\ref{subsec:architecture} and the train
 
 \subsection{Preprocessing}
 \label{subsec:preprocessing}
-To overcome some limitations of the SimRa data set, we use data cleaning and preprocessing steps, in a sequential multi-stage manner,  some of which are specific to some model types that will be used afterwards to classify the incidents within rides.
+To overcome some limitations of the SimRa data set, we use data cleaning and preprocessing steps, in a sequential multi-stage manner,  some of which are specific to some model types that will be used afterwards to classify the incidents within bicycle trips.
 
-Before the preprocessing phase, a typical ride can be expressed by a $n \times d$ sparse matrix $X^{(i)}$, where $d$ describes the number of sensor features and $n$ represents the number of timestamps in a given ride $i \in \{1,...,R\}$.
+Before the preprocessing phase, a typical trip can be expressed by a $n \times d$ sparse matrix $X^{(i)}$, where $d$ describes the number of sensor features and $n$ represents the number of timestamps in a given trip $i \in \{1,...,R\}$.
 
 Note that we typically only use the accelerometer, gyroscope, and \ac{gps} sensor features.
 Using the linear accelerometer features in addition did not lead to a significant improvement.
-Furthermore, the linear accelerometer and the rotation vector features are only available in the newer Android rides.
+Furthermore, the linear accelerometer and the rotation vector features are only available in the newer Android trips.
 The non-sensory features such as phone location and bike type have a non-logical strong correlation with incidents caused by issues in the data recording phase and are therefore not used.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.5\textwidth]{fig/accelerometer-x-axis.png}
-	\caption{The accelerometer readings of an example ride. The encircled spots could indicate an incident but also driving over a curb.}
+	\caption{The accelerometer readings of an example bicycle trip. The encircled spots could indicate an incident but also driving over a curb.}
 	\label{fig:x-axis}
 \end{figure}
 
@@ -168,7 +168,7 @@ When visualizing the accelerometer sensor readings, incidents usually stand out 
 Therefore we focus on the incidents that feature an additional description that was provided by the users.
 As it is very time-consuming, this is the only manual preprocessing step, and we apply it only to the newer Android data set.
 Note that this procedure did not result in a fully cleaned data set.
-Next, the timestamps within rides are sorted.
+Next, the timestamps within trips are sorted.
 Afterwards, we sort out invalid rides, i.e., rides that contain adjacent timestamps that have been recorded with a gap of more than 6 seconds.
 Furthermore, we remove outliers based on the statistical definition of outliers by Tukey et al.~\cite{tukey1977exploratory} that characterizes a data point as an outlier if it fulfills one of the equations $Outlier < q_{25} - k \cdot IQR$ or $Outlier > q_{75} + k \cdot IQR$ where the \ac{iqr} is equal to the difference between the upper and lower quartiles \cite{upton1996understanding, zwillinger1999crc}.
 The $k$-values we are utilizing are 1.5 for \ac{gps} outliers regarding the accuracy feature and 3.0 for velocity outliers, as we have seen reasonable results for these values.
