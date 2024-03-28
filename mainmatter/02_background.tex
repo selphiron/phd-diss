@@ -1,16 +1,59 @@
 \cleardoublepage
 \chapter{Background and Related Work}
 \label{cha:background}
-The main contributions of this thesis revolve around the SimRa project (see section~\ref{subsec:simra}), which is a crowdsourcing/crowdsensing citizen science application, with the goal of improving cycling comfort and cycling safety.
-In this chapter, we go through fundamental topics that are needed to better understand the nature of the SimRa project and thus, the contributions outlined in chapter~\ref{cha:contributions}.
-For this, we first outline which factors mainly influence cycling comfort and give an overview of recent studies from that research area in section~\ref{sec:cycling_comfort_background}.
-We then continue with cycling safety in section~\ref{sec:cycling_safety_background}, which is related to cycling comfort.
-There, we also differentiate between bicycle safety and bicycle traffic safety.
-In chapter~\ref{sec:crowdsourcing_crowdsensing_background}, we point out similarities and differences between crowdsourcing and crowdsensing, so that we can later, in section~\ref{subsec:simra}, better categorize the SimRa project between them.
-Lastly, to complete this chapter, we take a brief look into the field of citizen science, namely what makes a project a citizen science project, which benefits and challenges it brings and how the related work makes use of it in chapter~\ref{sec:citizen_science_background}. 
+The main contributions of this thesis revolve around the SimRa project (see \cref{subsec:simra}), which is a crowdsourcing/crowdsensing citizen science application, with the goal of revealing hazardous hotspots in bicycle traffic, that are detrimental to cycling safety and comfort.
+In this chapter, we go through fundamental topics that are needed to better understand the nature of the SimRa project and thus, the contributions outlined in \cref{part:contributions}.
+For this, we first outline which factors mainly influence cycling comfort and give an overview of recent studies from that research area in \cref{sec:cycling_comfort_background}.
+We then continue with cycling safety in \cref{sec:cycling_safety_background}, which is related to cycling comfort.
+There, we also differentiate between unilateral accidents and traffic crashes.
+In \cref{sec:crowdsourcing_crowdsensing_background}, we point out similarities and differences between crowdsourcing and crowdsensing, so that we can later, in \cref{sec:simra}, better categorize the SimRa project between them.
+Lastly, to complete this chapter, we take a brief look into the field of citizen science, namely what makes a project a citizen science project, which benefits and challenges it brings and how the related work makes use of it in \cref{sec:citizen_science_background}. 
 
 \section{Cycling Comfort}
 \label{sec:cycling_comfort_background}
+According to surveys, a low level of cycling comfort is one of the main reasons why people choose other modes of transportation, especially driving a car, over cycling.
+This issue underlines the importance of cycling comfort when trying to increase the modal share of cycling.
+The Cambridge Dictionary\footnote{https://dictionary.cambridge.org/} defines comfort as
+``a pleasant feeling of being relaxed and free from pain''.
+
+According to that definition, a comfortable ride needs to be absent of both \textit{mentally} and \textit{physically} stress factors.
+Related work has identified four factors that can cause mental and physical strain on the cyclist: Cycling Posture, Cycling Smoothness, Environment, Mental State.
+
+\subsection*{Cycling Posture}
+A wrong cycling posture does not only result in a lower cycling comfort, it can also cause medical problems, especially over long periods of times, such as painful pelvic bones or pain in the region of the
+perineum~\cite{christiaans1998comfort}.
+Causes for a wrong cycling posture can be a wrong-sized bicycle frame, a misaligned handlebar or a saddle that is too high, too low or badly angled.
+The shape of the saddle as well as the handlebar are also important, as different types of saddle and handlebars result in different cycling postures~\cite{bressel2003bicycle}.
+Informing cyclists about the importance of cycling posture, so that they can buy the right bicycle for them, as well as adjust the bicycle they already have, seems to be a good way to improve the cycling postures of cyclists and thus increasing their cycling comfort.
+
+\subsection*{Cycling Smoothness}
+Vibrations stemming from the rolling of the bicycle wheels on the surface can also lead to a decrease of comfort level.
+These vibrations are mainly conducted to the cyclist through the contact points with the bicycle, usually at the handlebar and the saddle.
+This means, that if the handlebar and the saddle absorb the vibrations of the ride, the cycling will be more smooth and thus more comfortable for the cyclist.
+Soft materials or good suspensions, as well as good, vibration-absorbing tires can contribute here.
+But the biggest factor here is obviously the road surface.
+Without a well-built and well-maintained infrastructure, the best bicycle in terms of comfort cannot absorb the vibrations of the unevenness, the cracks and the potholes of a badly maintained bicycle lane or road.
+
+\subsection*{Environment}
+The environment is a significant factor that influences the comfort level of a cycling trip~\cite{hull2014bicycle}.
+Thereby, we can distinguish between the \textit{natural} and the \textit{built} environment.
+To the \textit{natural} environment belong climate, weather, scenery and topography.
+Most cyclists find a bad weather, i.e., strong winds, precipitation too low and even too high temperature combined with humidity~\cite{nkurunziza2012examining}, detrimental to their cycling comfort.
+The study by Boyce et al.~\cite{boyce2000perceptions} shows that people feel more comfortable during daytime, so long winters with short day times, as is common near the poles, also leads to less comfortable cycling trips.
+Wessel et al.~\cite{wessel2022cycling} look further into this issue and find out, that adopting the day saving time throughout the year would increase the amount of cycling.
+A nice scenery along the cycling trip route can increase cyclist satisfaction and thus result in a higher comfort level~\cite{wahlgren2012exploring,willis2013uniquely}.
+While hills can be advantageous for recreational cycling trips due to a nice scenery and the physical effort to cycle up to a hill, that is commonly sought after by recreational cyclists, they are often perceived as a nuisance by commuting cyclists~\cite{lee2008neighbourhood}.
+
+So the \textit{natural} environment can impact the comfort of a cycling trip both in positive and negative ways.
+Similarly, the \textit{built} environment can further enhance the positive and negative effects of the \textit{natural} environments.
+As the name suggests, \textit{built} environment refers to environmental circumstances realized by humans.
+The most obvious one to mention here is the bicycle infrastructure.
+Not only does a well planned and maintained bicycle infrastructure reduce unpleasant vibrations and bumps during the cycling trip, it also contributes to a comfortable ride by making clear how the cyclist has to behave in traffic, e.g., when approaching an intersection.
+A well maintained infrastructure is also important to mitigate the downsides of bad weather, especially the removal of accumulated snow on bike lanes/paths is crucial~\cite{an2019weather,shoman2023evaluation}.
+Likewise, street lights illuminating the bicycle infrastructure leads to a more comfy cycling trip, because it makes it easier for the cyclist to perceive the surroundings and avoid potential hazards~\cite{digioia2017safety}.
+
+In general, the physical well-being and a feeling of safety is very important for comfortably cycling, which is why the next section deals with cycling safety.
+  
 
 \section{Cycling Safety}
 \label{sec:cycling_safety_background}
