@@ -5,57 +5,103 @@ First, we introduce SimRa, which is a mobile application for gathering cycling t
 Second, we suggest an approach to derive the road surface quality from cycling trip data and use the data gathered with SimRa to demonstrate how it works in \cref{cha:cyclequality}.
 Third, we show our approach to improve the bicycle simulation of an urban traffic simulation software called SUMO, by utilizing the SimRa dataset to extract the lateral movement and the left-turn behavior of cyclists at intersections in \cref{cha:sumo}.
 \vspace*{\fill}
-\chapter{Gathering Cycling Trip Data and Detecting Near Miss Incidents in Bicycle Traffic}
+\chapter{Gathering Cycling Trip Data and Detecting Near Miss Incidents}
 \label{cha:cyclesense}
-In recent years, more and more cities worldwide aim to reduce the modal share of car traffic in favor of bicycle traffic to reduce NO\textsubscript{x}, CO\textsubscript{2}, and particulate matter emissions, to reduce traffic jams, and to free up space that is urgently needed for other purposes ranging from vegetation that provides natural cooling in a heating world to new flats for a growing population.
+In this chapter, we present SimRa\footnote{SimRa is an acronym for \textbf{S}icherheit \textbf{im} \textbf{Ra}dverkehr, which translates to safety in bicycle traffic from German.}, which is a crowdsourcing/crowdsensing (see \cref{sec:crowdsourcing_crowdsensing_background}) platform for gathering cycling trip data.
+A special feature of SimRa is it's capability to automatically detect incidents in bicycle traffic, which we also show in this chapter.
+SimRa's main objective is to find out hazardous hotspots in bicycle traffic.
+For this, we need to gather recordings of cycling trips, which have to contain user-generated information regarding the incidents, as well as a GPS trace, so that we can map the incidents and find out where they accumulate.
+While automatically recording the GPS trace during a cycling trip via a smartphone app is trivial, automatically gathering detailed information such as exact location, type and other participants of the incidents is not.
+Although we can use data produced by the \ac{imu}, which provides us information about acceleration, orientation and other gravitational forces, to automatically detect these information, we first need to know how the \ac{imu} footprint of an incident looks like.
+That is where we rely on the SimRa users, who after each ride add information about the incidents that happened during the trip.
+However, a cycling trip can be very long, both in distance and time, which complicates this process for the SimRa users since it can be difficult to remember every incident and their exact location.
+To make their task easier, SimRa has two different mechanisms to automatically detect where an incident occurred, so that the user can easier remember the incidents and their specifics to provide them.
+The first mechanism relies only on the \ac{imu} readings of the ride to suggest points in the ride where an incident might have happened and was available since the initial release of SimRa.
+The second mechanism relies on a \ac{dl} model which was trained with labeled data and is better at detecting incidents, which eases the task of the SimRa users to provide all incidents together with their details.
 
-A key mechanism to support this is to make bicycle traffic more attractive.
-In practice, however, what keeps people from using their bikes more frequently is a lack of safety or perceived safety in cities with a car-centric traffic infrastructure~\cite{aldred2018predictors}.
-Hence, city planners urgently require an overview of safety and perceived safety in their city.
-
-Aside from actual accidents, an often overlooked aspect of cycling safety are near miss incidents\footnote{In the remainder of this paper, we will also refer to them as ``incidents''.} such as close passes or near dooring~\cite{aldred2018predictors, karakaya2020simra}.
-Information on these have previously not been available or have not been easily accessible as they are distributed over private video recordings, social media posts, public CCTV footage, and other sources.
-In 2019, we therefore launched the SimRa\footnote{SimRa is a German acronym for safety in bicycle traffic.} project in which cyclists record their trips and annotate them with incident information via a smartphone app~\cite{karakaya2020simra}.
-
-While our previous approach~\cite{karakaya2020simra} already used a rudimentary heuristic for automatically detecting incidents based on acceleration sensors, it is inherently limited resulting in significant manual annotation efforts which makes it unattractive for some groups of cyclists -- in particular, elderly cyclists who have problems using smartphone apps and cyclists with significant daily mileage for whom the labeling approach is too much effort.
-To increase participation, it is hence crucial to decrease manual efforts through an improved pre-detection of incidents.
-
-As a first step towards this goal, we supervised a master's thesis which developed a neural network-based method for incident detection using the public SimRa data set\footnote{https://github.com/simra-project/dataset}~\cite{sanchez2020detecting} which, however, does not show the desired detection quality despite being an improvement over our original heuristic.
-Both detection methods are currently used in the live version of the app, hence, we will later use them as baseline in our evaluation.
-Besides that, there are alternative approaches for quantifying the perceived safety of bicycle traffic, e.g.,~\cite{blanc2016modeling, blanc2017safety, wu2018predicting}, but to the best of our knowledge no other methods are based on mobile motion sensory data.
-
-Since its start in 2019, the SimRa data set has grown to more than 65,000 cycling trips with almost 30,000 reported incidents.
-These amounts of data now enable the application of much more sophisticated methods, namely \ac{ml} and/or \ac{dl}, for automatic incident detection.
-Therefore, we here propose CycleSense -- a \ac{dl} model trained on smartphone sensory data from the SimRa data set to detect incidents in the SimRa app.
-We hope, that it will lead to more reported incidents due to an easier reporting, and make the following contributions:
-
+This chapter combines material published in \cite{karakaya2020simra,karakaya2022cyclesense} and has following contributions:
 \begin{itemize}
-	\item We propose an approach that combines signal processing and \ac{ml} techniques to detect incidents based on motion sensor data of cyclists with an \ac{auc} \ac{roc} of 0.906 (Section~\ref{sec:detecting}).
-	\item We evaluate our approach using the SimRa data set and compare it to two baselines as well as common \acl{dl} models used in the context of \acl{tsc} (Section~\ref{sec:eval}).
-	\item We discuss to which degree our approach can automate incident detection and which additional sensors are needed for full automation (Section~\ref{sec:disc}).
+\item We describe the design of the SimRa platform, a crowdsourcing- and crowdsensing-based data collection and processing platform for cyclist routes and near miss incidents.
+\item We propose an approach that combines signal processing and \ac{ml} techniques to detect incidents based on motion sensor data of cyclists with an \ac{auc} \ac{roc} of 0.906.
+\item We evaluate our approach using the SimRa data set and compare it to two baselines as well as common \acl{dl} models used in the context of \acl{tsc}.
+\item We discuss to which degree our approach can automate incident detection and which additional sensors are needed for full automation.
 \end{itemize}
 
-\section{Deep Learning}
+This chapter continues with background information about \ac{dl} and \ac{tsc} following Ismail Fawaz et al.~\cite{ismail2019deep} in \cref{sec:deep_learning_background}, which is important to understand the second mechanism to automatically detect incidents, mentioned above.
+Afterwards, we give a more detailed description about the SimRa mobile application in \cref{sec:simra}.
+In \cref{sec:detecting_near_miss_incidents}, we explain how we use \ac{dl} to automatically detect incidents.
+We evaluate our approach in \cref{sec:evaluation_cyclesense}, which we follow up with a discussion in \cref{sec:discussion_cyclesense}.
+Finally, we give an overview of alternative approaches and summarize this chapter in \cref{sec:related_work_cyclesense} and \cref{sec:summary_cyclesense} respectively.
+
+\section{Deep Learning for Time Series Classification}
 \label{sec:deep_learning_background}
-One of the most common tasks for \ac{tsc} are Natural Language Processing, speech recognition, and audio recognition in general.
-Another field that deals with this problem is \acf{har} which is concerned with identifying the specific activity of a human based on sensory time series data.
-Time windows of a few seconds are classified into activity categories (e.g., walking, sitting, running, lying).
-While various feature extraction and pattern recognition methods have been successfully applied in the past in this context~\cite{bulling2014tutorial}, those approaches have constraints such as hand-crafted feature extraction, being able to only learn shallow features~\cite{yang2015deep}, or the requirement for large amounts of well-labeled data for model training~\cite{wang2019deep}.
-\acl{dl} techniques and more specifically \acp{cnn} have recently proven to overcome these issues and deliver convincing results in the context of \ac{har}~\cite{wang2019deep,ronao2015deep}.
-Also, implementations of \acp{rnn} such as \ac{lstm}~\cite{tao2016multicolumn,yao2017deepsense} have proven to be successful.
-Yao et al.\ \cite{yao2017deepsense} use a combination of \acp{rnn} and \acp{cnn} on top of a \ac{sf} approach after preprocessing their input data using a \ac{dft}.
+In this section, we explain background information about time series classification and deep learning, which is used by SimRa to automatically detect the incidents.
+
+\subsection{Time Series Classification}
+As we will see in \cref{sec:simra}, the SimRa dataset consists of multivariate time series.
+A multivariate time series consists of $n \in \mathbb{N}$ different univariate time series $X_{i} \in \mathbb{R}_{t}$ with univariate time series $X = x_{1}, x_{2},...,x_{t}$ with each $x_{i} \in \mathbb{R}$ being chronologically ordered by $t \in \mathbb{N}$.
+In short, a multivariate time series is a chronologically ordered set of variables, in our case different \ac{imu} readings.
+An example of a univariate time series is the data produced by a distance sensor, where we have pairs of $(distance,timestamp)$, chronologically ordered by $timestamp$.
+An example of a multivariate time series is a weather station database, that reports the temperature, humidity and wind force every hour.
+The task of \ac{tsc} is to assign a one-hot label to each entry of the time series, e.g., whether the weather is safe for an airplane to fly or not. 
+
+\subsection{Deep Learning for Time Series Classification}
+With their rise, \ac{dnn} has drawn attraction to itself from the field of \ac{tsc}.
+
+\begin{figure}
+    \center
+    \includegraphics[width=\columnwidth]{fig/deep_learning_structure.pdf}
+    \caption{Structure of a Deep Learning approach to time series classification: A classifier that maps a time series to a probability distribution of classes\cite{chen2021deep}}
+    \label{fig:deep_learning_structure}
+\end{figure}
+
+As shown in figure~\ref{fig:deep_learning_structure}, a Deep Learning approach to \ac{tmc} consists of a classifier (in this case a \ac{mlp}, which is a type of a \ac{dnn}), that maps a time series to a probability distribution of $K$ classes.
+
+\begin{figure}
+    \center
+    \includegraphics[width=\columnwidth]{fig/deep_learning_approaches.pdf}
+    \caption{Taxonomy of Deep Learning approaches for Time Series Classification (based on L\"ankvist et al. and Ismail Fawaz et al.~\cite{langkvist2014review,ismail2019deep}}
+    \label{fig:deep_learning_approaches}
+\end{figure}
+
+Figure~\ref{fig:deep_learning_approaches} shows the two categories of \ac{dl} approaches for \ac{tsc}, which were differentiated by L\"ankvist et al. and then extended by Ismail Fawaz et al.~\cite{langkvist2014review,ismail2019deep}.
+
+\subsubsection*{Generative Models}
+Generally, generative Models provide a probability distribution $P(x,y)$ with $x$ being the input data and $y$ being the label.
+The label $y$ is determined by using the Bayes rules to calculate $P(y|x)$~\cite{ng2001discriminative}.
+A generative model for \ac{tsc} usually consists of two parts~\cite{langkvist2014review}: First, a model of the dataset is derived with an unsupervised learning phase.
+This model is then used to train a classifier that can successfully determine the correct label for each input.
+Ismail Fawaz et al. classifies two different categories of Generative Models: \textit{Auto Encoders} and \textit{Echo State Networks}~\cite{ismail2019deep}.
+
+\textit{Auto Encoders}, such as Stacked Denoising Auto-Encoders~\cite{bengio2013generalized}, \acp{cnn}~\cite{song2020representation}, Deep Belief Networks~\cite{banerjee2019deep}, \acp{cnn}~\cite{rajan2018generative}, split the the unsupervised learning preprocessing
+and the training of the classifier.
+
+\textit{Echo State Networks} on the other hand combine these steps~\cite{jaeger2001echo} to first reconstruct the dataset, to use the learned representation of it from the reservoir space~\cite{aswolinskiy2018time,bianchi2020reservoir,chouikhi2018genesis,ma2016functional}
+
+\subsubsection*{Distinctive Models}
+As stated by Vapnik~\cite{vapnik1998statistical}, the classification problem should be solved directly, without trying to solve a more general problem as an intermediate step.
+This is what Distinctive Models do, and instead of first calculating $P(x,y)$, they derive $P(y|x)$, or a mapping from an input to the label directly~\cite{ng2001discriminative}.
+Distinctive Models can be further categorized into \textit{Feature Engineering} and \textit{End-to-End}~\cite{ismail2019deep}.
+
+As the name suggests, in \textit{Feature Engineering} the focus lies in the hand-engineering of the features.
+In the most common form, which was inspired from computer vision, the time series is first transformed into an image~\cite{wang2015encoding,hatami2018classification,tripathy2018use}, so that the features could be hand-engineered correctly.
+This approach does not need any domain-specific knowledge.
+If domain-specific knowledge is available, the feature extraction can be done without transforming the dataset into images and the features can directly be included in the classifier~\cite{uemura2018feasibility,ignatov2018real}.
+
+Contrary, in \textit{End-to-End} Deep Learning the feature extraction is included in the process and does not have to be made manually~\cite{nweke2018deep}.
+Distinctive Models of the \textit{End-to-End}-type have been realized with \acp{MLP}~\cite{wang2017time,geng2019cost}, \acp{cnn}~\cite{che2017boosting,ismail2018evaluating,liu2018time} and hybrid networks~\cite{lin2017gcrnn,serra2018towards}.
 
 
 \section{SimRa - A Platform for Gathering Cycling Trips and Near Miss Incidents in Bicycle Traffic}
 \label{sec:simra}
+In this section, we give a general overview of the SimRa platform which comprises all things related to the collection, storage, and analysis of crowdsourced cycling data which we will focus on in the following sections.
 
 \subsection{Goal of the SimRa platform}
 \label{subsec:simra}
-In this section, we give a general overview of the SimRa platform which comprises all things related to the collection, storage, and analysis of crowdsourced cycling data which we will focus on in the following sections.
 
 For data acquisition we rely on an app installed on the smartphones of participating cyclists.
-This app collects data and detects incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see section~\ref{sec:data_acquisition}).
-The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated trip statistics (see section~\ref{sec:data}).
+This app collects data and detects incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see \cref{subsec:data_acquisition}).
+The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated trip statistics.
 Finally, we continuously process and analyze collected data to gain insights into dangerous street segments and intersections.
 For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection (see section~\ref{sec:analysis}).
 
@@ -535,7 +581,7 @@ A key challenge for this, is the lack of (perceived) safety for cyclists.
 Improving the situation requires detailed insights into safety levels of street segments -- the SimRa platform~\cite{karakaya2020simra} has been proposed as a data gathering mechanism for incidents and cycling tracks.
 While this is an important step towards data collection, the platform relies on manual annotation of tracks which limits the number of potential users.
 
-In this paper, we have proposed CycleSense -- a model for automatic detection of such incidents.
+In this chapter, we have proposed CycleSense -- a model for automatic detection of such incidents.
 Using the SimRa data set, we have shown that CycleSense is capable of detecting incidents on the basis of accelerometer and gyroscope time series data in a real-world scenario.
 It can correctly distinguish between an incident and a non-incident with a probability of up to 90.5\%.
 We have also compared it to the heuristic currently used in the SimRa platform and an existing \ac{fcn} that was specifically developed for SimRa.
