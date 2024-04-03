@@ -36,9 +36,9 @@ We do this to clarify why existing approaches, which we discuss in the next sect
 \begin{figure}[t]
     %\vspace{-3em}
     \centering
-    \subfloat[Smooth cobblestones]{\includegraphics{fig/cobblestone.jpg}}
+    \subfloat[Smooth cobblestones]{\includegraphics[width=0.4\columnwidth, height=4cm]{fig/cobblestone.jpg}}
     \hfill
-    \subfloat[Rough asphalt]{\includegraphics{fig/asphalt.jpg}}
+    \subfloat[Rough asphalt]{\includegraphics[width=0.4\columnwidth, height=4cm]{fig/asphalt.jpg}}
     \caption{%
         Smooth cobblestones can provide a good surface quality while bad asphalt can result in a bumpy ride (Source: Flickr.com).
     }%
@@ -133,7 +133,7 @@ The main question here is how much the surface quality should be weighed when ca
 We decided to give the user the opportunity to influence this factor with the usage of a slider, that can be set between 0 for not considering surface quality in the routing and 10 for the highest importance of the surface quality (\cref{fig:routing}).
  \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/routing_settings_2.png}
+    \includegraphics[width=0.7\columnwidth]{fig/routing_settings_2.png}
     \caption{%
 With a slider in the settings menu, the weight of the surface quality in the routing can be set.}%
     \label{fig:routing}
@@ -149,7 +149,7 @@ Our bicycle road surface quality pipeline creates a GeoJSON file as an output.
 It contains the cells with a surface area of 10m² in a grid as \codeword{Features} of the \codeword{geometry} type \codeword{Polygon} with the surface quality score information such as mean, median, standard deviation, number of rides going through the cell and coloring information in the \codeword{properties} key.
  \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/visualization.png}
+    \includegraphics[width=0.7\columnwidth]{fig/visualization.png}
     \caption{%
 A visualization of the output file showing the surface quality of the boxes when hovering over them with the mouse cursor. Color coding is based on the average value.}%
     \label{fig:visualization}
@@ -180,7 +180,7 @@ After filtering based on these criteria, we randomly picked four sections.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/pdf_clear.png}
+    \includegraphics[width=0.7\columnwidth]{fig/pdf_clear.png}
     \caption{%
         The Probability Density Function of the Derived Surface Qualities shows that these segments have very undisputed road surface quality values, since they are either very good or very bad.
     }%
@@ -219,7 +219,7 @@ While most results are intuitive, e.g., new bicycle roads paved with asphalt and
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/pdf_mixed.png}
+    \includegraphics[width=0.7\columnwidth]{fig/pdf_mixed.png}
     \caption{%
         The Probability Density Function of the Derived Surface Qualities shows that these segments have confusing road surface quality values: Depending on the ride, they appear to have either very good or very bad surface quality (multiple peaks).
     }%
@@ -250,7 +250,7 @@ In \textit{Invalidenstraße}, there are a bus lane, a bus stop, and an on-curb b
 Most bus lanes in Berlin can be legally used by cyclists, however, some cyclist may still prefer the relatively bumpy bike lane.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/invalidenstr.png}
+    \includegraphics[width=0.7\columnwidth]{fig/invalidenstr.png}
     \caption{%
         A bus lane, a bus station and a bicycle lane on the sidewalk can create different results in a small area. (Source: Apple Maps)
     }%
@@ -270,7 +270,7 @@ There are also sections where the surface quality result seem to be completely w
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/pdf_mismatched.png}
+    \includegraphics[width=0.7\columnwidth]{fig/pdf_mismatched.png}
     \caption{%
         The Probability Density Function of the Derived Surface Qualities shows that these segments have very smooth road surfaces, although they are paved with cobblestones.
     }%
@@ -283,9 +283,9 @@ However, as \cref{fig:sidewalk} reveals, both streets are indeed paved with cobb
 \begin{figure*}[t]
     %\vspace{-3em}
     \centering
-    \subfloat[Straßburger Straße]{\includegraphics[width=\columnwidth]{fig/straßburger_str_2.png}}
+    \subfloat[Straßburger Straße]{\includegraphics[width=0.4\columnwidth]{fig/straßburger_str_2.png}}
     \hfill
-    \subfloat[Goethestraße]{\includegraphics[width=\columnwidth]{fig/goethestr22.png}}
+    \subfloat[Goethestraße]{\includegraphics[width=0.4\columnwidth]{fig/goethestr22.png}}
     \caption{%
         Straßburger Straße and Goethestraße in Berlin are paved with large cobblestones and the roads are contested by cars that are parking or searching for a parking spot. In contrast, the sidewalks are paved with flat-surfaced paving stones and are quiet due to the absence of shops, restaurants or cafes. (Source: Apple Maps)
     }%

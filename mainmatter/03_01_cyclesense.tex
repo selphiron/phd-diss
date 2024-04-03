@@ -11,11 +11,14 @@ In this chapter, we present SimRa\footnote{SimRa is an acronym for \textbf{S}ich
 A special feature of SimRa is it's capability to automatically detect incidents in bicycle traffic, which we also show in this chapter.
 SimRa's main objective is to find out hazardous hotspots in bicycle traffic.
 For this, we need to gather recordings of cycling trips, which have to contain user-generated information regarding the incidents, as well as a GPS trace, so that we can map the incidents and find out where they accumulate.
+%While automatically recording the GPS trace during a cycling trip via a smartphone app is trivial, automatically gathering detailed information such as exact location, type and other participants of the incidents is not.
+%Although we can use data produced by the \ac{imu}, which provides us information about acceleration, orientation and other gravitational forces, to automatically detect these information, we first need to know how the \ac{imu} footprint of an incident looks like.
+%That is where we rely on the SimRa users, who after each ride add information about the incidents that happened during the trip.
+However, a cycling trip can be very long, both in distance and time, which complicates this process for the SimRa users since it can be difficult to remember every incident, its details and exact location.
 While automatically recording the GPS trace during a cycling trip via a smartphone app is trivial, automatically gathering detailed information such as exact location, type and other participants of the incidents is not.
-Although we can use data produced by the \ac{imu}, which provides us information about acceleration, orientation and other gravitational forces, to automatically detect these information, we first need to know how the \ac{imu} footprint of an incident looks like.
-That is where we rely on the SimRa users, who after each ride add information about the incidents that happened during the trip.
-However, a cycling trip can be very long, both in distance and time, which complicates this process for the SimRa users since it can be difficult to remember every incident and their exact location.
-To make their task easier, SimRa has two different mechanisms to automatically detect where an incident occurred, so that the user can easier remember the incidents and their specifics to provide them.
+It is however possible for the SimRa app to make educated guesses \textit{where} an incident might have happened during a ride based on the data produced by the \ac{icu}, which provides us information about acceleration, orientation and other gravitational forces.
+With this information, the user only has to remember whether an incident really happened there and what kind of incident it was, which makes their task easier.
+For this, SimRa has two different mechanisms.
 The first mechanism relies only on the \ac{imu} readings of the ride to suggest points in the ride where an incident might have happened and was available since the initial release of SimRa.
 The second mechanism relies on a \ac{dl} model which was trained with labeled data and is better at detecting incidents, which eases the task of the SimRa users to provide all incidents together with their details.
 
@@ -46,7 +49,7 @@ An example of a multivariate time series is a weather station database, that rep
 The task of \ac{tsc} is to assign a one-hot label to each entry of the time series, e.g., whether the weather is safe for an airplane to fly or not. 
 
 \subsection{Deep Learning for Time Series Classification}
-With their rise, \ac{dnn} has drawn attraction to itself from the field of \ac{tsc}.
+With their rise, \acp{dnn} have drawn attraction to themselves from the field of \ac{tsc}.
 
 \begin{figure}
     \center
@@ -55,7 +58,7 @@ With their rise, \ac{dnn} has drawn attraction to itself from the field of \ac{t
     \label{fig:deep_learning_structure}
 \end{figure}
 
-As shown in figure~\ref{fig:deep_learning_structure}, a Deep Learning approach to \ac{tmc} consists of a classifier (in this case a \ac{mlp}, which is a type of a \ac{dnn}), that maps a time series to a probability distribution of $K$ classes.
+As shown in figure~\ref{fig:deep_learning_structure}, a Deep Learning approach to \ac{tsc} consists of a classifier (in this case a \ac{mlp}, which is a type of a \ac{dnn}), that maps a time series to a probability distribution of $K$ classes.
 
 \begin{figure}
     \center
@@ -73,7 +76,7 @@ A generative model for \ac{tsc} usually consists of two parts~\cite{langkvist201
 This model is then used to train a classifier that can successfully determine the correct label for each input.
 Ismail Fawaz et al. classifies two different categories of Generative Models: \textit{Auto Encoders} and \textit{Echo State Networks}~\cite{ismail2019deep}.
 
-\textit{Auto Encoders}, such as Stacked Denoising Auto-Encoders~\cite{bengio2013generalized}, \acp{cnn}~\cite{song2020representation}, Deep Belief Networks~\cite{banerjee2019deep}, \acp{cnn}~\cite{rajan2018generative}, split the the unsupervised learning preprocessing
+\textit{Auto Encoders}, such as Stacked Denoising Auto-Encoders~\cite{bengio2013generalized}, \acp{cnn}~\cite{song2020representation}, Deep Belief Networks~\cite{banerjee2019deep}, \acp{rnn}~\cite{rajan2018generative}, split the the unsupervised learning preprocessing
 and the training of the classifier.
 
 \textit{Echo State Networks} on the other hand combine these steps~\cite{jaeger2001echo} to first reconstruct the dataset, to use the learned representation of it from the reservoir space~\cite{aswolinskiy2018time,bianchi2020reservoir,chouikhi2018genesis,ma2016functional}
@@ -89,7 +92,7 @@ This approach does not need any domain-specific knowledge.
 If domain-specific knowledge is available, the feature extraction can be done without transforming the dataset into images and the features can directly be included in the classifier~\cite{uemura2018feasibility,ignatov2018real}.
 
 Contrary, in \textit{End-to-End} Deep Learning the feature extraction is included in the process and does not have to be made manually~\cite{nweke2018deep}.
-Distinctive Models of the \textit{End-to-End}-type have been realized with \acp{MLP}~\cite{wang2017time,geng2019cost}, \acp{cnn}~\cite{che2017boosting,ismail2018evaluating,liu2018time} and hybrid networks~\cite{lin2017gcrnn,serra2018towards}.
+Distinctive Models of the \textit{End-to-End}-type have been realized with \acp{mlp}~\cite{wang2017time,geng2019cost}, \acp{cnn}~\cite{che2017boosting,ismail2018evaluating,liu2018time} and hybrid networks~\cite{lin2017gcrnn,serra2018towards}.
 
 
 \section{SimRa - A Platform for Gathering Cycling Trips and Near Miss Incidents in Bicycle Traffic}
@@ -103,11 +106,10 @@ For data acquisition we rely on an app installed on the smartphones of participa
 This app collects data and detects incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see \cref{subsec:data_acquisition}).
 The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated trip statistics.
 Finally, we continuously process and analyze collected data to gain insights into dangerous street segments and intersections.
-For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection (see section~\ref{sec:analysis}).
+For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection~\footnote{https://simra-project.github.io/dashboard/}.
 
 \subsection{Data Acquisition}
 \label{subsec:data_acquisition}
-Our approach relies on crowdsourcing to collect necessary data; in fact, SimRa is a citizen science project.
 For data acquisition, we could either rely on dedicated hardware or use commonly available hardware such as smartphones.
 While dedicated hardware has certain benefits, e.g., higher measurement precision, such projects are inherently limited in scale:
 \begin{figure}
@@ -116,16 +118,16 @@ While dedicated hardware has certain benefits, e.g., higher measurement precisio
     \caption{In the data acquisition process, collected data is manually annotated and anonymized before being uploaded to our backend servers.}
     \label{fig:data_acquisition_process}
 \end{figure}
-%An example of this is the Radmesser project~\cite{ndw_2019} which built custom sensors to track close pass incidents.
-%While the data quality is indeed rather high, the project was limited to a total of 100 cyclists (only partly in parallel).
-%As a result, the project could not achieve full coverage of Berlin streets.
-%For example, one of the incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single bicyle trip in the Radmesser data.
+An example of this is the Radmesser project~\footnote{https://interaktiv.tagesspiegel.de/radmesser/} which built custom sensors to track close pass incidents.
+While the data quality is indeed rather high, the project was limited to a total of 100 cyclists (only partly in parallel).
+As a result, the project could not achieve full coverage of Berlin streets.
+For example, some incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single bicyle trip in the Radmesser data.
 We decided for project scalability and collect data with smartphones only.
 Our goal is to collect data in a way that allows us (i) to identify incident hotspots as well as the kind of incidents and (ii) to identify the routes of cyclists (in which unnecessary detours are likely to identify severe incident hotspots).
 %, and (iii) to collect additional data with the goal of improving automated incident detection.
 
 
-Overall, our data acquisition process has five steps and follows the structure shown in figure~\ref{fig:data_acquisition_process} (we describe the steps in the following sections in detail).
+Overall, our data acquisition process has five steps and follows the structure shown in figure~\ref{fig:data_acquisition_process} (we describe the steps in the following in detail).
 This process runs continuously and in parallel as cyclists may create data for individual bicycle trips at any time.
 During a trip, we first record sensor data using the built-in sensors of a cyclist's smartphone.
 Upon completion of a trip, we analyze the raw data to automatically detect incidents.
@@ -140,19 +142,19 @@ While such a high sampling rate allows us to detect sudden peaks, this also lead
 Thus, we aggregate the data based on a moving average across 30 values of which we only consider every sixth value.
 This reduces the amount of data while still retaining all peaks in sensor readings.
 Third, we store the device orientation based on the smartphone's gyroscope sensor every three seconds.
-%These values describe the rate of rotation around the X/Y/Z axis in rad/s and allow us to correctly interpret the direction of the acceleration values.
+These values describe the rate of rotation around the X/Y/Z axis in rad/s and allow us to correctly interpret the direction of the acceleration values.
 Each sensor measurement, together with a timestamp, is stored locally on the device.
 
 We chose these rate settings based on initial experiments in which we identified the data collection rates and aggregation schemes as a sweet spot between system overload and information loss.
 
 
 
-\paragraph{Automated Incident Detection - Naive Approach}
+\paragraph{Automated Incident Detection}
 After a cycling trip, as soon as the cyclist stops the recording, we analyze the recorded data to identify incidents.
 The challenge, here, is to reliably detect incidents -- initially, without any training data.
 
 For this reason, we developed a heuristic for incident detection that relies on the assumption that incidents will often materialize as sudden acceleration spikes.
-Now, that we have over 10,000 labeled trips, we started to explore alternative detection methods ranging from machine learning to signals processing.
+After reaching over 10,000 labeled trips, we started to explore alternative detection methods ranging from machine learning to signals processing.
 In our heuristic, we group the acceleration time series in three-second buckets to differentiate incidents and poor road conditions (e.g., potholes result in high vertical acceleration).
 In each bucket, we identify the minimum and maximum value for every dimension and calculate the difference between those two.
 In a second step, we categorize the six highest difference values across all buckets as likely incidents.
@@ -162,12 +164,15 @@ In practice, this heuristic works well for cyclists with a ``relaxed'' cycling s
 For cyclists with a more ``rapid'' style of cycling, our heuristic usually identifies either accidents, severe bumps, or traffic lights but usually not incidents.
 The heuristic is also inherently limited as it cannot detect close passes and similar incidents which do not materialize as acceleration spikes.
 
+There was an alternative approach~\cite{sanchez2020detecting} using a simple Fully Connected Network (FCN) architecture without considering gyroscope sensor features yet.
+
 \paragraph{Data Labeling and Annotation}
 
 Even though we plan to improve the automated detection of incidents, some incident types cannot be automatically detected based on the sensor data alone.
 For example, while being tailgated might make the cyclist increase speed, this kind of observable activity can also be related to other, non-dangerous events.
 Thus, we do not think that a fully automated detection, also based on our hardware limitations, is a realistic option for SimRa -- neither now nor in the future.
-Instead, we ask the cyclist to edit the pre-detected set of incidents (i.e., add false negatives and ignore false positives) and to label and annotate the correct set of incidents (see also section~\ref{sec:data} which describes the resulting data in detail).
+Instead, we ask the cyclist to edit the pre-detected set of incidents (i.e., add false negatives and ignore false positives) and to label and annotate the correct set of incidents.
+%(see also section~\ref{sec:data} which describes the resulting data in detail).
 
 \paragraph{Data Anonymization}
 
@@ -186,20 +191,50 @@ Finally, and only when explicitly triggered by the cyclist, the cycling trip dat
 For authentication, we calculate an access key based on the current timestamp and a random salt which we update with new app versions.
 This is necessary to avoid automated attacks on our backend as we do not have a notion of user accounts.
 So far, this has sufficed as extracting the salt from the app binary requires enough manual effort to make this infeasible for automated attacks.
-Note, that we store trips and user data per region so that we can analyze (geographic) regions separately (we describe our concept of regions in section~\ref{sec:data}).
+Note, that we store trips and user data per region so that we can analyze (geographic) regions separately.
 
+\paragraph{Resulting Data}
+The SimRa data set consists of more than 114,500 rides from over 100 regions.
+Berlin accounts for the majority of rides of any region: Almost half the rides and incidents have been recorded there.
+Hanover and Nuremberg are the next largest regions with approximately 8000 and 5500 rides respectively\footnote{65,000 rides from over 65 regions and 3500 rides for Hanover and Nuremberg each, when we submitted our paper~\cite{karakaya2022cyclesense}}.
+The SimRa data set and source code are available online and in data repositories\footnote{https://github.com/simra-project/}.
+Due to per ride pseudonymization, we used only ride data for our classifier and could not rely on profiles of individual cyclists.
+Each ride file has two parts: The incident part and the ride part.
+The incident part lists all incidents of the ride.
+The ride part consists of timestamps, GPS, accelerometer, and gyroscope sensor readings. In more recent versions of the app, linear accelerometer and rotation vector data are also included.
+The recording frequencies of the various sensors vary a lot (See table~\ref{tab:theoretical-measurements}) and as a result require a partition of the SimRa data set in three distinct parts: older Android rides, newer Android rides, and iOS rides.
+
+\begin{table}[ht]
+	\centering
+	\resizebox{1.0\columnwidth}{!}{%
+	\begin{tabular}{cccccc}
+		\hline
+		& \textbf{Accelerometer} & \textbf{Gyroscope} & \textbf{\ac{gps}} & \textbf{Linear accelerometer} & \textbf{Rotation vector} \\
+		\hline\hline
+		\textbf{Android old} & 10 Hz & 0.33 Hz  & 0.33 Hz & \textbf{/} & \textbf{/} \\
+		\hline
+		\textbf{Android new} & 4 Hz & 4 Hz  & 0.33 Hz & 4 Hz & 4 Hz \\
+		\hline
+		\textbf{iOS} & 10 Hz & 0.33 Hz  & 0.33 Hz & \textbf{/} & \textbf{/} \\
+		\hline
+	\end{tabular}%
+	}
+	\caption{Theoretical measurement frequencies of different sensors in different parts of the SimRa data set. 
+		Note that these are only the theoretical frequencies that deviate significantly from the empirical measurement frequencies that can be observed in the data set (see Section \ref{sec:disc}).}
+	\label{tab:theoretical-measurements}
+\end{table}
 
 \section{Detecting Near Miss Incidents with Deep Learning}
 \label{sec:detecting_near_miss_incidents}
 This section describes the process of automatically detecting incidents. 
 Please note that the SimRa data are not optimized for automated processing and \ac{ml} but rather for aggregated statistics and review by humans.
 Therefore, several preprocessing steps are needed (Section~\ref{subsec:preprocessing}).
-We describe our \ac{ml} model in Section~\ref{subsec:architecture} and the training process in Section~\ref{subsec:training}.
+We describe our \ac{ml} model in Section~\ref{subsec:model_architecture} and the training process in Section~\ref{subsec:model_training}.
 
 
 \subsection{Preprocessing}
 \label{subsec:preprocessing}
-To overcome some limitations of the SimRa data set, we use data cleaning and preprocessing steps, in a sequential multi-stage manner,  some of which are specific to some model types that will be used afterwards to classify the incidents within bicycle trips.
+To overcome some limitations of the SimRa data set, we use data cleaning and preprocessing steps, in a sequential multi-stage manner, some of which are specific to some model types that will be used afterwards to classify the incidents within bicycle trips.
 
 Before the preprocessing phase, a typical trip can be expressed by a $n \times d$ sparse matrix $X^{(i)}$, where $d$ describes the number of sensor features and $n$ represents the number of timestamps in a given trip $i \in \{1,...,R\}$.
 
@@ -258,7 +293,7 @@ The aforementioned $f$-point \ac{dft} is applied on these synthetic incident buc
 
 \subsection{Model Architecture}
 \label{subsec:model_architecture}
-As our problem setting is similar to the \ac{har} task (see Section~\ref{sec:rw}), we build a customized \ac{ann} inspired by the DeepSense architecture proposed by Yao et al.~\cite{yao2017deepsense}.
+As our problem setting is similar to the \ac{har} task (see Section~\ref{sec:related_work_cyclesense}), we build a customized \ac{ann} inspired by the DeepSense architecture proposed by Yao et al.~\cite{yao2017deepsense}.
 
 In a first step, the network input is split based on the sensor that has produced it into accelerometer, gyroscope and \ac{gps} (i.e., velocity).
 Simultaneously, the previously Fourier transformed accelerometer and gyroscope data are separated into their real and imaginary parts.
@@ -311,7 +346,7 @@ Furthermore, the exact same splits are used for each model to improve comparabil
 We trained the final model for 60 epochs on an NVIDIA K80 GPU.
 We utilized a \ac{bce} loss function that was updated with Adam optimization, a \ac{sgd} method, a learning rate of 0.0001, and early stopping with a patience value of 10 epochs on the \ac{auc} \ac{roc} of the validation set.
 It is important to note that we did not use the complete SimRa data set.
-Instead, we used only a smaller subset of more recent rides recorded on Android devices since the heterogeneity of the data set across different versions and operating systems (see Section \ref{sec:disc}) did not allow us to train a model properly on the full data set.
+Instead, we used only a smaller subset of more recent rides recorded on Android devices since the heterogeneity of the data set across different versions and operating systems (see Section \ref{sec:discussion_cyclequality}) did not allow us to train a model properly on the full data set.
 In addition, due to limited access to hardware, we focused predominantly on data originating from the Berlin region if not stated otherwise.
 
 As previously described, one notable challenge we were facing was the extreme label imbalance present in the data.
@@ -327,14 +362,14 @@ We therefore changed the CycleSense model to an integrated stacking model by ado
 Also, we deviate from a pure stacking model.
 This is the case, as the meta-learner does not get any classification output of the subnetworks as input aside from the latent features in the last layer of the subnetworks.
 Thereby, the weights of the submodel layers that have been pretrained individually are loaded and frozen, so they are not updated during the training of the whole CycleSense model.
-This learning procedure further improved our results as shown in Section~\ref{sec:disc}.
+This learning procedure further improved our results as shown in Section~\ref{sec:discussion_cyclesense}.
 
 \section{Evaluation}
 \label{sec:evaluation_cyclesense}
 To evaluate CycleSense' training results, we have to put them into context. 
-For this purpose, we compare them to the two detection methods currently used in the app as discussed in Section~\ref{sec:background}.
+For this purpose, we compare them to the two detection methods currently used in the app as discussed in Section~\ref{sec:deep_learning_background}.
 We give an overview of the changes we made to the baseline methods with the goal of a fair comparison in Section~\ref{subsec:baselines}.
-We also describe the metrics that we use to compare our model to the baseline methods (Section~\ref{subsec:metrics}) before presenting the results of our evaluation (Section~\ref{subsec:eval-results}).
+We also describe the metrics that we use to compare our model to the baseline methods (Section~\ref{subsec:data_acquisition}) before presenting the results of our evaluation (Section~\ref{subsec:evaluation_results}).
 
 
 \subsection{Baselines}
@@ -343,11 +378,11 @@ The first baseline is our original heuristic~\cite{karakaya2020simra} which is b
 We made some small changes to this heuristic to enable its compatibility with the \ac{auc} \ac{roc} metric, thus, increasing the comparability with our approach.
 
 As a second baseline, we retrained the \ac{fcn} model from the alternative approach~\cite{sanchez2020detecting}.
-We used the original preprocessing pipeline (which differs significantly from the here presented one) but used the full data set as introduced in Section~\ref{sec:background}.
+We used the original preprocessing pipeline (which differs significantly from the here presented one) but used the full data set as introduced in Section~\ref{subsec:simra}.
 We skipped the under-sampling step, disregarded the phone location and the bike type feature for the reasons mentioned in Section~\ref{subsec:preprocessing}, and used a non-overlapping sliding window approach with 10 second windows for better comparability.
 
 The third baseline is DeepSense~\cite{yao2017deepsense}, which we implemented and trained as the authors describe in their work.
-For the differences between DeepSense and CycleSense, see sections~\ref{subsec:architecture} and~\ref{subsec:tsc}.
+For the differences between DeepSense and CycleSense, see sections~\ref{subsec:model_architecture} and~\ref{sec:related_work_cyclesense}.
 
 Based on these changes for improved comparability, we retrained the original model.
 We use both baselines for comparison as they are, to our knowledge, the only approaches for (semi-)automatically detecting incidents based on sensory time series data.
@@ -561,7 +596,14 @@ This further complicates the matter.
 
 \subsection{Data Set Shift}
 \label{subsec:data_set_shift}
-A major challenge in the context of crowdsourced data are data set shifts. Depending on the device (see also \autoref{subsec:technical_limitations}), but also on other factors, such as the city of origin of the recorded data (see also \autoref{subsec:eval-results}), there could be non-stationarities in the data that violate the assumptions underlying almost all ML models and thus could impact the generalization performance of the trained models. Several types of data set shifts can be distinguished, including \textit{covariate shifts}, meaning shifts in the input data \cite{sugiyama_machine_2012}, \textit{label shifts}, meaning shifts in the distribution of targets \cite{lipton_detecting_2018}, or mixtures thereof. Detecting these shifts \cite{polyzotis_data_2018, rabanser_failing_2018, breck_data_2019, abdar_review_2021, bates_testing_2021} and predicting \cite{schelter_learning_2020} or reducing their impact on the generalization performance is an active field of research \cite{schelter_challenges_2018, biessmann_automated_2021}. Some approaches aim at model specific improvements to alleviate data set shift \cite{sugiyama_machine_2012}. These approaches have a decisive disadvantage, most of these approaches only work for one model class and require access to the inner workings of the ML pipeline, often after the feature extraction step. More promising and easier to build and maintain are model agnostic solutions that focus on the data, rather than the models, to detect and counteract data set shifts \cite{biessmann_automated_2021}. Extending the training data sets to account for all variation and shifts in the data that the ML model should be invariant to, often called \textit{augmentation}, is a popular and effective way of counteracting data set shift, see for instance \cite{cubuk_autoaugment_2019}. In our work we follow this line of thought of a data centric AI approach. 
+A major challenge in the context of crowdsourced data are data set shifts.
+Depending on the device (see also \autoref{subsec:technical_limitations_of_the_simra_data_set}), but also on other factors, such as the city of origin of the recorded data (see also \autoref{subsec:evaluation_results}), there could be non-stationarities in the data that violate the assumptions underlying almost all ML models and thus could impact the generalization performance of the trained models.
+Several types of data set shifts can be distinguished, including \textit{covariate shifts}, meaning shifts in the input data \cite{sugiyama_machine_2012}, \textit{label shifts}, meaning shifts in the distribution of targets \cite{lipton_detecting_2018}, or mixtures thereof.
+Detecting these shifts \cite{polyzotis_data_2018, rabanser_failing_2018, breck_data_2019, abdar_review_2021, bates_testing_2021} and predicting \cite{schelter_learning_2020} or reducing their impact on the generalization performance is an active field of research \cite{schelter_challenges_2018, biessmann_automated_2021}.
+Some approaches aim at model specific improvements to alleviate data set shift \cite{sugiyama_machine_2012}. These approaches have a decisive disadvantage, most of these approaches only work for one model class and require access to the inner workings of the ML pipeline, often after the feature extraction step.
+More promising and easier to build and maintain are model agnostic solutions that focus on the data, rather than the models, to detect and counteract data set shifts \cite{biessmann_automated_2021}.
+Extending the training data sets to account for all variation and shifts in the data that the ML model should be invariant to, often called \textit{augmentation}, is a popular and effective way of counteracting data set shift, see for instance \cite{cubuk_autoaugment_2019}.
+In our work we follow this line of thought of a data centric AI approach. 
 
 
 \section{Alternative Approaches}
