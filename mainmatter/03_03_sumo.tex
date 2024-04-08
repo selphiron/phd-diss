@@ -1,52 +1,41 @@
 \chapter{Creating a Realistic Cyclist Model out of Bicycle Ride Data}
 \label{cha:sumo}
-%Motivation
-Active transportation modes such as cycling provide health benefits, alleviate traffic congestion, and reduce air pollution~\cite{goetschi2016cycling}.
-In practice, however, cyclists often face a car-centric traffic infrastructure which has a significant impact on their (perceived) safety and also affects the attractiveness of cycling routes~\cite{karakaya2020simra, pedroso2016bicycle,aldred2018predictors}.
-Changing this infrastructure to better accommodate cyclists and pedestrians requires significant planning efforts of city planners and traffic engineers.
-Similarly, road traffic safety systems for vulnerable road users are often assessed using simulation.
-Particularly the interaction with cars is relevant when it comes to V2X-based safety systems for cyclists~\cite{oczko2020integrating}.
-Many of these studies rely on the open source simulation platform SUMO\footnote{https://www.eclipse.org/sumo/} (Simulation of Urban Mobility), which allows them to study the effects of infrastructure changes before implementing them on the streets.
+In this chapter, we describe how we created a realistic cyclist model out of the SimRa dataset for \ac{sumo}.
+The main idea is, to deduce the lateral movement specifications, i.e. acceleration, deceleration and maximum velocity, as well as the left-turn behavior at intersections of cyclists by analyzing the SimRa dataset and adapting it to \ac{sumo}.
 
-In SUMO, vehicles and their dynamics are simulated individually~\cite{lopez2018microscopic}.
+In \ac{sumo}, vehicles and their dynamics are simulated individually~\cite{lopez2018microscopic}.
 Unfortunately, the cyclist model is not particularly realistic -- cyclists can either be modeled to behave as slow cars or as fast pedestrians.
-Several studies have already improved the bicycle model of SUMO.
-For instance, Kaths et al.~\cite{kaths2016integration} investigated the intersection behavior of cyclists using camera traces and transferred findings into SUMO.
-Also, Grigoropoulos et al.~\cite{grigoropoulos2019modelling} improved modeling of bicycle infrastructure at intersections while Heinovski et al.~\cite{heinovski2019modeling} created a virtual cycling environment to import real bicycle behavior directly into SUMO.
-Nevertheless, the current cyclist behavior in SUMO is still rather unrealistic; so far, researchers have devoted much more effort to car models, e.g., \cite{chandler1958traffic,gazis1961nonlinear,gipps1981behavioural, leutzbach1986development,bando1995dynamical,krauss1998microscopic,treiber2000congested,salles2020extending}.
+Several studies have already improved the bicycle model of \ac{sumo}.
+For instance, Kaths et al.~\cite{kaths2016integration} investigated the intersection behavior of cyclists using camera traces and transferred findings into \ac{sumo}.
+Also, Grigoropoulos et al.~\cite{grigoropoulos2019modelling} improved modeling of bicycle infrastructure at intersections while Heinovski et al.~\cite{heinovski2019modeling} created a virtual cycling environment to import real bicycle behavior directly into \ac{sumo}.
+Nevertheless, the current cyclist behavior in \ac{sumo} is still rather unrealistic; so far, researchers have devoted much more effort to car models, e.g., \cite{chandler1958traffic,gazis1961nonlinear,gipps1981behavioural, leutzbach1986development,bando1995dynamical,krauss1998microscopic,treiber2000congested,salles2020extending}.
 One reason for this is that, until recently, not enough data on real-world cyclist behavior have been available.
 Today, crowdsourced data collection approaches such as SimRa\footnote{https://github.com/simra-project/}~\cite{karakaya2020simra} have made thousands of cycle tracks available as open data.
 
-In this paper, we analyze the SimRa dataset regarding acceleration, deceleration, and velocity of cyclists as well as their left-turn behavior in four-way intersections.
-We then use our findings to improve the cyclist model in SUMO.
+In this chapter, we analyze the SimRa dataset regarding acceleration, deceleration, and velocity of cyclists as well as their left-turn behavior in four-way intersections.
+We then use our findings to improve the cyclist model in \ac{sumo}.
 Additionally, we add three more detailed cylist models for slow, medium and fast cyclists.
-In this regard, we make the following contributions:
+This chapter combines material published in \cite{karakaya2022realistic,karakaya2023achieving} and contains following contributions:
 \begin{itemize}
-    \item We show that SUMO's default bicycle simulation is not realistic,
-    \item we improve bicycle simulation of SUMO by deriving new parameters for that vehicle type in SUMO,
-    \item we add three new bicycle simulation models - slow, mediumd and fast - to SUMO by splitting the SimRa dataset into slow, medium and fast rides.
+    \item We show that \ac{sumo}'s default bicycle simulation is not realistic,
+    \item we improve bicycle simulation of \ac{sumo} by deriving new parameters for that vehicle type in \ac{sumo},
+    \item we add three new bicycle simulation models - slow, mediumd and fast - to \ac{sumo} by splitting the SimRa dataset into slow, medium and fast rides.
     \item we develop an intersection model which captures cyclists' left-turn behavior at intersections in a more realistic way, and
-    \item we compare our improvements to SUMO's default bicycle simulation, using the SimRa dataset as a ground truth.
+    \item we compare our improvements to \ac{sumo}'s default bicycle simulation, using the SimRa dataset as a ground truth.
 \end{itemize}
 
-This paper is an extension of our previous work~\cite{karakaya2022realistic}.
-The main new contributions are:
-\begin{itemize}
-\item We rerun all analyses of the original paper using significantly more rides which have become available in the time period since starting our original paper.
-\item We complement the general cyclist model from our original paper with three dedicated models covering the behavior of cyclist groups clustered by their average velocity.
-    For each of the three models, we also derive distributions of left-turn, acceleration, and maximum velocity behavior.
-\item For both the general and the three dedicated cyclist models, we also derive deceleration behavior as a distribution.
-\item We implement all new contributions as SUMO plugins and have successfully reimplemented the cyclist model from our original paper in SUMO core.
-    We are currently in the process of finalizing an implementation of the extensions of this paper also in SUMO core.
-\item We evaluate all four cyclist models against the default cyclist model of SUMO using scenarios from Berlin, Munich, and Hanover, Germany
-\end{itemize}
+This chapter is organized in the following manner:
+\cref{sec:sumo_background} has background information on \ac{sumo}.
+\cref{sec:cycling_behavior_in_simra_and_sumo} contains an analysis and comparison of cyclists' lateral movement and behavior at intersections in real life (SimRa dataset) and \ac{sumo}.
+\cref{sec:improving_sumos_bicycle_simulation} gives a description of how we implemented the insights gained from the analysis from the previous section.
+\cref{sec:evaluation_sumo} evaluates and \cref{sec:discussion_sumo} discusses our approach.
+\cref{sec:related_work_sumo} gives an overview of alternative approaches and \cref{sec:summary_sumo} concludes this chapter.
 
-
-\section{SUMO - Simulation of Urban Mobility}
+\section{\ac{sumo} - Simulation of Urban Mobility}
 \label{sec:sumo_background}
 % sumo in general
-SUMO is an open source traffic simulation tool that offers macroscopic as well as microscopic simulation of vehicle mobility~\cite{lopez2018microscopic}.
-SUMO includes models for different types of ``vehicles'', including, among others, cars, bicycles, and even pedestrians.
+\ac{sumo} is an open source traffic simulation tool that offers macroscopic as well as microscopic simulation of vehicle mobility~\cite{lopez2018microscopic}.
+\ac{sumo} includes models for different types of ``vehicles'', including, among others, cars, bicycles, and even pedestrians.
 Due to its large feature set, it has become the de-facto standard for traffic simulation and is used even beyond the transport community, e.g., \cite{beilharz2021towards}.
 
 % network
@@ -55,33 +44,33 @@ The road network includes roads and their (sub-)lanes as well as exclusive lanes
 Furthermore, connections between these lanes and traffic lights can be configured.
 
 % vtypes
-When modeling vehicle traffic, users specify demand for a specific road segment per vehicle type and can adjust vehicle-specific parameters of SUMO's simulation model to control their respective behavior.
+When modeling vehicle traffic, users specify demand for a specific road segment per vehicle type and can adjust vehicle-specific parameters of \ac{sumo}'s simulation model to control their respective behavior.
 In general, vehicle parameters are usually specified in the vehicle type declaration (\textit{vType}), applying the changes to all instances of the respective \textit{vType}, e.g., to all cars.
 An alternative, however, is to obtain multiple \textit{vType} realizations which typically differ in at least one parameter by using so-called \textit{vTypeDistributions}.
-This way, when spawning a new vehicle, SUMO randomly picks a specific \textit{vType} from the \textit{vTypeDistribution} and instantiates the vehicle's parameters accordingly, e.g., cars can thus have individual maximum velocities.
+This way, when spawning a new vehicle, \ac{sumo} randomly picks a specific \textit{vType} from the \textit{vTypeDistribution} and instantiates the vehicle's parameters accordingly, e.g., cars can thus have individual maximum velocities.
 
 % vehicle behavior
-In SUMO, vehicle behavior is, among other things, defined by
+In \ac{sumo}, vehicle behavior is, among other things, defined by
 \textit{Car Following (CF) models} for the longitudinal kinematic behavior,
 \textit{Lane Change (LC) models} for the lateral kinematic behaviour,
 and \textit{junction models} for the behavior at junctions and intersections.
 
 % bicycles
-Despite including several of these models for cars and trucks, SUMO does not provide a dedicated movement model for cyclists.
+Despite including several of these models for cars and trucks, \ac{sumo} does not provide a dedicated movement model for cyclists.
 Instead, cyclists are simulated by modeling them either as slow cars or fast pedestrians.
 Both of these approaches use movement models of the corresponding vehicle type and adapt their respective shape and kinematic characteristics (e.g., velocity and acceleration profiles) to match cyclists.
 While this is obviously a rough approximation, it is unlikely to reflect the behavior of real-world cyclists~\cite{grigoropoulos2019modelling}.
 
 
-\section{Cycling Behavior in SimRa and SUMO}
+\section{Cycling Behavior in SimRa and \ac{sumo}}
 \label{sec:cycling_behavior_in_simra_and_sumo}
-In this section, we analyze real-world cyclists' behavior extracted from the SimRa dataset and compare it to the behavior of SUMO's default bicycle model.
+In this section, we analyze real-world cyclists' behavior extracted from the SimRa dataset\footnote{All numbers in this chapter regarding the SimRa dataset are as of January 2023} and compare it to the behavior of \ac{sumo}'s default bicycle model.
 SimRa's dataset stems from crowdsourced smartphone data generation and thus suffers from poor sensor quality~\cite{chowdhury2014estimating, usami2018bicycle} as well as heterogeneous hardware and users~\cite{basiri2018impact}.
-This leads to a lot of unclean data, which we first need to filter out (\cref{sec:analysis_preprocessing}).
-Since we want to create one general type for all cyclists and complement it with three dedicated models for slow, medium, and fast cyclists, we need to derive three distinct types from the SimRa dataset, which we do in \cref{sec:analysis_types}.
-We then analyze acceleration, deceleration and velocity behavior for each of the four models in \cref{sec:analysis_acceleration,sec:analysis_deceleration,sec:analysis_velocity} before discussing left-turn behavior at four-way intersections of the different models in \cref{sec:analysis_pathfinding}.
-We omit a detailed discussion of the right-turn behavior at intersections, since SUMO's default model does not deviate much from the behavior observed from SimRa's dataset.
-When referring to SUMO's bicycle model, we refer to the ``slow car'' model of SUMO as the ``fast pedestrian'' model occasionally leads to poor results and was therefore not considered further.
+This leads to a lot of unclean data, which we first need to filter out (\cref{subsec:preprocessing_sumo}).
+Since we want to create one general type for all cyclists and complement it with three dedicated models for slow, medium, and fast cyclists, we need to derive three distinct types from the SimRa dataset, which we do in \cref{subsec:categorizing_by_velocity_preprocessing}.
+We then analyze acceleration, deceleration and velocity behavior for each of the four models in \cref{subsec:acceleration_preprocessing,subsec:deceleration_preprocessing,subsec:velocity_preprocessing} before discussing left-turn behavior at four-way intersections of the different models in \cref{subsec:left-turn_behavior_at_intersections_preprocessing}.
+We omit a detailed discussion of the right-turn behavior at intersections, since \ac{sumo}'s default model does not deviate much from the behavior observed from SimRa's dataset.
+When referring to \ac{sumo}'s bicycle model, we refer to the ``slow car'' model of \ac{sumo} as the ``fast pedestrian'' model occasionally leads to poor results and was therefore not considered further.
 
 \begin{table}
 \centering
@@ -110,13 +99,12 @@ To achieve the best possible data quality, we tested various pre-processing tech
 We also conducted an experiment in which sample trajectories were recorded in parallel on several SimRa client devices and compared to a ground truth trajectory recorded by a stand-alone GPS receiver.
 In the end, we used a Gaussian Kernel filter for improving location data and a Low Pass filter for the velocity data.
 Additionally, the SimRa dataset contains information about the location accuracy, which we use to filter out rides where the GPS accuracy suffered greatly.
-After filtering semantically and syntactically defective files, we used data from \num{55175} rides, which is around \num{65}\% of the initial dataset as input for our analysis scripts.\footnote{https://github.com/simra-project/SimRaXSUMO}
-
+After filtering semantically and syntactically defective files, we used data from \num{55175} rides, which is around \num{65}\% of the initial dataset as input for our analysis scripts.\footnote{https://github.com/simra-project/SimRaX\ac{sumo}}
 \subsection{Categorizing Cyclists by Velocity}
 \label{subsec:categorizing_by_velocity_preprocessing}
 To get different types of cyclists, we decided to analyze the average velocity of each ride after filtering out the stops.
 \Cref{fig:analysis_avg_vel_all} shows the distribution of the average velocities of each ride in the SimRa dataset.
-This does not present an obvious way to split the dataset into three types, which is why we have split the dataset from a SUMO users' perspective.
+This does not present an obvious way to split the dataset into three types, which is why we have split the dataset from a \ac{sumo} users' perspective.
 We, hence, decided to split the dataset so, that the \num{25}\% slowest and the \num{25}\% fastest rides represent the slow and the fast cyclists respectively, which leaves the middle \num{50}\% to the medium-paced cyclists.
 This results in the following cyclist type velocities:
 \textit{Slow cyclists} have an average cycling velocity of up to \SI{13.5}{\km\per\hour}.
@@ -125,7 +113,7 @@ This results in the following cyclist type velocities:
 We have chosen against an equal split and in favor of a \num{25}\%-\num{50}\%-\num{25}\% split, because we think that the majority of the cyclists should be in the same cyclist type, namely, the medium cyclist type.
 \begin{figure}
   \centering
-    \includegraphics[width=\columnwidth]{fig/analysis_avg_velo_all.pdf}
+    \includegraphics[width=0.7\columnwidth]{fig/analysis_avg_velo_all.pdf}
     \caption{%
         Histogram of the empirical average velocity capabilities of cyclists found in the SimRa dataset. The average velocity of all bicycle rides after the preprocessing is \SI{4.38}{\metre\per\second} with a standard deviation of \num{0.89} and a median of \SI{4.42}{\metre\per\second}.
     }%
@@ -139,15 +127,15 @@ We have chosen against an equal split and in favor of a \num{25}\%-\num{50}\%-\n
 % \___ \| | | | |\/| | | | | \ \ / / __|   \___ \| | '_ ` _ \| |_) / _` |
 %  ___) | |_| | |  | | |_| |  \ V /\__ \_   ___) | | | | | | |  _ < (_| |
 % |____/ \___/|_|  |_|\___/    \_/ |___(_) |____/|_|_| |_| |_|_| \_\__,_|
-\begin{figure*}[t]
+\begin{figure*}
     %\vspace{-3em}
     \centering
-    \subfloat[All cyclists]{\includegraphics[width=\columnwidth]{fig/analysis_max_acceleration_dist_fit_all.pdf}\label{fig:analysis_max_acceleration_dist_fit_all}}
+    \subfloat[All cyclists]{\includegraphics[width=0.4\columnwidth]{fig/analysis_max_acceleration_dist_fit_all.pdf}\label{fig:analysis_max_acceleration_dist_fit_all}}
     \hfill
-    \subfloat[\num{3} cyclist groups: slow ($s$), medium ($m$), and fast ($f$)]{\includegraphics[width=\columnwidth]{fig/analysis_max_acceleration_dist_fit_groups.pdf}\label{fig:analysis_max_acceleration_dist_fit_groups}}
+    \subfloat[\num{3} cyclist groups: slow ($s$), medium ($m$), and fast ($f$)]{\includegraphics[width=0.4\columnwidth]{fig/analysis_max_acceleration_dist_fit_groups.pdf}\label{fig:analysis_max_acceleration_dist_fit_groups}}
     \caption{%
         Histogram of maximum acceleration capabilities found in the empirical SimRa dataset and their respective distribution functions.
-        The red scalar represents the default value in SUMO.
+        The red scalar represents the default value in \ac{sumo}.
     }%
     \label{fig:analysis_max_acceleration_dist_fit}
 \end{figure*}
@@ -165,10 +153,10 @@ $Burr3(x; c,d) = c*d*\frac{x^{-c-1}}{(1+x^c)^{d+1}}$ for $x = a_{max} \geq 0$ an
 
 $M\beta\kappa(x; c,d) = \frac{k*x^{k-1}}{(1+x^s)^{1+k/s}}$ for $x = a_{max} > 0$ and $k,s > 0$ is the best fit for the medium cyclist model's acceleration distribution (see also \cref{fig:analysis_max_acceleration_dist_fit_groups}).
 
-Comparing the acceleration capability of actual cyclists (the SimRa dataset) with the default SUMO cyclist model, differences become apparent.
-By default, SUMO specifies $a_{max}^{SUMO}$ with \SI{1.2}{\metre\per\square\second}.
+Comparing the acceleration capability of actual cyclists (the SimRa dataset) with the default \ac{sumo} cyclist model, differences become apparent.
+By default, \ac{sumo} specifies $a_{max}^{\ac{sumo}}$ with \SI{1.2}{\metre\per\square\second}.
 This deviates significantly from the findings in the SimRa dataset where only \num{15}\% of the acceleration maneuvers are executed with a maximum acceleration of \SI{1.2}{\metre\per\square\second} or higher.
-Furthermore, the empirical distributions are rather wide, indicating a broad variance across different cyclist types and cycling situations, which is in stark contrast to SUMO's strategy of choosing a fixed maximum value.
+Furthermore, the empirical distributions are rather wide, indicating a broad variance across different cyclist types and cycling situations, which is in stark contrast to \ac{sumo}'s strategy of choosing a fixed maximum value.
 
 \subsection{Deceleration}
 \label{subsec:deceleration_preprocessing}
@@ -178,26 +166,26 @@ Furthermore, the empirical distributions are rather wide, indicating a broad var
 % \___ \| | | | |\/| | | | | \ \ / / __|   \___ \| | '_ ` _ \| |_) / _` |
 %  ___) | |_| | |  | | |_| |  \ V /\__ \_   ___) | | | | | | |  _ < (_| |
 % |____/ \___/|_|  |_|\___/    \_/ |___(_) |____/|_|_| |_| |_|_| \_\__,_|
-\begin{figure*}[t]
+\begin{figure*}
     \centering
-    \subfloat[All cyclists]{\includegraphics[width=\columnwidth]{fig/analysis_max_deceleration_dist_fit_all.pdf}\label{fig:analysis_max_deceleration_dist_fit_all}}
+    \subfloat[All cyclists]{\includegraphics[width=0.4\columnwidth]{fig/analysis_max_deceleration_dist_fit_all.pdf}\label{fig:analysis_max_deceleration_dist_fit_all}}
     \hfill
-    \subfloat[\num{3} cyclist groups: slow ($s$), medium ($m$), and fast ($f$)]{\includegraphics[width=\columnwidth]{fig/analysis_max_deceleration_dist_fit_groups.pdf}\label{fig:analysis_max_deceleration_dist_fit_groups}}
+    \subfloat[\num{3} cyclist groups: slow ($s$), medium ($m$), and fast ($f$)]{\includegraphics[width=0.4\columnwidth]{fig/analysis_max_deceleration_dist_fit_groups.pdf}\label{fig:analysis_max_deceleration_dist_fit_groups}}
     \caption{%
         Histogram of maximum deceleration capabilities found in the empirical SimRa dataset and their respective distribution functions.
-        The red scalar represents the default value in SUMO.
+        The red scalar represents the default value in \ac{sumo}.
     }%
     \label{fig:analysis_max_deceleration_dist_fit}
 \end{figure*}
 
-For analyzing cyclist deceleration, we extracted deceleration maneuvers from the dataset (see \cref{sec:analysis_acceleration}).
+For analyzing cyclist deceleration, we extracted deceleration maneuvers from the dataset (see \cref{subsec:acceleration_preprocessing}).
 Distribution fitting processes showed here that the Johnson's $S_{U}$-distribution~\cite{johnson1949systems} $JSU(x; a,b) = \frac{b}{\sqrt{x^2+1}}\phi(a+b*log(x+\sqrt{x^2+1}))$ for $x=d_{max}$ and $b>0$ with $\phi$ being the probability density function of the normal distribution, fits the data best for the general cyclist model (see also \cref{fig:analysis_max_deceleration_dist_fit_all}).
 $JSU(d_{max}; a,b)$ was also the best fit for the slow and medium cylist models, whereas the fast cyclists' data was the best fit for the Student's $t$-distribution~\cite{student1908probable} $t(x; \nu)=\frac{\Gamma((\nu+1)/2)}{\sqrt{\pi*\nu}*\Gamma(\nu/2)}*(1+x^2/\nu)^{-(\nu+1)/2}$ for $x=d_{max}$ (see also \cref{fig:analysis_max_deceleration_dist_fit_groups}).
 
-Comparing the deceleration capability of actual cyclists (the SimRa dataset) with the default SUMO bicycle model, differences become apparent.
-By default, SUMO specifies $d_{max}^{SUMO}$ with \SI{-3}{\metre\per\square\second}.
+Comparing the deceleration capability of actual cyclists (the SimRa dataset) with the default \ac{sumo} bicycle model, differences become apparent.
+By default, \ac{sumo} specifies $d_{max}^{\ac{sumo}}$ with \SI{-3}{\metre\per\square\second}.
 This deviates extremely from the findings in the SimRa dataset where none of the deceleration maneuvers are executed with a maximum acceleration of \SI{-3}{\metre\per\square\second} or lower.
-Furthermore, the empirical distributions are rather wide, indicating a broad variance across different cyclist types and cycling situations, which is in stark contrast to SUMO's strategy of choosing a fixed maximum value.
+Furthermore, the empirical distributions are rather wide, indicating a broad variance across different cyclist types and cycling situations, which is in stark contrast to \ac{sumo}'s strategy of choosing a fixed maximum value.
 
 \subsection{Velocity}
 \label{subsec:velocity_preprocessing}
@@ -207,15 +195,15 @@ Furthermore, the empirical distributions are rather wide, indicating a broad var
 %  ___) | |_| | |  | | |_| |  \ V /\__ \_   ___) | | | | | | |  _ < (_| |
 % |____/ \___/|_|  |_|\___/    \_/ |___(_) |____/|_|_| |_| |_|_| \_\__,_|
                                                                         
-\begin{figure*}[t]
+\begin{figure*}
     %\vspace{-3em}
     \centering
-    \subfloat[All cyclists]{\includegraphics[width=\columnwidth]{fig/analysis_max_velo_dist_fit_all.pdf}\label{fig:analysis_max_velo_dist_fit_all}}
+    \subfloat[All cyclists]{\includegraphics[width=0.4\columnwidth]{fig/analysis_max_velo_dist_fit_all.pdf}\label{fig:analysis_max_velo_dist_fit_all}}
     \hfill
-    \subfloat[\num{3} cyclist groups: slow ($s$), medium ($m$), and fast ($f$)]{\includegraphics[width=\columnwidth]{fig/analysis_max_velo_dist_fit_groups.pdf}\label{fig:analysis_max_velo_dist_fit_groups}}
+    \subfloat[\num{3} cyclist groups: slow ($s$), medium ($m$), and fast ($f$)]{\includegraphics[width=0.4\columnwidth]{fig/analysis_max_velo_dist_fit_groups.pdf}\label{fig:analysis_max_velo_dist_fit_groups}}
     \caption{%
         Histogram of maximum velocity capabilities found in the empirical SimRa dataset and their respective distribution functions.
-        The red scalar represents the default value in SUMO.
+        The red scalar represents the default value in \ac{sumo}.
     }%
     \label{fig:analysis_max_velo_dist_fit}
     \vspace{-.5em}
@@ -226,9 +214,9 @@ Using distribution fitting, we found that the symmetric generalized normal distr
 For the model of the slow cyclists, the Johnson's $S_{U}$-distribution~\cite{johnson1949systems} $JSU(v_{max}; \Phi\mbox{*})$ fits the data best, while the best fit for the medium cyclists' model is the Exponentially Modified Gaussian distribution~\cite{grushka1972characterization} $EMG(x; K) = \frac{1}{2*K}*exp(\frac{1}{2*K^2}-x/K)erfc(-\frac{x-1/K}{\sqrt{2}})$ for $x = v_{max}$ and $K>0$.
 Finally, the non-central $t$-distribution~\cite{hogben1961moments} $NCT\newline(v_{max}; \Phi\mbox{*})$ emerged as the best fit for the fast cyclists' data.
 
-On the other hand, SUMO sets $v_{max}^{SUMO}$ at \SI{5.56}{\metre\per\s} by default.
+On the other hand, \ac{sumo} sets $v_{max}^{\ac{sumo}}$ at \SI{5.56}{\metre\per\s} by default.
 This deviates significantly from the findings in the SimRa dataset where \num{77}\% of the rides have a higher maximum velocity.
-Bringing this together with the acceleration findings, real-world cyclists often (but not always) cycle much faster than SUMO cyclists and vary much more in their acceleration behavior.
+Bringing this together with the acceleration findings, real-world cyclists often (but not always) cycle much faster than \ac{sumo} cyclists and vary much more in their acceleration behavior.
 
 \subsection{Left-turn Behavior at Intersections}
 \label{subsec:left-turn_behavior_at_intersections_preprocessing}
@@ -237,12 +225,12 @@ Bringing this together with the acceleration findings, real-world cyclists often
 % \___ \| | | | |\/| | | | | \ \ / / __|   \___ \| | '_ ` _ \| |_) / _` |
 %  ___) | |_| | |  | | |_| |  \ V /\__ \_   ___) | | | | | | |  _ < (_| |
 % |____/ \___/|_|  |_|\___/    \_/ |___(_) |____/|_|_| |_| |_|_| \_\__,_|
-\begin{figure}[t]
+\begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/analysis_im_loc_default.pdf}
+    \includegraphics[width=0.5\columnwidth]{fig/analysis_im_loc_default.pdf}
     \caption{%
-        Qualitative comparison between the SUMO default intersection model and real world data given by SimRa for the intersection between Alexanderstraße and Karl-Marx-Allee in Berlin.
-        SimRa shows two distinct left-turn paths (i.e., a direct and an indirect one) whereas SUMO default only models the direct path.
+        Qualitative comparison between the \ac{sumo} default intersection model and real world data given by SimRa for the intersection between Alexanderstraße and Karl-Marx-Allee in Berlin.
+        SimRa shows two distinct left-turn paths (i.e., a direct and an indirect one) whereas \ac{sumo} default only models the direct path.
     }%
     \label{fig:analysis_im_traj_default}
 \end{figure}
@@ -250,7 +238,7 @@ Bringing this together with the acceleration findings, real-world cyclists often
 According to the SimRa dataset, cyclists either behave like cars (using the normal road) or pedestrians (using the pedestrian crossing) to take left-turns at intersections.
 We call the former a \textit{direct} left turn and the latter an \textit{indirect} left turn.
 
-SUMO's default model only provides cyclists with an unrealistic "bicycle-lane-to-bicycle-lane-left-turn" (see also \cref{fig:analysis_im_traj_default}), where the cyclist enters the intersection from a bicycle lane, crossing all car lanes and directly entering the bicycle lane again.
+\ac{sumo}'s default model only provides cyclists with an unrealistic "bicycle-lane-to-bicycle-lane-left-turn" (see also \cref{fig:analysis_im_traj_default}), where the cyclist enters the intersection from a bicycle lane, crossing all car lanes and directly entering the bicycle lane again.
 
 Taking a closer look at real world intersections in the SimRa dataset revealed that there are mainly two intersection types.
 In the first intersection type, the \textit{indirect} path is chosen with a probability of \num{61}\% when all cyclists are considered, while medium cyclists and fast cyclists prefer the indirect path with a probability of \num{87}\% and \num{50}\% respectively.
@@ -259,77 +247,77 @@ Slow cyclists almost never tend to do direct left-turns, since they presumably a
 Randomly investigating intersections of both types revealed that the first intersection type has no specific characteristics while the second intersection type actively encourages cyclists to indirect turns through the design of the intersection, e.g., by having a traffic island in the center.
 Since such information cannot be identified in \ac{osm} data reliably and in an abstract way, we will consider only the first intersection type in the following.
 
-SUMO and real world data differ decisively in all metrics considered, namely acceleration, velocity, and left-turn behavior at intersections.
+\ac{sumo} and real world data differ decisively in all metrics considered, namely acceleration, velocity, and left-turn behavior at intersections.
 However, these three metrics are crucial for realistically simulating bicycle traffic.
-In the following, we try to adapt SUMO to simulate a more realistic cyclist behavior by introducing three different cyclist types.
+In the following, we try to adapt \ac{sumo} to simulate a more realistic cyclist behavior by introducing three different cyclist types.
 
 
-\section{Improving SUMO's Bicycle Simulation}
+\section{Improving \ac{sumo}'s Bicycle Simulation}
 \label{sec:improving_sumos_bicycle_simulation}
-To improve the simulation, we propose three changes to SUMO's bicycle model:
-First, the longitudinal kinematic parameters of SUMO's default bicycle model are \mbox{(re-)}parameterized based on the findings from the SimRa dataset.
-Second, a novel simulation model is derived from SimRa trajectories to exclusively simulate realistic left-turn bicycle behavior at intersections based on the findings in \cref{sec:analysis}.
+To improve the simulation, we propose three changes to \ac{sumo}'s bicycle model:
+First, the longitudinal kinematic parameters of \ac{sumo}'s default bicycle model are \mbox{(re-)}parameterized based on the findings from the SimRa dataset.
+Second, a novel simulation model is derived from SimRa trajectories to exclusively simulate realistic left-turn bicycle behavior at intersections based on the findings in \cref{sec:cycling_behavior_in_simra_and_sumo}.
 The latter model is referred to as the intersection model in the following.
-Third, four different cyclist models, with different longitudinal kinematic and left-turn behaviors depending on the findings from \cref{sec:analysis}.
+Third, four different cyclist models, with different longitudinal kinematic and left-turn behaviors depending on the findings from \cref{sec:cycling_behavior_in_simra_and_sumo}.
 One model is for all cyclists combined and the three other models are for modeling slow, medium and fast cyclists.
 
 
 \subsection{Longitudinal Kinematic Behavior}
 \label{subsec:longitudinal_kinematic_behavior}
-In \cref{sec:analysis}, we derived maximum acceleration, maximum deceleration and maximum velocity characteristics from the SimRa dataset.
-We now use them to improve the longitudinal kinematic behavior of the default SUMO bicycle model.
+In \cref{sec:cycling_behavior_in_simra_and_sumo}, we derived maximum acceleration, maximum deceleration and maximum velocity characteristics from the SimRa dataset.
+We now use them to improve the longitudinal kinematic behavior of the default \ac{sumo} bicycle model.
 Contrary to the default parameterization, we use theoretical distribution functions instead of scalar values for the exposed kinematic parameters.
 This enables the model to produce more realistic bicycle simulation results since the heterogeneity of real world cycling styles is reflected.
 
-We derive the theoretical distributions by aggregating the respective features from \cref{sec:analysis_acceleration,sec:analysis_deceleration,sec:analysis_velocity}.
+We derive the theoretical distributions by aggregating the respective features from \cref{subsec:acceleration_preprocessing,subsec:deceleration_preprocessing,subsec:velocity_preprocessing}.
 For this, we rely on the \textit{law of large numbers} which states that the average of the results obtained from a large number of trials of the same experiment eventually converges to its true expected value~\cite{etemadi1981elementary}.
 In the context of this work, this means that individual rides do not matter but that the aggregates of multiple rides will converge towards their actual expected value given a sufficiently large number of rides.
 
 For the implementation, we used \textit{vTypeDistributions} following the results of our previous analysis and sample both distribution independently.
 
-It should be noted that through the parameterizations with theoretical probability density functions SUMO's \textit{speedDev} parameter becomes obsolete as variance between the kinematic preferences among cyclists are already represented by the distribution function.
+It should be noted that through the parameterizations with theoretical probability density functions \ac{sumo}'s \textit{speedDev} parameter becomes obsolete as variance between the kinematic preferences among cyclists are already represented by the distribution function.
 
-Furthermore, alternatives for the acceleration parameters have been added to SUMO. This would enable a user to pick a normal distribution and choose the parameters for it.
+Furthermore, alternatives for the acceleration parameters have been added to \ac{sumo}. This would enable a user to pick a normal distribution and choose the parameters for it.
 This is would yield more realistic scenario data contrary to using a simple scalar value for the acceleration.
 
 \subsection{Left-turn Behavior at Intersections}
 \label{subsec:left-turn_behavior_at_intersections}
-To improve the degree of realism in cyclists' left-turn behavior at signaled intersections, we use an adapted version of the external intersection model (a Python script that steers cyclists via SUMO's \textit{Traffic Control Interface}) as proposed by \textcite{kaths2016integration} which is based on previously recorded real-world trajectories as their guidelines for cyclists across a single predefined intersection.
+To improve the degree of realism in cyclists' left-turn behavior at signaled intersections, we use an adapted version of the external intersection model (a Python script that steers cyclists via \ac{sumo}'s \textit{Traffic Control Interface}) as proposed by \textcite{kaths2016integration} which is based on previously recorded real-world trajectories as their guidelines for cyclists across a single predefined intersection.
 Our approach algorithmically synthesizes the cyclists' trajectories (i.e., their respective guidelines across the intersection) for any regular four-way intersection and can therefore be seen as a step towards a more universal solution.
 
 The left-turn maneuver distribution, as we call it, specifies the probability of the cyclists choosing either the \textit{direct} or the \textit{indirect} path to cross the intersection.
-For this, we use the distributions derived in \cref{sec:analysis_pathfinding} as the default for our intersection model for each different cyclist group.
-Users, however, can adjust the distributions if desired or needed for their specific purposes (see also the exception cases in \cref{sec:analysis_pathfinding}).
+For this, we use the distributions derived in \cref{subsec:left-turn_behavior_at_intersections_preprocessing} as the default for our intersection model for each different cyclist group.
+Users, however, can adjust the distributions if desired or needed for their specific purposes (see also the exception cases in \cref{subsec:left-turn_behavior_at_intersections_preprocessing}).
 
-In order to simplify the process and to improve performance, we decided to integrate this feature into the SUMO core.
+In order to simplify the process and to improve performance, we decided to integrate this feature into the \ac{sumo} core.
 The implementation provides a new parameter that lets the user adjust the indirect left turn probability of a bicycle ride.
 To detail the workflow, the cyclist makes a decision before each intersection, where there is at least one direct and indirect left-turn available to choose from.
-This delegates decisions inside SUMO just by using the bicycle vehicle type parameter.
+This delegates decisions inside \ac{sumo} just by using the bicycle vehicle type parameter.
 
 \subsection{Different Cyclist Models}
 \label{subsec:different_cyclist_models}
 
-Our approach defines distibutions of models derived from the same default implementation of SUMO.
+Our approach defines distibutions of models derived from the same default implementation of \ac{sumo}.
 The models vary only in the parameter values used.
-The parameters considered are maximum acceleration (\textit{accel}), maximum deceleration (\textit{decel}) and maximum velocity (\textit{maxSpeed}), splitted into \num{3} groups, as it can be seen in \cref{sec:analysis_acceleration,sec:analysis_deceleration,sec:analysis_velocity}.
-In order to leverage distribution parameters for a bicycle model, we used the \textit{vTypeDistribution} from SUMO to define a distribution of cyclists having all the parameters mentioned.
+The parameters considered are maximum acceleration (\textit{accel}), maximum deceleration (\textit{decel}) and maximum velocity (\textit{maxSpeed}), splitted into \num{3} groups, as it can be seen in \cref{subsec:acceleration_preprocessing,subsec:deceleration_preprocessing,subsec:velocity_preprocessing}.
+In order to leverage distribution parameters for a bicycle model, we used the \textit{vTypeDistribution} from \ac{sumo} to define a distribution of cyclists having all the parameters mentioned.
 
 With this data ready, the only remaining step is to augment these groups with a left-turn behavior probability per group.
-In order to make a decision whether to do a direct or an indirect left-turn, we approached the problem by using a script that controls the cyclists, as described in \cref{sec:concept_im}.
+In order to make a decision whether to do a direct or an indirect left-turn, we approached the problem by using a script that controls the cyclists, as described in \cref{subsec:left-turn_behavior_at_intersections}.
 
-Thus, this group-based model enables the user to simulate bicycle traffic in SUMO more realistically.
+Thus, this group-based model enables the user to simulate bicycle traffic in \ac{sumo} more realistically.
 
 \section{Evaluation}
 \label{sec:evaluation_sumo}
-In this section, we evaluate the new cyclist models from \cref{sec:concept} by comparing them to each other and to SUMO's default simulation model and the real-world data taken from the SimRa data set.
-We start by introducing the simulation setup (\cref{sec:eval_setup}) which we used to create and run the scenarios with.
-We then continue analyzing acceleration (\cref{sec:eval_accel}), deceleration (\cref{sec:eval_deceleration}), velocity (\cref{sec:eval_velocity}), and left-turn behavior at intersections (\cref{sec:eval_turn}) before evaluating the combination of all model extensions (\cref{sec:eval_combined}).
-Please note: While it may appear obvious that using the SimRa data set for both parameterization and evaluation should lead to perfect results, this is not the case as our extensions are subject to the design restrictions imposed by SUMO
+In this section, we evaluate the new cyclist models from \cref{sec:improving_sumos_bicycle_simulation} by comparing them to each other and to \ac{sumo}'s default simulation model and the real-world data taken from the SimRa data set.
+We start by introducing the simulation setup (\cref{subsec:simulation_setup}) which we used to create and run the scenarios with.
+We then continue analyzing acceleration (\cref{subsec:acceleration_evaluation}), deceleration (\cref{subsec:deceleration_evaluation}), velocity (\cref{subsec:velocity_evaluation}), and left-turn behavior at intersections (\cref{subsec:left-turn_behavior_at_intersections_evaluation}) before evaluating the combination of all model extensions (\cref{subsec:combinin_intersection_model_and_kinematic_extension}).
+Please note: While it may appear obvious that using the SimRa data set for both parameterization and evaluation should lead to perfect results, this is not the case as our extensions are subject to the design restrictions imposed by \ac{sumo}
 
 \subsection{Simulation Setup}
 \label{subsec:simulation_setup}
 % scenarios
-As SUMO users can import real-world scenarios from OSM data, simulation results can be compared to real-world data and thus be evaluated.
+As \ac{sumo} users can import real-world scenarios from OSM data, simulation results can be compared to real-world data and thus be evaluated.
 For our evaluation, we chose specific traffic scenarios from multiple SimRa regions that are representative and likely to showcase both strengths and weaknesses of our extensions.
 Likewise, we do not show every cyclist type's results in detail to avoid too many figures and tables.
 For evaluating the longitudinal behavior (acceleration, deceleration and velocity), we chose urban traffic scenarios with long straight sections.
@@ -341,7 +329,7 @@ For this, we study three intersections in Berlin, namely at \textit{Mehringdamm}
 \centering
 \caption{Most important attributes of our simulation scenarios.}%
 \label{tab:scenarios}
-\resizebox{\columnwidth}{!}{
+%\resizebox{\columnwidth}{!}{
 \begin{tabular}{ccccc}%
 \toprule%
                 & Cars  & Bicycles & Distance & Lanes\\%
@@ -355,34 +343,34 @@ Warschauer Str. & \num{180}   & \num{2700}    & --       & \num{26}\\%
 Alexanderstr.   & \num{180}   & \num{2700}    & --       & \num{25}\\%
 \bottomrule&%
 \end{tabular}%
-}
+%}
 \end{table}
 
 We made our scenarios as realistic as possible by choosing main roads and intersections with a lot of traffic and also added a significant number of cars, as \cref{tab:scenarios} shows.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/mehringdamm_screenshot.png}
+    \includegraphics[width=0.5\columnwidth]{fig/mehringdamm_screenshot.png}
     \caption{%
-        Excerpt from the \textit{Mehringdamm} scenario in SUMO.
+        Excerpt from the \textit{Mehringdamm} scenario in \ac{sumo}.
         The scenario was created using OSM data only.
     }%
     \label{fig:mehringdamm_sumo}
 \end{figure}
 
 % simulation and environment and parameterization
-For our evaluation, we use SUMO version 1.14.0 and a step size of \SI{1}{\s} in simulations.
-The SUMO default results are obtained with SUMO's \textit{vType} \texttt{Bicycle} for cyclists, i.e., the maximum acceleration, maximum deceleration and maximum velocity are scalars and set to \SI{1.2}{\m\per\s\squared}, \SI{-3}{\m\per\s\squared} and \SI{5.56}{\m\per\s} respectively.
+For our evaluation, we use \ac{sumo} version 1.14.0 and a step size of \SI{1}{\s} in simulations.
+The \ac{sumo} default results are obtained with \ac{sumo}'s \textit{vType} \texttt{Bicycle} for cyclists, i.e., the maximum acceleration, maximum deceleration and maximum velocity are scalars and set to \SI{1.2}{\m\per\s\squared}, \SI{-3}{\m\per\s\squared} and \SI{5.56}{\m\per\s} respectively.
 
 \subsection{Acceleration}
 \label{subsec:acceleration_evaluation}
-\begin{figure*}[t]
+\begin{figure*}
     \vspace{-1.5em}
     \centering
-    \subfloat[All cyclists]{\includegraphics[width=\columnwidth]{fig/eval_acc_all.pdf}\label{fig:eval_acc_all}}
+    \subfloat[All cyclists]{\includegraphics[width=0.4\columnwidth]{fig/eval_acc_all.pdf}\label{fig:eval_acc_all}}
     \hfill
-    \subfloat[Only cyclist group slow ($s$)]{\includegraphics[width=\columnwidth]{fig/eval_acc_slow.pdf}\label{fig:eval_acc_slow}}
+    \subfloat[Only cyclist group slow ($s$)]{\includegraphics[width=0.4\columnwidth]{fig/eval_acc_slow.pdf}\label{fig:eval_acc_slow}}
     \caption{%
-        Histogram of SUMO's, SimRa's, and our approach's observed maximum accelerations inside the example \textit{Frauentorgraben} scenario.
+        Histogram of \ac{sumo}'s, SimRa's, and our approach's observed maximum accelerations inside the example \textit{Frauentorgraben} scenario.
         While the maximum accelerations are heterogeneously distributed in the real-world data and our approach, the default values are clustered.
         Here, the observed accelerations deviate from the configured default value (\SI{1.2}{\metre\per\square\second}) due to traffic effects inside the simulation.
     }%
@@ -397,14 +385,14 @@ Apparently, the default parameterization is not suitable to describe this accele
 Our new parameterization - for all cyclists together and for each of the cyclist types - is significantly closer to the real-world behavior in the SimRa data set with its highly heterogeneous behavior across cyclists.
 \begin{table}
 \centering
-\caption{Results Overview Maximum Acceleration Comparing SUMO Default, Our Approach (All), Our Approach (Slow), SimRa (All) and SimRa (Slow)}%
+\caption{Results Overview Maximum Acceleration Comparing \ac{sumo} Default, Our Approach (All), Our Approach (Slow), SimRa (All) and SimRa (Slow)}%
 \label{tab:results_overview_acc}
 \begin{tabular}{cccc}
 \toprule
 & Mean & Std. Deviation & Median\\
 \midrule
 \midrule
-SUMO default & \num{1.178} & \num{0.019} & \num{1.18} \\
+\ac{sumo} default & \num{1.178} & \num{0.019} & \num{1.18} \\
 \midrule
 Our approach (\textit{all}) & \num{0.921} & \num{0.218} & \num{0.95} \\
 SimRa (\textit{all}) & \num{0.761} & \num{0.217} & \num{0.71} \\
@@ -414,7 +402,7 @@ SimRa (\textit{s}) & \num{0.656} & \num{0.109} & \num{0.65} \\
 \bottomrule&
 \end{tabular}
 \end{table}
-This can also be seen, when comparing the mean, standard deviation and median values of SUMO default, all and slow (\textit{s}) cyclists (both in the SimRa dataset and our approach) depicted in \cref{tab:results_overview_acc}.
+This can also be seen, when comparing the mean, standard deviation and median values of \ac{sumo} default, all and slow (\textit{s}) cyclists (both in the SimRa dataset and our approach) depicted in \cref{tab:results_overview_acc}.
 It also shows, that the division of the cyclist into subgroups further increases the realism, since the difference between the mean and median values of our approach (\textit{all}) and Simra (\textit{all}) shrinks, compared to our approach (\textit{s}) and Simra (\textit{s}).
 The standard deviation suffers though, which is probably due to less rides being regarded, because of the splitting into three subgroups.
 Please note also here, that we omitted the medium and fast cycling groups to stay consistent with \cref{fig:eval_acc_slow} and avoid clutter.
@@ -422,14 +410,14 @@ That our new parameterizations are not a perfect fit indicates that there are pr
 
 \subsection{Deceleration}
 \label{subsec:deceleration_evaluation}
-\begin{figure*}[t]
+\begin{figure*}
     %\vspace{-3em}
     \centering
-    \subfloat[All cyclists]{\includegraphics[width=\columnwidth]{fig/eval_dec_all.pdf}\label{fig:eval_dec_all}}
+    \subfloat[All cyclists]{\includegraphics[width=0.4\columnwidth]{fig/eval_dec_all.pdf}\label{fig:eval_dec_all}}
     \hfill
-    \subfloat[Only cyclist group medium ($m$)]{\includegraphics[width=\columnwidth]{fig/eval_dec_medium.pdf}\label{fig:eval_dec_medium}}
+    \subfloat[Only cyclist group medium ($m$)]{\includegraphics[width=0.4\columnwidth]{fig/eval_dec_medium.pdf}\label{fig:eval_dec_medium}}
     \caption{%
-        Histogram of SUMO's, SimRa's, and our approach's observed maximum decelerations inside the example \textit{Dachauer Straße} scenario.
+        Histogram of \ac{sumo}'s, SimRa's, and our approach's observed maximum decelerations inside the example \textit{Dachauer Straße} scenario.
         While the maximum decelerations are heterogeneously distributed in the real-world data and our approach, the default values are clustered.
         Here, the observed decelerations deviate from the configured default value (3m/s\textsuperscript{2}) due to traffic effects inside the simulation.
     }%
@@ -444,14 +432,14 @@ Here, too, the default parameterization is not suitable to describe this deceler
 Our new parameterization - for all cyclists together and for each of the cyclist types - is significantly closer to the real-world behavior in the SimRa data set with its highly heterogeneous behavior across cyclists.
 \begin{table}
 \centering
-\caption{Results Overview Maximum Deceleration Comparing SUMO Default, Our Approach (All), Our Approach (Medium), SimRa (All) and SimRa (Medium)}%
+\caption{Results Overview Maximum Deceleration Comparing \ac{sumo} Default, Our Approach (All), Our Approach (Medium), SimRa (All) and SimRa (Medium)}%
 \label{tab:results_overview_dec}
 \begin{tabular}{cccc}
 \toprule
 & Mean & Std. Deviation & Median\\
 \midrule
 \midrule
-SUMO default & \num{2.664} & \num{0.507} & \num{2.77} \\
+\ac{sumo} default & \num{2.664} & \num{0.507} & \num{2.77} \\
 \midrule
 Our approach (\textit{all}) & \num{1.071} & \num{0.336} & \num{1.09} \\
 SimRa (\textit{all}) & \num{0.962} & \num{0.141} & \num{0.96} \\
@@ -461,20 +449,20 @@ SimRa (\textit{m}) & \num{0.973} & \num{0.100} & \num{0.98} \\
 \bottomrule&
 \end{tabular}
 \end{table}
-Just like with the maximum acceleration, \cref{tab:results_overview_dec} shows, that our approach is not only more realistic than SUMO's default bicycle model (both with all and medium (\textit{m}) cyclists), but the introduction of the cyclist groups increases the realism.
+Just like with the maximum acceleration, \cref{tab:results_overview_dec} shows, that our approach is not only more realistic than \ac{sumo}'s default bicycle model (both with all and medium (\textit{m}) cyclists), but the introduction of the cyclist groups increases the realism.
 The medium cyclist group was randomly chosen as a representative for the other groups, since the conclusion does not differ.
 Influence factors, such as the traffic density or the weather situation, not covered in our kinematic models which aggregate data from all SimRa rides, result in a non-perfect fit for our new parameterizations.
-Note, that we had to filter out deceleration values, that we deemed too high (above \SI{7}{\m\per\s\squared}), to avoid recording emergency deceleration, which is another parameter in SUMO's vehicle parameterization.
+Note, that we had to filter out deceleration values, that we deemed too high (above \SI{7}{\m\per\s\squared}), to avoid recording emergency deceleration, which is another parameter in \ac{sumo}'s vehicle parameterization.
 
 \subsection{Velocity}
 \label{subsec:velocity_evaluation}
-\begin{figure*}[t]
+\begin{figure*}
     \centering
-    \subfloat[All cyclists]{\includegraphics[width=\columnwidth]{fig/eval_velo_all.pdf}\label{fig:eval_velo_all}}
+    \subfloat[All cyclists]{\includegraphics[width=0.4\columnwidth]{fig/eval_velo_all.pdf}\label{fig:eval_velo_all}}
     \hfill
-    \subfloat[Only cyclist group fast ($f$)]{\includegraphics[width=\columnwidth]{fig/eval_velo_fast.pdf}\label{fig:eval_velo_fast}}
+    \subfloat[Only cyclist group fast ($f$)]{\includegraphics[width=0.4\columnwidth]{fig/eval_velo_fast.pdf}\label{fig:eval_velo_fast}}
     \caption{%
-        Histogram of SUMO's, SimRa's, and our approach's observed maximum velocities inside the example \textit{Oranienstraße} scenario.
+        Histogram of \ac{sumo}'s, SimRa's, and our approach's observed maximum velocities inside the example \textit{Oranienstraße} scenario.
         While the maximum velocities are heterogeneously distributed in the real-world data and our approach, the default values are clustered.
     }%
     \label{fig:eval_velo}
@@ -486,14 +474,14 @@ Once more, the default parameterization is not able to reflect this characterist
 This is also the case for the different cyclist groups as \cref{fig:eval_velo_fast} shows exemplary.
 \begin{table}
 \centering
-\caption{Results Overview Maximum Velocity Comparing SUMO Default, Our Approach (All), Our Approach (Fast), SimRa (All) and SimRa (Fast)}%
+\caption{Results Overview Maximum Velocity Comparing \ac{sumo} Default, Our Approach (All), Our Approach (Fast), SimRa (All) and SimRa (Fast)}%
 \label{tab:results_overview_vel}
 \begin{tabular}{cccc}
 \toprule
 & Mean & Std. Deviation & Median\\
 \midrule
 \midrule
-SUMO default & \num{5.555} & \num{0.002} & \num{5.556} \\
+\ac{sumo} default & \num{5.555} & \num{0.002} & \num{5.556} \\
 \midrule
 Our approach (\textit{all}) & \num{6.589} & \num{1.234} & \num{6.58} \\
 SimRa (\textit{all}) & \num{7.072} & \num{0.904} & \num{7.10} \\
@@ -516,13 +504,13 @@ As for acceleration and deceleration behaviors, the fact that our new parameteri
 % |  \| |  _|  \ \ /\ / /  \ \ / / __|   \___ \| | '_ ` _ \| |_) / _` |
 % | |\  | |___  \ V  V /    \ V /\__ \_   ___) | | | | | | |  _ < (_| |
 % |_| \_|_____|  \_/\_/      \_/ |___(_) |____/|_|_| |_| |_|_| \_\__,_|
-\begin{figure*}[t]
+\begin{figure*}
     \centering
-    \subfloat[Only cyclist group slow ($s$)]{\includegraphics[width=.3\textwidth]{fig/eval_im_loc_im_slow.pdf}\label{fig:eval_im_traj_slow}}
+    \subfloat[Only cyclist group slow ($s$)]{\includegraphics[width=.25\textwidth]{fig/eval_im_loc_im_slow.pdf}\label{fig:eval_im_traj_slow}}
     \hfill
-    \subfloat[Only cyclist group medium ($m$)]{\includegraphics[width=.3\textwidth]{fig/eval_im_loc_im_medium.pdf}\label{fig:eval_im_traj_medium}}
+    \subfloat[Only cyclist group medium ($m$)]{\includegraphics[width=.25\textwidth]{fig/eval_im_loc_im_medium.pdf}\label{fig:eval_im_traj_medium}}
     \hfill
-    \subfloat[Only cyclist group fast ($f$)]{\includegraphics[width=.3\textwidth]{fig/eval_im_loc_im_fast.pdf}\label{fig:eval_im_traj_fast}}
+    \subfloat[Only cyclist group fast ($f$)]{\includegraphics[width=.25\textwidth]{fig/eval_im_loc_im_fast.pdf}\label{fig:eval_im_traj_fast}}
     \caption{%
         Qualitative comparison between the results of our approach for the intersection model and real-world raw GPS data given by SimRa for the intersection between Alexanderstraße and Karl-Marx-Allee in Berlin.
         SimRa shows two distinct left-turn paths (i.e., a direct and an indirect one), which are also modeled by our models.
@@ -532,14 +520,14 @@ As for acceleration and deceleration behaviors, the fact that our new parameteri
 \end{figure*}
 
 As shown in \cref{fig:eval_im_traj_new}, which shows the intersection between Alexanderstraße and Karl-Marx-Allee in Berlin, the 2D trajectories produced by the new intersection models converge towards the trajectories of the SimRa data set.
-While the trajectories produced by SUMO's default bicycle model, as can be seen in \cref{fig:analysis_im_traj_default}, only offer direct "bike-lane-to-bike-lane" turns, the new model is significantly closer to real-world intersection behavior of cyclists.
+While the trajectories produced by \ac{sumo}'s default bicycle model, as can be seen in \cref{fig:analysis_im_traj_default}, only offer direct "bike-lane-to-bike-lane" turns, the new model is significantly closer to real-world intersection behavior of cyclists.
 This is true for all of our cyclist models.
 Here, we see again the different left-turn behaviors of different cyclist types.
 While slow cyclist only prefer the indirect left-turn, the medium and fast cyclists are more inclined to take the direct left-turn comparatively.
 
 \subsection{Combining Intersection Model and Kinematic Extension}
 \label{subsec:combinin_intersection_model_and_kinematic_extension}
-To achieve a holistic comparison between SUMO's default bicycle model and our new models, we measure the durations of left-turn maneuvers at multiple intersections and compare the empirical distributions of these measurements.
+To achieve a holistic comparison between \ac{sumo}'s default bicycle model and our new models, we measure the durations of left-turn maneuvers at multiple intersections and compare the empirical distributions of these measurements.
 To specifically monitor the impact of our changes, we do not include any ride time before or after the intersection in the measurements.
 Note that we also omit the slow rides, since no or too few slow rides went through the intersections presented here.
 
@@ -550,13 +538,13 @@ Based on this, we identified the following four findings:
 %  \ \ /\ / / _ \ | |_) \___ \| |   | |_| | / _ \| | | |  _| | |_) |
 %   \ V  V / ___ \|  _ < ___) | |___|  _  |/ ___ \ |_| | |___|  _ <
 %    \_/\_/_/   \_\_| \_\____/ \____|_| |_/_/   \_\___/|_____|_| \_\
-\begin{figure}[t]
+\begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/im_warschauer_ecdf_every.pdf}
+    \includegraphics[width=0.7\columnwidth]{fig/im_warschauer_ecdf_every.pdf}
     \caption{%
         ECDFs of the measured durations for crossing the scenario \textit{Warschauer Straße}.
-        It is apparent that our models for all, medium ($m$) and fast ($f$) cyclists outperform SUMO's default as the measured durations converge towards the real-world data.
-        Only our fast cyclist model ($f$) is just marginally better than SUMO's default.
+        It is apparent that our models for all, medium ($m$) and fast ($f$) cyclists outperform \ac{sumo}'s default as the measured durations converge towards the real-world data.
+        Only our fast cyclist model ($f$) is just marginally better than \ac{sumo}'s default.
     }%
     \label{fig:im_warschauer}
 \end{figure}
@@ -570,20 +558,20 @@ This is consistent with real-world data as we find it in the SimRa dataset at mu
 % | |\/| |  _| | |_| | |_) || ||  \| | |  _| | | |/ _ \ | |\/| | |\/| |
 % | |  | | |___|  _  |  _ < | || |\  | |_| | |_| / ___ \| |  | | |  | |
 % |_|  |_|_____|_| |_|_| \_\___|_| \_|\____|____/_/   \_\_|  |_|_|  |_|
-\begin{figure}[t]
+\begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/im_mehringdamm_ecdf_every.pdf}
+    \includegraphics[width=0.7\columnwidth]{fig/im_mehringdamm_ecdf_every.pdf}
     \caption{%
         ECDFs of the measured durations for crossing the scenario \textit{Mehringdamm}.
-        The results when using our models for all, medium ($m$) and fast ($f$) cyclists are only slightly more realistic than when using the standard SUMO model.
+        The results when using our models for all, medium ($m$) and fast ($f$) cyclists are only slightly more realistic than when using the standard \ac{sumo} model.
         However, when the \textit{direct} path is blocked for cyclists, the simulation results outperform the default approach.
     }%
     \label{fig:im_mehringdamm}
 \end{figure}
 
-Second, in some cases, we were able to improve our results by adjusting the left-turn behavior distribution following the second distribution discussed in \cref{sec:analysis_pathfinding}.
+Second, in some cases, we were able to improve our results by adjusting the left-turn behavior distribution following the second distribution discussed in \cref{subsec:left-turn_behavior_at_intersections_preprocessing}.
 The ``lane only'' results in \cref{fig:im_mehringdamm} were achieved by prohibiting cyclists from using the \textit{direct} path.
-Obviously, it takes much longer for cyclists to cross the intersection than SUMO's default simulation model suggests.
+Obviously, it takes much longer for cyclists to cross the intersection than \ac{sumo}'s default simulation model suggests.
 When examining SimRa trajectories at this particular intersection, almost all cyclists chose the \textit{indirect} path as the infrastructure guides cyclists to do so.
 Hence, manually adjusting the left-turn behavior distribution for such intersections is crucial.
 
@@ -593,30 +581,30 @@ Hence, manually adjusting the left-turn behavior distribution for such intersect
 %   / _ \ | |   |  _|  \  /   / _ \ |  \| | | | |  _| | |_) |
 %  / ___ \| |___| |___ /  \  / ___ \| |\  | |_| | |___|  _ <
 % /_/   \_\_____|_____/_/\_\/_/   \_\_| \_|____/|_____|_| \_\
-\begin{figure}[t]
+\begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/im_alex_ecdf_every.pdf}
+    \includegraphics[width=0.7\columnwidth]{fig/im_alex_ecdf_every.pdf}
     \caption{%
         ECDFs of the measured durations for crossing the scenario \textit{Alexanderstraße}.
-        Here, our new approach is not more precise than SUMO default behavior.
+        Here, our new approach is not more precise than \ac{sumo} default behavior.
     }%
     \label{fig:im_alex}
 \end{figure}
 
 Third, at a few intersections, the results of our approach do not yet sufficiently reflect real-world bicycle behavior (see \cref{fig:im_alex}).
-We discuss possible reasons for this in \cref{sec:disc}.
+We discuss possible reasons for this in \cref{sec:discussion_sumo}.
 
-Fourth, creating three cyclist models based on their average velocity also revealed, that SUMO's default model behaves like fast cyclists.
-This becomes clear when looking at \cref{fig:im_warschauer,fig:im_mehringdamm,fig:im_alex}, since the lines representing the cyclists modeled with our fast cyclist model are the closes to the red line representing SUMO default.
+Fourth, creating three cyclist models based on their average velocity also revealed, that \ac{sumo}'s default model behaves like fast cyclists.
+This becomes clear when looking at \cref{fig:im_warschauer,fig:im_mehringdamm,fig:im_alex}, since the lines representing the cyclists modeled with our fast cyclist model are the closes to the red line representing \ac{sumo} default.
 
 
 \section{Discussion}
 \label{sec:discussion_sumo}
 Overall, the results presented in this paper show a significant improvement over the state-of-the-art.
 Nevertheless, they still have a number of shortcomings.
-In this section, we discuss the inherent limitations of our approach in general (\cref{sec:method}) as well as problems resulting from the SimRa dataset as our ground truth data (\cref{sec:problem_simra}).
-We also describe a potential problem regarding e-bikes in \cref{sec:e-bikes}.
-
+In this section, we discuss the inherent limitations of our approach in general (\cref{subsec:methodological_challenges_sumo}) as well as problems resulting from the SimRa dataset as our ground truth data (\cref{subsec:dataset_choice_as_ground_truth}).
+We also describe a potential problem regarding e-bikes in \cref{subsec:e-bikes}.
+Note that we also discuss some limitations in \cref{cha:discussion_and_outlook}, that may also apply to this approach.
 
 %  __  __ _____ _   _ ____  ___ _   _  ____ ____    _    __  __ __  __
 % |  \/  | ____| | | |  _ \|_ _| \ | |/ ___|  _ \  / \  |  \/  |  \/  |
@@ -624,14 +612,15 @@ We also describe a potential problem regarding e-bikes in \cref{sec:e-bikes}.
 % | |  | | |___|  _  |  _ < | || |\  | |_| | |_| / ___ \| |  | | |  | |
 % |_|  |_|_____|_| |_|_| \_\___|_| \_|\____|____/_/   \_\_|  |_|_|  |_|
 \begin{figure}
-\includegraphics[width=\columnwidth]{fig/mehringdamm_island_arrows.png}
-\caption{Intersection Mehringdamm/Gneisenaustraße: a traffic island obstructs the direct turn path (dashed line) and, thus, makes the indirect path (solid line) more likely to be used.}
-\label{fig:mehringdamm_traffic_island}
+    \centering
+    \includegraphics[width=0.7\columnwidth]{fig/mehringdamm_island_arrows.png}
+    \caption{Intersection Mehringdamm/Gneisenaustraße: a traffic island obstructs the direct turn path (dashed line) and, thus, makes the indirect path (solid line) more likely to be used.}
+    \label{fig:mehringdamm_traffic_island}
 \end{figure}
 
 \subsection{Methodological Challenges}
 \label{subsec:methodological_challenges_sumo}
-Generalization Problem
+%Generalization Problem
 %\paragraph{Generalizing Behavior}
 Our initial assumption was that the behavior of cyclists in a single intersection cannot be generalized to all intersections~\cite{kaths2016integration} but that the average behavior across a large number of intersections will be close enough to cyclists' behavior at arbitrary intersections.
 This seems to be true only for a (relatively large) subset of intersections -- apparently, the intersection behavior of cyclists is more heterogeneous than expected.
@@ -657,7 +646,7 @@ These, however, have the inherent limitation that they will either limit the num
 In this paper, we used the SimRa datasets as input for our analysis as it is, to the best of our knowledge, the first public dataset comprising a large number of rides that actually publishes individual rides in an anonymized but non-aggregated form.
 We need to keep in mind, however, that SimRa was designed for a different purpose:
 For example, the SimRa app records motion sensors at \SI{50}{\hertz} but only persists every fifth value of a moving average over 30 values.
-While this suffices for detecting near miss incidents~\cite{karakaya2020simra}, it further limits the resolution of motion data (and thus any conclusions we can draw from that).
+While this suffices for detecting incidents~\cite{karakaya2020simra}, it further limits the resolution of motion data (and thus any conclusions we can draw from that).
 Furthermore, the SimRa data which we used were recorded over a period of 1.5 years.
 During such as long period of time, physical changes to the bicycle infrastructure (both temporary and permanent) will occur, thus, adding additional noise to the data.
 
@@ -672,7 +661,7 @@ The SimRa dataset which we used to analyse the longitudinal kinematic behavior c
 However, to derive and evaluate the left-turn model, we need data from intersections with many left-turns, with the same orientation, e.g., entering the intersection from the south and leaving it to the west.
 Mind, that we also split the rides into three groups: slow, medium and fast.
 Only the regions Berlin, Munich and Nuremberg provide eligible data for this, since almost half the rides are from these regions~\cite{karakaya2022cyclesense}.
-This is further aggravated by the fact that the preprocessing step (see \cref{sec:analysis}) further reduces the number of eligible rides and with that the number of intersections with sufficient left-turn maneuvers.
+This is further aggravated by the fact that the preprocessing step (see \cref{sec:cycling_behavior_in_simra_and_sumo}) further reduces the number of eligible rides and with that the number of intersections with sufficient left-turn maneuvers.
 Nevertheless, this does not pose a threat to the generalizability of our findings -- at least for Germany -- as traffic infrastructure guidelines throughout Germany are standardized.
 Furthermore, adjacent countries such as Austria often also have comparable infrastructure.
 Additionally, this problem is not present with the evaluation of the longitudinal kinematic behavior, since we only need more or less straight routes without any sharp turns.
@@ -689,24 +678,24 @@ And there are not enough e-bike rides to create a dedicated e-bike model with a 
 \section{Alternative Approaches}
 \label{sec:related_work_sumo}
 % this section is about how people have been trying to improve sumo
-In this section, we give an overview of related work on improving intersection behavior (\cref{sec:rw_intersection}) and longitudinal (\cref{sec:rw_longitudinal}) behavior of cyclists in SUMO's simulation models.
+In this section, we give an overview of related work on improving intersection behavior (\cref{subsec:rw_intersection}) and longitudinal (\cref{subsec:rw_longitudinal}) behavior of cyclists in \ac{sumo}'s simulation models.
 
 % intersection behavior
 \subsection{Intersection Behavior of Cyclists}%
 \label{subsec:rw_intersection}
 
 % intersection behavior in sumo with external tool
-\textcite{kaths2016integration} aim to address the shortcomings of SUMO's intersection model for cyclists.
+\textcite{kaths2016integration} aim to address the shortcomings of \ac{sumo}'s intersection model for cyclists.
 For this, they record video footage of an example intersection in Munich and derive cyclist trajectories.
-From the set of trajectories, they select one representative trajectory for each combination of start and end points in the intersection and make it available to SUMO via an external API.
-While this is a significant improvement in realism over SUMO's intersection model, it is hard to generalize to other intersections and cannot cover the plurality of trajectories chosen by real-world cyclists.
+From the set of trajectories, they select one representative trajectory for each combination of start and end points in the intersection and make it available to \ac{sumo} via an external API.
+While this is a significant improvement in realism over \ac{sumo}'s intersection model, it is hard to generalize to other intersections and cannot cover the plurality of trajectories chosen by real-world cyclists.
 
 % Traffic flow at signalized intersections with large volumes of bicycle traffic
 
 Similar to \textcite{kaths2016integration}, \textcite{grigoropoulos2022traffic} analyze video footage of intersections with the goal of better understanding the intersection behavior of cyclists.
 Their focus, however, is not on deriving an improved intersection model but rather on identifying best practices for traffic planners working on intersections with high volumes of cycling traffic.
 % bicycle lanes into sumo for better behavior, esp. at intersections
-\textcite{grigoropoulos2019modelling} propose to adjust the default traffic infrastructure inside SUMO to achieve more realistic cyclist behavior at intersections.
+\textcite{grigoropoulos2019modelling} propose to adjust the default traffic infrastructure inside \ac{sumo} to achieve more realistic cyclist behavior at intersections.
 Here, they focus on the number and shape of bicycle lanes which, however, are highly specific and differ from intersection to intersection.
 
 % Longitudinal behavior
@@ -714,20 +703,20 @@ Here, they focus on the number and shape of bicycle lanes which, however, are hi
 \label{subsec:rw_longitudinal}
 
 \textcite{twaddle2016modeling} examine four models for the longitudinal kinematic behavior of cyclists, i.e., acceleration and velocity.
-The first, called Constant Model, is the simplest and is the SUMO default:
+The first, called Constant Model, is the simplest and is the \ac{sumo} default:
 Cyclists accelerate and decelerate at a constant rate until the desired velocity is reached.
 This model works well when breaking to a full stop but leads to frequent acceleration jumps between a fixed positive or negative value and zero, which is not realistic cyclist behavior.
 In the Linear Decreasing Model, maximum acceleration is reached when starting the acceleration maneuver and then linearly declines until the desired velocity is reached.
 This model is outperformed by all other models.
 In the third and fourth models, Polynomial and Two Term Sinusoidal Model, acceleration or deceleration start at zero and then gradually grow over time.
-In their paper, \textcite{twaddle2016modeling} analyze the video recordings of 1,030 rides in four intersections in Munich, Germany and conclude that the Polynomial Model has overall the most realistic cyclist behavior but is, however, not trivial to implement in SUMO.
+In their paper, \textcite{twaddle2016modeling} analyze the video recordings of 1,030 rides in four intersections in Munich, Germany and conclude that the Polynomial Model has overall the most realistic cyclist behavior but is, however, not trivial to implement in \ac{sumo}.
 
 % different approach - integrating a real bicycle, recording traces
-A different approach of achieving realistic cycling behavior in SUMO is taken by \textcite{heinovski2019modeling}.
+A different approach of achieving realistic cycling behavior in \ac{sumo} is taken by \textcite{heinovski2019modeling}.
 The authors simulate multiple traffic scenarios in which accidents between cars and cyclists occur to investigate the effects of wireless communication between cyclists and other road users in the context of accident prevention.
-In order to obtain realistic cycling behavior for SUMO, they set up a novel Virtual Cycling Environment (VCE) featuring an actual bicycle that is connected to the simulation via multiple sensors.
+In order to obtain realistic cycling behavior for \ac{sumo}, they set up a novel Virtual Cycling Environment (VCE) featuring an actual bicycle that is connected to the simulation via multiple sensors.
 The VCE supports interactive empirical studies in a physically safe environment and allows the authors to record the cyclists' behavior in the form of trajectories.
-They use a set of recorded trajectories from different cyclists for emulating realistic cycling behavior inside SUMO to simulate accidents.
+They use a set of recorded trajectories from different cyclists for emulating realistic cycling behavior inside \ac{sumo} to simulate accidents.
 Although their approach produces trajectories from cyclists created with an actual bicycle, it does only achieve limited realism, since no other road users were present when recording the trajectories.
 Furthermore, deriving a realistic set of trajectories requires a large number of test persons.
 
@@ -737,13 +726,13 @@ Furthermore, deriving a realistic set of trajectories requires a large number of
 
 
 Increasing the modal share of cyclists to provide health benefits, alleviate traffic congestion, and reduce air pollution requires significant planning efforts of city planners and traffic engineers towards an improved cycling infrastructure.
-For this, city planners often rely on the open source simulation platform SUMO to study the effects of infrastructure changes before implementing them on the streets.
-Likewise, research on V2X-based safety systems for cyclists often relies on SUMO for evaluation.
-Unfortunately, SUMO cyclists are either modeled as slow cars or as fast pedestrians, neither of which is overly realistic.
+For this, city planners often rely on the open source simulation platform \ac{sumo} to study the effects of infrastructure changes before implementing them on the streets.
+Likewise, research on V2X-based safety systems for cyclists often relies on \ac{sumo} for evaluation.
+Unfortunately, \ac{sumo} cyclists are either modeled as slow cars or as fast pedestrians, neither of which is overly realistic.
 
-In this paper, we used the recently published SimRa dataset, which to our knowledge is the first public dataset providing detailed insights into a large number of individual cyclists' rides, to improve SUMO's cyclist model.
+In this paper, we used the recently published SimRa dataset, which to our knowledge is the first public dataset providing detailed insights into a large number of individual cyclists' rides, to improve \ac{sumo}'s cyclist model.
 For this, we split the rides into three categories based on their average velocity, after the stops are filtered out: slow, medium, and fast.
-We then derived acceleration, deceleration and velocity behaviors for each of these three cyclist groups and reparameterized the SUMO cyclist models.
-As a SUMO extension, we also developed a new intersection model describing left-turn behaviors of cyclists of the three new groups in four-way intersections.
+We then derived acceleration, deceleration and velocity behaviors for each of these three cyclist groups and reparameterized the \ac{sumo} cyclist models.
+As a \ac{sumo} extension, we also developed a new intersection model describing left-turn behaviors of cyclists of the three new groups in four-way intersections.
 While our work significantly improved the existing cyclist model, it is not as realistic as we wanted it to be.
 We, hence, discussed a number of research directions which we plan to explore in the near future.

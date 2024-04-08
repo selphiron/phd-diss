@@ -1,22 +1,19 @@
 \vspace*{\fill}
-
 In this part, we exhibit the three main contributions of our work.
-First, we introduce SimRa, which is a mobile application for gathering cycling trip data and we also focus on our approach to automatically detect near miss incidents in bicycle traffic in \cref{cha:cyclesense}.
+First, we introduce SimRa, which is a mobile application for gathering cycling trip data and we also focus on our approach to automatically detect incidents in bicycle traffic in \cref{cha:cyclesense}.
 Second, we suggest an approach to derive the road surface quality from cycling trip data and use the data gathered with SimRa to demonstrate how it works in \cref{cha:cyclequality}.
 Third, we show our approach to improve the bicycle simulation of an urban traffic simulation software called SUMO, by utilizing the SimRa dataset to extract the lateral movement and the left-turn behavior of cyclists at intersections in \cref{cha:sumo}.
 \vspace*{\fill}
-\chapter{Gathering Cycling Trip Data and Detecting Near Miss Incidents}
+\chapter{Gathering Cycling Trip Data and Detecting Incidents}
 \label{cha:cyclesense}
-In this chapter, we present SimRa\footnote{SimRa is an acronym for \textbf{S}icherheit \textbf{im} \textbf{Ra}dverkehr, which translates to safety in bicycle traffic from German.}, which is a crowdsourcing/crowdsensing (see \cref{sec:crowdsourcing_crowdsensing_background}) platform for gathering cycling trip data.
+In this chapter, we present SimRa\footnote{SimRa is an acronym for \textbf{S}icherheit \textbf{im} \textbf{Ra}dverkehr, which translates to safety in bicycle traffic from German.}, which is a crowdsourcing (see \cref{sec:crowdsourcing_crowdsensing_background}) platform for gathering cycling trip data.
 A special feature of SimRa is it's capability to automatically detect incidents in bicycle traffic, which we also show in this chapter.
 SimRa's main objective is to find out hazardous hotspots in bicycle traffic.
 For this, we need to gather recordings of cycling trips, which have to contain user-generated information regarding the incidents, as well as a GPS trace, so that we can map the incidents and find out where they accumulate.
-%While automatically recording the GPS trace during a cycling trip via a smartphone app is trivial, automatically gathering detailed information such as exact location, type and other participants of the incidents is not.
-%Although we can use data produced by the \ac{imu}, which provides us information about acceleration, orientation and other gravitational forces, to automatically detect these information, we first need to know how the \ac{imu} footprint of an incident looks like.
-%That is where we rely on the SimRa users, who after each ride add information about the incidents that happened during the trip.
+
 However, a cycling trip can be very long, both in distance and time, which complicates this process for the SimRa users since it can be difficult to remember every incident, its details and exact location.
 While automatically recording the GPS trace during a cycling trip via a smartphone app is trivial, automatically gathering detailed information such as exact location, type and other participants of the incidents is not.
-It is however possible for the SimRa app to make educated guesses \textit{where} an incident might have happened during a ride based on the data produced by the \ac{icu}, which provides us information about acceleration, orientation and other gravitational forces.
+It is however possible for the SimRa app to make educated guesses \textit{where} an incident might have happened during a ride based on the data produced by the \ac{imu}, which provides us information about acceleration, orientation and other gravitational forces.
 With this information, the user only has to remember whether an incident really happened there and what kind of incident it was, which makes their task easier.
 For this, SimRa has two different mechanisms.
 The first mechanism relies only on the \ac{imu} readings of the ride to suggest points in the ride where an incident might have happened and was available since the initial release of SimRa.
@@ -24,7 +21,7 @@ The second mechanism relies on a \ac{dl} model which was trained with labeled da
 
 This chapter combines material published in \cite{karakaya2020simra,karakaya2022cyclesense} and has following contributions:
 \begin{itemize}
-\item We describe the design of the SimRa platform, a crowdsourcing- and crowdsensing-based data collection and processing platform for cyclist routes and near miss incidents.
+\item We describe the design of the SimRa platform, a crowdsourcing-based data collection and processing platform for cyclist routes and incidents.
 \item We propose an approach that combines signal processing and \ac{ml} techniques to detect incidents based on motion sensor data of cyclists with an \ac{auc} \ac{roc} of 0.906.
 \item We evaluate our approach using the SimRa data set and compare it to two baselines as well as common \acl{dl} models used in the context of \acl{tsc}.
 \item We discuss to which degree our approach can automate incident detection and which additional sensors are needed for full automation.
@@ -95,7 +92,7 @@ Contrary, in \textit{End-to-End} Deep Learning the feature extraction is include
 Distinctive Models of the \textit{End-to-End}-type have been realized with \acp{mlp}~\cite{wang2017time,geng2019cost}, \acp{cnn}~\cite{che2017boosting,ismail2018evaluating,liu2018time} and hybrid networks~\cite{lin2017gcrnn,serra2018towards}.
 
 
-\section{SimRa - A Platform for Gathering Cycling Trips and Near Miss Incidents in Bicycle Traffic}
+\section{SimRa - A Platform for Gathering Cycling Trips and Incidents in Bicycle Traffic}
 \label{sec:simra}
 In this section, we give a general overview of the SimRa platform which comprises all things related to the collection, storage, and analysis of crowdsourced cycling data which we will focus on in the following sections.
 
@@ -106,7 +103,7 @@ For data acquisition we rely on an app installed on the smartphones of participa
 This app collects data and detects incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see \cref{subsec:data_acquisition}).
 The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated trip statistics.
 Finally, we continuously process and analyze collected data to gain insights into dangerous street segments and intersections.
-For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection~\footnote{https://simra-project.github.io/dashboard/}.
+For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection~\footnote{\url{https://simra-project.github.io/dashboard/}}.
 
 \subsection{Data Acquisition}
 \label{subsec:data_acquisition}
@@ -118,7 +115,7 @@ While dedicated hardware has certain benefits, e.g., higher measurement precisio
     \caption{In the data acquisition process, collected data is manually annotated and anonymized before being uploaded to our backend servers.}
     \label{fig:data_acquisition_process}
 \end{figure}
-An example of this is the Radmesser project~\footnote{https://interaktiv.tagesspiegel.de/radmesser/} which built custom sensors to track close pass incidents.
+An example of this is the Radmesser project~\footnote{\url{https://interaktiv.tagesspiegel.de/radmesser/}} which built custom sensors to track close pass incidents.
 While the data quality is indeed rather high, the project was limited to a total of 100 cyclists (only partly in parallel).
 As a result, the project could not achieve full coverage of Berlin streets.
 For example, some incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single bicyle trip in the Radmesser data.
@@ -134,6 +131,7 @@ Upon completion of a trip, we analyze the raw data to automatically detect incid
 Afterwards, the cyclist can enrich collected data with labels and annotations, use a number of anonymization measures, and upload the data to our backend servers.
 
 \paragraph{Data Recording}
+In the SimRa app, users manually start recording before they begin cycling (left part of Figure~\ref{fig:user-story}).
 During a cycling trip, we track three sensors at varying rates per minute.
 First, we query the GPS sensor every three seconds; this returns the current location and a radius with an accuracy confidence value of 68\%.
 Second, we query the smartphone's accelerometer at 50Hz.
@@ -171,20 +169,13 @@ There was an alternative approach~\cite{sanchez2020detecting} using a simple Ful
 Even though we plan to improve the automated detection of incidents, some incident types cannot be automatically detected based on the sensor data alone.
 For example, while being tailgated might make the cyclist increase speed, this kind of observable activity can also be related to other, non-dangerous events.
 Thus, we do not think that a fully automated detection, also based on our hardware limitations, is a realistic option for SimRa -- neither now nor in the future.
-Instead, we ask the cyclist to edit the pre-detected set of incidents (i.e., add false negatives and ignore false positives) and to label and annotate the correct set of incidents.
+Instead, we ask the cyclist to edit the pre-detected set of incidents (i.e., add false negatives and ignore false positives) and to label and annotate the correct set of incidents (right part of Figure~\ref{fig:user-story}).
 %(see also section~\ref{sec:data} which describes the resulting data in detail).
 
 \paragraph{Data Anonymization}
 
-One of our side goals in SimRa is to preserve the privacy of our users, which is mainly achieved through three mechanisms: \emph{Delayed recording} allows users to define a time and a distance threshold after which a recording will start, \emph{trip cropping} allows users to crop their bicycle trip manually to hide where they started or arrived, and \emph{per-record pseudonymization} stores demographic and trip data separately so that they cannot be connected to individual users. Furthermore, each trip is pseudonymized separately.
-
-
-%\begin{itemize}
-    %\item Delayed recording: Users can define a time and a distance threshold after which a recording will start
-    %\item Ride cropping: Users can crop their ride manually to hide where they started/arrived
-	%\item Per-record pseudonymization: Demographic data and ride data of users is stored separately, so that rides cannot be connected to individual users. Furthermore, each ride is pseudonymized separately.
-%\end{itemize}
-
+One of our side goals in SimRa is to preserve the privacy of our users, which is mainly achieved through three mechanisms: \emph{Delayed recording} allows users to define a time and a distance threshold after which a recording will start, \emph{trip cropping} allows users to crop their bicycle trip manually to hide where they started or arrived (middle part of Figure~\ref{fig:user-story}), and \emph{per-record pseudonymization} stores demographic and trip data separately so that they cannot be connected to individual users.
+Furthermore, each trip is pseudonymized separately.
 
 \paragraph{Data Upload and Storage}
 Finally, and only when explicitly triggered by the cyclist, the cycling trip data is uploaded to our backend.
@@ -192,6 +183,14 @@ For authentication, we calculate an access key based on the current timestamp an
 This is necessary to avoid automated attacks on our backend as we do not have a notion of user accounts.
 So far, this has sufficed as extracting the salt from the app binary requires enough manual effort to make this infeasible for automated attacks.
 Note, that we store trips and user data per region so that we can analyze (geographic) regions separately.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{fig/screenshots.png}
+	\caption{Screenshots of the SimRa app depicting the user story from left to right.}
+	\label{fig:user-story}
+\end{figure}
+
 
 \paragraph{Resulting Data}
 The SimRa data set consists of more than 114,500 rides from over 100 regions.
@@ -203,6 +202,8 @@ Each ride file has two parts: The incident part and the ride part.
 The incident part lists all incidents of the ride.
 The ride part consists of timestamps, GPS, accelerometer, and gyroscope sensor readings. In more recent versions of the app, linear accelerometer and rotation vector data are also included.
 The recording frequencies of the various sensors vary a lot (See table~\ref{tab:theoretical-measurements}) and as a result require a partition of the SimRa data set in three distinct parts: older Android rides, newer Android rides, and iOS rides.
+
+
 
 \begin{table}[ht]
 	\centering
@@ -220,11 +221,46 @@ The recording frequencies of the various sensors vary a lot (See table~\ref{tab:
 	\end{tabular}%
 	}
 	\caption{Theoretical measurement frequencies of different sensors in different parts of the SimRa data set. 
-		Note that these are only the theoretical frequencies that deviate significantly from the empirical measurement frequencies that can be observed in the data set (see Section \ref{sec:disc}).}
+		Note that these are only the theoretical frequencies that deviate significantly from the empirical measurement frequencies that can be observed in the data set (see Section \ref{sec:discussion_cyclesense}).}
 	\label{tab:theoretical-measurements}
 \end{table}
 
-\section{Detecting Near Miss Incidents with Deep Learning}
+\paragraph{Crowdsensing or Crowdsourcing?}
+Neither of the terms crowdsensing and crowdsourcing (see \cref{sec:crowdsourcing_crowdsensing_background}) fit perfectly to SimRa.
+While SimRa could be classified as a \textit{infrastructure application} with a \textit{mobile sensing} approach as \textit{data collection} in the context of crowdsensing, the participants have to contribute more than just the data from the \ac{imu}.
+They are also asked to classify, annotate and describe the incidents they encounter during their cycling trip.
+If we go through the different aspects that characterize a crowdsourcing application (see \cref{sec:crowdsourcing_crowdsensing_background}) we can say that SimRa is a light-weight crowdsourced application.
+The \textit{degree of human involvment} is medium.
+While the users have to start and stop the recording and have to give additional information about the ride and incidents, no input is needed during the cycling trip and the app records the trip passively.
+There is rather higher degree of \textit{location relevance}.
+Although the annotation of the ride can be done wherever, a cycling trip can only be recorded when the cyclist is physically at a location.
+It is not possible to record a ride in a location without being physically there (at least not without spoofing the GPS location of the smartphone).
+There is a minimal \textit{knowledge requirement} the participants have to fulfill.
+They must know, that they only have to report incidents and not a static hazard or a nuisance such as a very long red light.
+The \textit{participation incentive} in SimRa is purely intrinsic.
+There are no external benefits in using SimRa, such as monetary compensation.
+The \textit{data flow} is hybrid, since there is preprocessing involved in the SimRa app, that happens on the smartphone.
+However, it would be wrong to label SimRa as a fully fledged crowdsourcing project, since the \textit{Application User} and \textit{Data Processing Platform}, are basically merged together and there is no allocation of tasks.
+The task is to record cycling trips, add additional details about the trip and the incidents and upload the data.
+Hence, we consider SimRa as a (lightweight) crowdsourcing project.
+
+\paragraph{SimRa and Citizen Science}
+SimRa can clearly be considered as a Citizen Science project, as it fulfills the Ten Principles of Citizen Science (see \cref{sec:citizen_science_background}):
+\begin{enumerate}
+\item The users are crucial for the project, as they contribute their cycling trip data.
+\item There is a genuine science outcome, as this thesis shows and the informing management decisions and environmental policies.
+\item While the benefits of the citizen scientists are not as apparent as the professional scientists, they also profit in the long run, if the project goal improving the bicycle traffic safety increases.
+\item While the citizen scientists' main task is to contribute cycling trip and incident data, they are free and encouraged to also participate in other stages of the scientific process.
+E.g., the dataset is published as open data and everyone can analyze the data for insights about traffic safety.
+\item We provide multiple channels for the citizen scientists to inform themselves about the progress of the project, such as through our social media account\footnote{\url{https://twitter.com/SimRa_App}} as well as a website\footnote{\url{https://simra-project.github.io/}}.
+\item In each of our published papers, as well as in this thesis, we point at possible limitations and biases (see \cref{sec:discussion_cyclesense,sec:discussion_cyclequality,sec:discussion_sumo,sec:limitations_of_crowdsourced_data}). 
+\item We publish the SimRa dataset as open data~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3}
+\item While we don't mention any citizen scientists directly, since there would be too many, we make sure that it is obvious, that we rely on participating citizen scientists.
+\item In each of our published papers, as well as in this thesis, we evaluate the scientific output (see \cref{sec:evaluation_cyclesense,sec:evaluation_cyclequality,sec:evaluation_sumo}). 
+\item We designed SimRa to be as privacy friendly as possible and have a very strict privacy policy statement\footnote{https://www.tu.berlin/en/mcc/research/projects/simra-privacy-policy-statement}.
+\end{enumerate}
+
+\section{Detecting Incidents with Deep Learning}
 \label{sec:detecting_near_miss_incidents}
 This section describes the process of automatically detecting incidents. 
 Please note that the SimRa data are not optimized for automated processing and \ac{ml} but rather for aggregated statistics and review by humans.
@@ -391,7 +427,7 @@ Furthermore, they have been developed on the SimRa data set, which enables a fai
 \subsection{Metrics}
 \label{subsec:metrics}
 Due to the massive label imbalance already mentioned earlier, common metrics such as accuracy, F1-score, and precision are difficult to interpret.
-Moreover, in our scenario it is more important to find the true near miss incidents than to classify non-incidents correctly, as False Positives can be more easily corrected by the user of the SimRa app.
+Moreover, in our scenario it is more important to find the true incidents than to classify non-incidents correctly, as False Positives can be more easily corrected by the user of the SimRa app.
 For both reasons, a high number of False Positives is more acceptable than a low number of True Positives, which further limits the usefulness of such metrics like precision, F1-score, or \ac{mcc}.
 Therefore, we focus on the \ac{auc} of the \ac{roc} metric, which is insensitive to changes in class distribution~\cite{fawcett2006introduction} while also reporting the respective confusion matrices.
 
@@ -507,6 +543,7 @@ Nevertheless, the \ac{auc} \ac{roc} for Berlin is still the highest and clearly 
 \label{sec:discussion_cyclesense}
 Our results demonstrate that the proposed CycleSense model outperforms every other model that we have compared to.
 While improving the model's architecture and other components, we identified a number of challenges inherent to the problem setting that we discuss in the following.
+Note that we also discuss some limitations in \cref{cha:discussion_and_outlook}, that may also apply to this approach.
 
 
 \subsection{Impact of Preprocessing \& Training Steps}
@@ -520,25 +557,6 @@ Therefore, Figure~\ref{fig:impact} illustrates the performance of CycleSense whe
 	\caption{Impact of different preprocessing and training steps on the performance of CycleSense.}
 	\label{fig:impact}
 \end{figure}
-
-\subsection{Limitations of Crowdsourced Data}
-\label{subsec:limitations_of_crowdsourced_data}
-Crowdsourced data are generally noisy which could contribute to a reduced model performance.
-They do also contain several biases, e.g., the Selection Bias, Device Positioning Bias, Extreme Aversion Bias, or Confirmation Bias~\cite{basiri2019crowdsourced, chakraborty2017makes, kahneman1991anomalies}.
-In this context, the heterogeneity across devices and platforms is likely another factor of influence.
-As already described, the application that is used by contributors to record their rides is available on two platforms. 
-Those platforms are supported by a wide range of different devices and models with different hardware inside. 
-Phone manufacturers use different \ac{gps}, gyroscope, and accelerometer sensors that can vary immensely in sensitivity and overall behavior.
-Stisen et al.~\cite{stisen2015smart} have shown that there is major heterogeneity when it comes to the accuracy of sensor readings. 
-While the main focus of that study was on accelerometer data, Kuhlmann et al.~\cite{kuhlmann2021smartphone} have shown that orientation sensor data is also affected by this variability.
-This is in contrast to the \ac{har} tasks, we compare our task to.
-The \ac{har} data set~\cite{anguita2013public} was generated under laboratory conditions that always used the same smartphone type body mounted to the exact same position on selected study participants.
-This significantly simplifies the classification task.
-Another factor that contributes to the issue of noisy crowdsourcing data in the SimRa data set is the fact that some users misinterpret the purpose of the SimRa app.
-Instead of labeling incidents, they report, e.g., dangerous areas or annoying traffic lights.
-These can of course not be captured by the sensors used.
-Many such ``incidents'' can be identified through the comment column of the data set.
-It should also be noted that the SimRa data set was not recorded and labeled with the goal of developing ML models -- the goal was to record data which will be analyzed and processed by humans.
 
 \subsection{Technical Limitations of the SimRa Data Set}
 \label{subsec:technical_limitations_of_the_simra_data_set}

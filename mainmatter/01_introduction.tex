@@ -55,12 +55,12 @@ Third, we improve the bicycle simulation of a widely used traffic simulation sof
 
 \subsection{SimRa: A Platform for Gathering Cycling Trip Data and Detecting Near Miss Incidents in Bicycle Traffic}
 \label{subsec:simra_contribution}
-The SimRa\footnote{SimRa is a German acronym for ``Sicherheit im Radverkehr´´, which translates to Safety in Bicycle Traffic.} platform comprises all things related to the collection, storage, and analysis of crowdsensed cycling data.
+The SimRa\footnote{SimRa is a German acronym for ``Sicherheit im Radverkehr´´, which translates to Safety in Bicycle Traffic.} platform comprises all things related to the collection, storage, and analysis of crowdsourced cycling data.
 The data acquisition relies on a free app, which is available on both major smartphone operating systems Android and iOS, installed on the smartphones of participating cyclists.
-This app collects data and detects near miss incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to the SimRa servers.
-Initially, the detection of near miss incidents used a heuristic, where the accelerometer data of the recorded bicycle trip were analyzed and the biggest differences in consecutive values were considered a near miss incident.
-We then built a second near miss incident detection option that relies on deep learning model.
-The anonymized data comprises information on cyclist routes, near miss incidents, user demographics, as well as some aggregated bicycle trip statistics.
+This app collects data and detects near miss incidents\footnote{In the remainder of this thesis, we will also refer to them as ‘‘incidents’’.} during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to the SimRa servers.
+Initially, the detection of incidents used a heuristic, where the accelerometer data of the recorded bicycle trip were analyzed and the biggest differences in consecutive values were considered a incident.
+We then built a second incident detection option that relies on deep learning model.
+The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated bicycle trip statistics.
 Finally the collected data gets processed and analyzed continuously to gain insights into dangerous street segments and intersections.
 For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis which automatically derives a ‘‘dangerousness’’ score per street segment and intersection. 
 
@@ -69,9 +69,9 @@ We have published this contribution in~\cite{karakaya2020simra,karakaya2022cycle
 \subsection{Deriving Road Surface Quality from Cycling Trip Data}
 \label{subsec:road_surface_contribution}
 Deriving road surface quality is one way how we leverage the cycling trip data gathered with SimRa.
-The inclusion of the accelerometer sensor readings into the bicycle trip data recordings was mainly to be able to detect near miss incidents based on that data, since the main idea behind that is, that near miss incidents trigger sudden movements of the cyclists and thus can be recognized in the motion sensor readings.
+The inclusion of the accelerometer sensor readings into the bicycle trip data recordings was mainly to be able to detect incidents based on that data, since the main idea behind that is, that incidents trigger sudden movements of the cyclists and thus can be recognized in the motion sensor readings.
 However, a byproduct of this approach is, that the SimRa dataset also contains information about the surface quality of the roads the bicycle trip was recorded on.
-While the automatic detection of near miss incidents views the vibrations stemming from the uneven surface of the roads as noise data, here we can use them to derive the ``bumpiness´´ of the road.
+While the automatic detection of incidents views the vibrations stemming from the uneven surface of the roads as noise data, here we can use them to derive the ``bumpiness´´ of the road.
 One major challenge, though, is the heterogeneity  of the user base who contribute to the SimRa dataset.
 Different bicycle types and the place of the smartphone during the bicycle trip have both a big impact on how intensive the vibrations caused by the road surface are detected by the accelerometer sensors.
 The bicycle trip data contain information about the bicycle type and the position of the smartphone during the bicycle trip, however, these information can be given voluntarily by the user.
@@ -86,7 +86,7 @@ We have published this contribution in~\cite{karakaya2023crowdsensing}.
 \subsection{Cyclist Model for SUMO}
 \label{subsec:sumo_contribution}
 The SimRa dataset contains the GPS trace of the bicycle trip as well as the timestamp for each tracked GPS point.
-The main reasoning to include that data is to be able to show the recorded trip to the user and to place near miss incidents at the correct position.
+The main reasoning to include that data is to be able to show the recorded trip to the user and to place incidents at the correct position.
 Additionally, by knowing where the trip has been through, we can identify dangerous and safe areas in bicycle traffic.
 However, we can also extract the longitudinal movement profile, that is the acceleration, deceleration and maximum velocity of cyclists, as well as their behavior at intersections.
 With this, we improve the bicycle simulation model of SUMO~\cite{lopez2018microscopic}, which simulates bicycles as slower cars or faster pedestrians by default, which is obviously far from being realistic.

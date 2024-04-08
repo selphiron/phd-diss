@@ -5,18 +5,41 @@
 \cleardoublepage
 \addcontentsline{toc}{section}{Abstract}
 \section*{Abstract}
-
 An increased modal share of bicycle traffic is a key mechanism to reduce emissions and solve traffic-related problems.
-However, a lack of (perceived) safety keeps people from using their bikes more frequently.
-To improve safety in bicycle traffic, city planners need an overview of accidents, near miss incidents, and bike routes.
-Such information, however, is currently not available.
-In this paper, we describe SimRa, a platform for collecting data on bicycle routes and near miss incidents using smartphone-based crowdsourcing.
-We also describe how we identify dangerous near miss hotspots based on the collected data and propose a scoring model.
-
+However, a lack of comfort and (perceived) safety keeps people from using their bikes more frequently.
+To improve comfort and safety in bicycle traffic, city planners need (a), an overview of accidents, near miss incidents, and bike routes, (b), an overview of the cycling infrastructure's maintenance state and (c), a way to test the planned changes in the bicycle infrastructure before implementing them in the real life.
+This needs, however, are currently not fulfilled satisfactory.
+In this thesis, we present three main contributions to solve these problems.
+We first show SimRa, a crowdsourcing-based citizen science project to gather records of cycling trips and near miss incidents in bicycle traffic.
+As part of this contribution, we also present CycleSense, an approach based on Deep Learning to automatically detect near miss incidents from recorded cycling trip data.
+The hazardous hotspots in bicycle traffic revealed with SimRa is beneficial for city planners, because if they know of a dangerous place for cyclists, they can implement changes to increase the safety there.
+Cyclists, on the other hand, can use this information to circumvent these spots.
+In our second contribution, we describe an approach to derive the road surface quality from cycling trip data.
+Our approach uses data produced by the inertial measurement unit of the smartphone to calculate the smoothness of the road surface by the vibrations caused by traversing on the road with a bicycle. 
+We then show how our approach can easily be integrated into a cycling trip recording app with SimRa as a case study.
+This contribution also contains a visualization of the cycling infrastructure's smoothness and helps both city planners and cyclists the same way as our first contribution.
+As our third contribution, we improve the cyclist simulation model of the urban traffic simulation software called SUMO.
+For this, we first show that the default cyclist model of SUMO is not realistic by comparing it to how cyclists behave through the SimRa dataset.
+We then split the cycling trips in the SimRa dataset into three parts for slow, medium and fast cyclists and implement our findings as a plugin that can be added to SUMO for a more realistic cyclist simulation.
+This can provide a strong tool for city planners to better test their planned changes in the traffic infrastructure. 
 
 
 \newpage
 \addcontentsline{toc}{section}{Zusammenfassung}
 \section*{Kurzdarstellung}
-
-Eine Erhöhung des Fahrradverkehrs ist ein wichtiges Instrument zur Verringerung der Emissionen und zur Lösung verkehrsbedingter Probleme. Allerdings hält ein Mangel an (gefühlter) Sicherheit die Menschen davon ab, ihr Fahrrad häufiger zu benutzen. Um die Sicherheit im Radverkehr zu verbessern, benötigen Stadtplaner einen Überblick über Unfälle, Gefahrensituationen und Radwege. Solche Informationen sind jedoch derzeit nicht verfügbar. In diesem Beitrag beschreiben wir SimRa, eine Plattform zur Sammlung von Daten über Fahrradrouten und Gefahrensituationen mithilfe von Smartphone-basiertem Crowdsourcing. Außerdem beschreiben wir, wie wir auf der Grundlage der gesammelten Daten gefährliche Hotspots für Gefahrensituationen identifizieren und ein Scoring-Modell vorschlagen.
+Eine Erhöhung des Fahrradverkehrs trägt zur Verringerung der Treibhausgasemissionen und zur Lösung verkehrsbedingter Probleme bei.
+Mangelnder Komfort und (gefühlte) Unsicherheit halten die Menschen jedoch davon ab, öfter Fahrrad zu fahren.
+Um den Komfort und die Sicherheit im Radverkehr zu erhöhen, benötigen Stadtplaner (a) einen Überblick über Unfälle und Gefahrensituationen, (b) einen Überblick über den Wartungszustand der Radverkehrsinfrastruktur und (c) eine Möglichkeit, die geplanten Änderungen an der Radverkehrsinfrastruktur zu testen, bevor sie umgesetzt werden.
+In dieser Arbeit präsentieren wir drei Beiträge zur Lösung dieser Probleme.
+Zunächst stellen wir SimRa vor, ein Crowdsourcing-basiertes Citizen-Science-Projekt zur Erfassung Gefahrensituationen im Radverkehr.
+Im Rahmen dieses Beitrags stellen wir auch CycleSense vor, einen auf Deep Learning basierenden Ansatz zur automatischen Erkennung von Gefahrensituationen aus aufgezeichneten Radfahrdaten.
+Stadtplaner können die mit SimRa aufgedeckten gefährlichen Stellen im Radverkehr mit Baumaßnahmen verbessern.
+Radfahrer wiederum können diese Informationen nutzen, um diese Stellen zu umfahren.
+In unserem zweiten Beitrag beschreiben wir einen Ansatz zur Ableitung der Straßenoberflächenqualität aus Fahrradfahrtdaten.
+Unser Ansatz verwendet Daten, die von den Bewegungssensoren des Smartphones erzeugt werden, um Unebenheiten der Straßenoberfläche anhand der Vibrationen zu berechnen, die durch das Befahren der Straße mit einem Fahrrad verursacht werden. 
+Wir zeigen dann, wie unser Ansatz in eine App zur Aufzeichnung von Fahrradtouren integriert werden kann, mit SimRa als Fallbeispiel.
+Dieser Beitrag enthält auch eine Visualisierung der Ergebnisse und hilft sowohl Stadtplanern als auch Radfahrern auf ähnliche Weise wie unser erster Beitrag.
+In unserem dritten Beitrag verbessern wir das Radfahrersimulationsmodell der Verkehrssimulationssoftware SUMO.
+Dazu zeigen wir zunächst, dass das Standard-Radfahrermodell von SUMO nicht realistisch ist, indem wir es mit dem Verhalten von Radfahrern anhand des SimRa-Datensatzes vergleichen.
+Anschließend teilen wir die Radfahrten im SimRa-Datensatz in drei Teile für langsame, mittlere und schnelle Radfahrer auf und implementieren unsere Ergebnisse als Plugin, das zu SUMO hinzugefügt werden kann, um eine realistischere Radfahrersimulation zu ermöglichen.
+Dies kann ein starkes Werkzeug für Stadtplaner sein, um ihre geplanten Änderungen an der Verkehrsinfrastruktur besser zu testen. 

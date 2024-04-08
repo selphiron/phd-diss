@@ -1,15 +1,6 @@
 \chapter{Deriving Road Surface Quality from Bicycle Ride Data}
 \label{cha:cyclequality}
-
-
-Cities all over the world aim to increase the modal share of bicycle traffic, e.g., to address emission problems, frequent traffic jams, but also to improve the citizens' health through more daily activity.
-Key factors for this are traffic safety, topography but also the comfort level of cyclists~\cite{nyberg1996Road,gadsby2022understanding,karakaya2020simra}.
-All these factors are affected by the availability and quality of cycling infrastructure which needs to be monitored and maintained continuously.
-Even monitoring of surface quality alone, however, can be challenging due to the sheer dimensions of existing infrastructure.
-Germany's capital Berlin, for example, has around 2,300 km of bicycle tracks as of March 2023, i.e., manually inspecting cycling infrastructure to monitor surface quality is infeasible.
-
-To address this problem, we propose to use a crowdsensing approach in which cyclists record their daily rides using a smartphone app.
-Using the built-in motion sensors, the surface quality (or rather the lack of) can be measured as vibrations or bumps.
+In this chapter we present an approach for deriving the surface quality (or rather the lack of), which can be measured as vibrations or bumps, using the \ac{imu} built in smartphones.
 In a second step, we can then combine data from multiple rides to derive an estimate for the surface quality.
 This way, monitoring of surface quality can be automated to a high degree at little cost and the resulting data can be used for maintenance planning or surface quality-aware routing.
 Especially for highly frequented cycling tracks, surface quality problems can be detected quickly.
@@ -17,19 +8,44 @@ Especially for highly frequented cycling tracks, surface quality problems can be
 While there are other projects studying the surface quality of cycling infrastructure through crowdsourcing (e.g., Luedemann et al.~\cite{luedemann2022bikevibes}), our work is unique and novel because alternative approaches (i) either focus on categorizing the surface \emph{type} (e.g., cobblestones) where we focus on the surface \emph{quality} (i.e., the level of roughness) or (ii) have strict assumptions on phone positioning and other properties where we rely on a ``wisdom of the crowds'' strategy to filter out noise.
 The latter is also an advantage because, unlike related approaches, which use a dedicated app for measuring the road surface quality, thus, potentially forcing cyclists to run multiple apps, our approach can easily be retrofitted to existing apps and can even be used to analyze already stored datasets.
 
-For this, we make the following contributions:
+This chapter contains material published in \cite{karakaya2023crowdsensing} with following contributions:
 \begin{itemize}
-	\item We present a data processing pipeline for deriving surface quality which combines signal processing with geographical clustering techniques in the form of edge-based preprocessing on the phone and cloud analytics (\cref{sec:pipeline}).
-	\item We describe how we integrate this data processing pipeline in the existing crowdsensing project SimRa~\cite{karakaya2020simra} which up to now has only focused on traffic safety(\cref{sec:pipeline}).
-	\item We describe how the resulting data can be used to increase the comfort of cyclists through surface quality-aware routing and how the data can be exposed to city administrations(\cref{sec:use}).
-	\item We evaluate our approach by analyzing the SimRa dataset~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} and comparing it on-site conditions in eight streets with different surface quality (\cref{sec:eval}).
-	\item We discuss to which degree our approach can automate surface quality monitoring and how additional sensors could possibly help to improve data quality (\cref{sec:disc}).
+	\item We present a data processing pipeline for deriving surface quality which combines signal processing with geographical clustering techniques in the form of edge-based preprocessing on the phone and cloud analytics.
+	\item We describe how we integrate this data processing pipeline in the existing crowdsourcing project SimRa~\cite{karakaya2020simra}(see \cref{sec:simra}) which previously only focused on incidents.
+	\item We describe how the resulting data can be used to increase the comfort of cyclists through surface quality-aware routing and how the data can be exposed to city administrations.
+	\item We evaluate our approach by analyzing the SimRa dataset~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} and comparing it on-site conditions in eight streets with different surface quality.
+	\item We discuss to which degree our approach can automate surface quality monitoring and how additional sensors could possibly help to improve data quality.
 \end{itemize}
 
+We outlined this chapter as follows:
+In \cref{sec:surface_quality_background} we give background information about the measurement of road surface quality.
+We then continue with \cref{sec:scenarios_and_constraints}, where we clarify the scenarios and constraints of our approach.
+We explain our approach and how it is integrated in SimRa (see \cref{sec:simra}) in \cref{sec:data_processing_pipeline}.
+After that we describe two ways in which the road surface quality information can be used in \cref{sec:using_road_surface_quality_information}.
+We follow this up with an evaluation and discussion of our approach in \cref{sec:evaluation_cyclequality} and \cref{sec:evaluation_cyclequality} respectively.
+We conclude this chapter in \cref{sec:summary_cyclequality} after giving an overview of alternative approaches in \cref{sec:related_work_cyclequality}.
 
 \section{Road Surface Quality}
 \label{sec:surface_quality_background}
-The idea to use smartphones and crowdsensing for tracking surface quality is not new.
+Traffic departments frequently analyze the road surface quality to find out road segments that need to be repaired to increase the traffic safety.
+There are mainly three types of methods used for, which we briefly introduce here.
+\textit{Profilographs} are one of the oldest devices used to measure road surface quality.
+They consist of a profiling wheel in the center and multiple support wheels held together by a rigid frame.
+They measure the road quality by tracking the vertical movement of the profiling wheel.
+The higher the vertical movement of that wheel, the worse the surface quality of the road.
+This method of measuring surface quality is very slow, since the profilograph has to be pulled very slowly by another vehicle.
+\textit{Scanner-based systems} are more sophisticated and rely either on accelerometers measuring the vibrations caused by driving on a specific surface, lasers scanning the surface in front or beneath the vehicle, cameras making photos later to be analyzed with the help of computer vision and photogrammetry, or a combination of the aforementioned methods.
+This system provides the highest resolution and accuracy, however it is also the most costly and complex one.
+More recently, \textit{smartphone-based systems} are gaining traction due to their cost-efficiency.
+A smartphone is being attached inside the car and the vibrations caused by the road surface are recorded.
+This is the least accurate system, since the measured vibrations are very indirect, due to car tires and suspension.
+
+However, these systems are impractical for measuring bicycle road surface quality, because cars are not suited to drive on bicycle roads and these systems are too costly.
+Hence, we propose a novel system using crowdsourced smartphone bicycle ride data.
+
+\section{Scenarios and Constraints}
+\label{sec:scenarios_and_constraints}
+The idea to use smartphones and crowdsourcing for tracking surface quality is not new.
 For this reason, we use this dedicated section to briefly discuss the specific goals of our work and the unique constraints of the scenarios we target.
 We do this to clarify why existing approaches, which we discuss in the next section, cannot solve the problem we target.
 
@@ -68,9 +84,9 @@ We retrofitted it to the SimRa app~\cite{karakaya2020simra} but it could easily 
 As a soft constraint, we tried (and succeeded) to design our approach in a way that it can also process our existing datasets~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3}.
 
 
-\section{Data Processing Pipeline}
+\section{Integrating Road Surface Quality Measurement into SimRa}
 \label{sec:data_processing_pipeline}
-In this section, we start by giving a high-level overview of our data processing pipeline for deriving surface quality \cref{sec:overview} before describing the individual steps in the process (\cref{sec:data_acq} to \cref{sec:surface_quality}).
+In this section, we start by giving a high-level overview of our data processing pipeline for deriving surface quality (\cref{subsec:overview_of_pipeline}) before describing how we derive the surface quality (\cref{subsec:surface_quality_analysis}).
 
 
 \subsection{Overview of Pipeline}
@@ -84,25 +100,11 @@ In this section, we start by giving a high-level overview of our data processing
     \label{fig:overview}
 \end{figure}
 The tasks of our data processing pipelines are distributed over the edge (i.e., on the smartphone) and the cloud, see also \Cref{fig:overview}.
-After collecting data in the SimRa app using the built-in motion sensors, data is preprocessed locally before upload to our backend servers.
+After collecting data in the SimRa app (see \cref{sec:simra} using the built-in motion sensors, data is preprocessed locally before upload to our backend servers.
 There, additional preprocessing steps are executed before the actual surface quality analysis.
 
 The parts of the preprocessing which reduce the amount of data need to be run on the edge to preserve user privacy and to reduce bandwidth consumption.
 The data cleaning parts are too compute-intensive and are executed in the cloud to reduce power consumption on the phone.
-
-\subsection{Preprocessing in the Cloud}
-\label{subsec:preprocessing_in_the_cloud}
-The preprocessing in the cloud has two main goals: cleaning noisy data and calculating a value that represents the smoothness of the ride.
-For the first goal, we cut off ten seconds each at the start and end of the ride to remove noise resulting from users (un)mounting their bikes or putting the phone in a pocket.
-Ideally, this would of course already be done on the phone but could not be done here since the main use case of SimRa requires this data, i.e., we would have had to upload the data twice.
-We also remove stops, i.e., only the parts of the ride which have a minimum speed of 5 km/h and a minimum duration of 1 minute are considered.
-Such low speeds usually occur, when the bicycle is being pushed by the cyclist rather than being ridden or when stopping at traffic lights.
-Even if the cyclist should manage to ride so slowly, the ride will be prone to unsteady motions, leading to noisy data.
-This also removes parts where users forgot to stop the recording after their ride.
-
-For the second goal, we normalize the accelerometer data by calculating the mean of the three moving variances (window size 10) of the axes X, Y and Z.
-This preserves information about amplitude but disregards the direction which is highly affected by the position of the phone.
-Thus, we obtain a time series of single values representing the bumpiness of the surface in each in-motion ride segment.
 
 \subsection{Surface Quality Analysis}
 \label{subsec:surface_quality_analysis}
@@ -122,8 +124,8 @@ As a metric for the bumpiness of that cell, we use the average of all values -- 
 \section{Using Road Surface Quality Information}
 \label{sec:using_road_surface_quality_information}
 In this section, we describe how such surface quality results can be used.
-In \cref{sec:routing}, we describe how we implement a navigation feature into the SimRa app that uses the road surface quality as an additional parameter in routing.
-We then show in \cref{sec:visualization} how we can expose the output data of our pipeline to city administrators.
+In \cref{subsec:routing_with_surface_quality}, we describe how we implement a navigation feature into the SimRa app that uses the road surface quality as an additional parameter in routing.
+We then show in \cref{subsec:output_data_and_visualization} how we can expose the output data of our pipeline to city administrators.
 
 
 \subsection{Routing with Surface Quality}
@@ -161,13 +163,13 @@ Using a visualization like this, also non-tech-savvy users can easily monitor th
 \section{Evaluation}
 \label{sec:evaluation_cyclequality}
 In this section, we evaluate the surface quality analysis by comparing the calculated surface quality of selected street segments across Berlin with their surface type in the real world, which we get from OpenStreetMap (OSM).
-As data input, we use the existing SimRa datasets~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} (almost 90,000 rides with more than 650,000km in total).
+As data input, we use the existing SimRa datasets~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} (almost 90,000 rides with more than 650,000km in total\footnote{All numbers in this chapter regarding the SimRa dataset are as of September 2022}).
 Based on the intuition that different surface types will also be partially correlated with surface quality, we randomly picked four spots with different surface types.
 To also show the limitations of our approach, we then explored the dataset and manually picked four additional spots where our approach appears to have returned the wrong results.
 Each evaluated section has a surface area of 10 m² and to compare them to each other we analyze their mean, median, and standard deviation values.
 
-We first describe the clear results from the first group (\cref{subsec:clear}).
-Afterwards, we categorize the additional four ``problem spots'' as mixed results (\cref{subsec:mixed}) or seemingly incorrect results (\cref{subsec:mismatch}).
+We first describe the clear results from the first group (\cref{subsec:sections_with_clear_results}).
+Afterwards, we categorize the additional four ``problem spots'' as mixed results (\cref{subsec:sections_with_mixed_results}) or seemingly incorrect results (\cref{subsec:sections_with_seemingly_confusing_results}).
 
 
 \subsection{Sections with Clear Results}
@@ -191,7 +193,7 @@ It can be observed, that the aforementioned list of surface types, which was sor
 A newly maintained asphalt section in \textit{Straße des 17. Juni} has a nearly perfect score, which means that its surface quality was in the top 20\% in almost all rides crossing this section.
 Followed by that are two sections with flat paving stones and fine gravel as their surface type, which have very similar results.
 This means, that both flat paving stones and fine gravel have comparable surface quality in terms of bumpiness from the perspective of a cyclist.
-However, it should be noted, that fine gravel can be less favorable in areas with a lot of precipitation (more on that in \cref{sec:disc}).
+However, it should be noted, that fine gravel can be less favorable in areas with a lot of precipitation (more on that in \cref{sec:discussion_cyclequality}).
 Not very surprisingly, the \textit{Liebauer Straße} has very bad surface quality scores, since it is paved with cobblestones and has very busy sidewalks with restaurants and cafes, which prevent cyclists from (illegaly) cycling there instead of on the street.
 
 \begin{table}%
@@ -322,21 +324,8 @@ Goethestraße       & Cobblestone & 52.508889,13.308333 & 1    & 1      & 0\\%
 \label{sec:discussion_cyclequality}
 Overall, the results presented in this paper show, that our approach can derive surface quality information using data recorded in the SimRa app.
 Nevertheless, it still has a number of limitations which we discuss in this section.
+Note that we also discuss some limitations in \cref{cha:discussion_and_outlook}, that may also apply to this approach.
 
-\subsection{Methodological Challenges}
-\label{subsec:methodological_challenges_cyclequality}
-Since the SimRa dataset consists of crowdsourced data generated by smartphones, the recorded data is very heterogeneous.
-This comes from the fact that different smartphone models have different GPS modules and motions sensors, which leads to the problem that a road can be very smooth according to one smartphone and very rough according to another.
-This problem is further aggravated by the wide range of different bicycle types, e.g., racing bicycles or mountain bikes, which in turn also heavily influence the vibrations the smartphone can sense.
-To solve these problems, we rely on the \textit{law of large numbers} and compare how a section's surface quality was relative to the ride. 
-
-\subsection{Preprocessing in SimRa}
-\label{subsec:preprocessing_in_simra}
-As input for our surface quality analysis pipeline, we used the SimRa dataset, since it is to our knowledge the only public dataset containing a very high number of anonymized individual rides in a non-aggregated form.
-However, it is important to note, that SimRa was developed for identifying near miss incident hotspots in bicycle traffic.
-For that, a relatively low accelerometer sampling rate of 50 Hz is used before further reducing the level of detail by calculating the moving average with a window size of 30 and then taking every fifth value.
-While with this, it is possible to automatically detect near-miss incidents~\cite{karakaya2022cyclesense}, a higher resolution of data points would allow us to develop a more sophisticated measurement approach.
-This would, however, further increase the disk space, memory, battery and bandwidth usage of the SimRa app and as we have shown in \cref{sec:eval}, the surface quality we derive are sufficiently precise for our intended use cases.
 
 \subsection{Behavior of Cyclists}
 \label{subsec:behavior_of_cyclists}
@@ -401,9 +390,9 @@ Cities all over the world aim to increase the modal share of bicycle traffic, e.
 Aside from safety, a key influence factor for this is comfort, particularly in the form of the surface quality of cycling infrastructure.
 Monitoring the surface quality manually, however, is infeasible due to the dimensions of such infrastructure.
 
-In this paper, we proposed a crowdsensing approach in which cyclists record their daily rides using a smartphone app and the phone's built-in motion sensors.
+In this paper, we proposed a crowdsourcing approach in which cyclists record their daily rides using a smartphone app and the phone's built-in motion sensors.
 We proposed a data processing pipeline that starts on the edge (i.e., the phone) and ends in a cloud backend.
-Furthermore, we showed that our crowdsensing approach can indeed derive surface quality and implemented two use cases for using such data.
+Furthermore, we showed that our crowdsourcing approach can indeed derive surface quality and implemented two use cases for using such data.
 
 
 
