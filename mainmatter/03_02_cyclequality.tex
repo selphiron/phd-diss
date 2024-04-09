@@ -1,29 +1,29 @@
 \chapter{Deriving Road Surface Quality from Bicycle Ride Data}
 \label{cha:cyclequality}
-In this chapter we present an approach for deriving the surface quality (or rather the lack of), which can be measured as vibrations or bumps, using the \ac{imu} built in smartphones.
-In a second step, we can then combine data from multiple rides to derive an estimate for the surface quality.
+In this chapter we present an approach for deriving the surface quality (or rather the lack of it), which can be measured as vibrations or bumps, using the \ac{imu} included in smartphones.
+In the second step, we can then combine data from multiple rides to derive an estimate for the surface quality.
 This way, monitoring of surface quality can be automated to a high degree at little cost and the resulting data can be used for maintenance planning or surface quality-aware routing.
 Especially for highly frequented cycling tracks, surface quality problems can be detected quickly.
 
 While there are other projects studying the surface quality of cycling infrastructure through crowdsourcing (e.g., Luedemann et al.~\cite{luedemann2022bikevibes}), our work is unique and novel because alternative approaches (i) either focus on categorizing the surface \emph{type} (e.g., cobblestones) where we focus on the surface \emph{quality} (i.e., the level of roughness) or (ii) have strict assumptions on phone positioning and other properties where we rely on a ``wisdom of the crowds'' strategy to filter out noise.
 The latter is also an advantage because, unlike related approaches, which use a dedicated app for measuring the road surface quality, thus, potentially forcing cyclists to run multiple apps, our approach can easily be retrofitted to existing apps and can even be used to analyze already stored datasets.
 
-This chapter contains material published in \cite{karakaya2023crowdsensing} with following contributions:
+This chapter contains material published in \cite{karakaya2023crowdsensing} with the following contributions:
 \begin{itemize}
 	\item We present a data processing pipeline for deriving surface quality which combines signal processing with geographical clustering techniques in the form of edge-based preprocessing on the phone and cloud analytics.
-	\item We describe how we integrate this data processing pipeline in the existing crowdsourcing project SimRa~\cite{karakaya2020simra}(see \cref{sec:simra}) which previously only focused on incidents.
+	\item We describe how we integrate this data processing pipeline in the existing crowdsourcing project SimRa~\cite{karakaya2020simra}(see \Cref{sec:simra}) which previously only focused on incidents.
 	\item We describe how the resulting data can be used to increase the comfort of cyclists through surface quality-aware routing and how the data can be exposed to city administrations.
-	\item We evaluate our approach by analyzing the SimRa dataset~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} and comparing it on-site conditions in eight streets with different surface quality.
+	\item We evaluate our approach by analyzing the SimRa dataset~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} and comparing its on-site conditions in eight streets with different surface quality.
 	\item We discuss to which degree our approach can automate surface quality monitoring and how additional sensors could possibly help to improve data quality.
 \end{itemize}
 
 We outlined this chapter as follows:
-In \cref{sec:surface_quality_background} we give background information about the measurement of road surface quality.
-We then continue with \cref{sec:scenarios_and_constraints}, where we clarify the scenarios and constraints of our approach.
-We explain our approach and how it is integrated in SimRa (see \cref{sec:simra}) in \cref{sec:data_processing_pipeline}.
-After that we describe two ways in which the road surface quality information can be used in \cref{sec:using_road_surface_quality_information}.
-We follow this up with an evaluation and discussion of our approach in \cref{sec:evaluation_cyclequality} and \cref{sec:evaluation_cyclequality} respectively.
-We conclude this chapter in \cref{sec:summary_cyclequality} after giving an overview of alternative approaches in \cref{sec:related_work_cyclequality}.
+In \Cref{sec:surface_quality_background} we give background information about the measurement of road surface quality.
+We then continue with \Cref{sec:scenarios_and_constraints}, where we clarify the scenarios and constraints of our approach.
+We explain our approach and how it is integrated into SimRa (see \Cref{sec:simra}) in \Cref{sec:data_processing_pipeline}.
+After that, we describe two ways in which the road surface quality information can be used in \Cref{sec:using_road_surface_quality_information}.
+We follow this up with an evaluation and discussion of our approach in \Cref{sec:evaluation_cyclequality} and \Cref{sec:evaluation_cyclequality} respectively.
+We conclude this chapter in \Cref{sec:summary_cyclequality} after giving an overview of alternative approaches in \Cref{sec:related_work_cyclequality}.
 
 \section{Road Surface Quality}
 \label{sec:surface_quality_background}
@@ -65,7 +65,7 @@ First, our work focuses on the experience in terms of ``bumpiness'' for cyclists
 Therefore, we try to quantify the roughness of a road surface and not its type.
 As an example, a ride on asphalt will usually be smoother than one on a cobblestone road.
 In practice, though, an asphalt road might have lots of (small) potholes and repair patches while a cobblestone road might use relatively flat (instead of rounded) stones  with mostly filled-in gaps between the stones.
-See \cref{fig:cobblestone_vs_asphalt} for an example.
+See \Cref{fig:cobblestone_vs_asphalt} for an example.
 In such a setup, a ride on the cobblestone road can be much smoother.
 Quantifying the surface \emph{quality} and not the surface \emph{type} will thus yield different results -- a large body of related work is hence not applicable to the problem we target.
 
@@ -86,7 +86,7 @@ As a soft constraint, we tried (and succeeded) to design our approach in a way t
 
 \section{Integrating Road Surface Quality Measurement into SimRa}
 \label{sec:data_processing_pipeline}
-In this section, we start by giving a high-level overview of our data processing pipeline for deriving surface quality (\cref{subsec:overview_of_pipeline}) before describing how we derive the surface quality (\cref{subsec:surface_quality_analysis}).
+In this section, we start by giving a high-level overview of our data processing pipeline for deriving surface quality (\Cref{subsec:overview_of_pipeline}) before describing how we derive the surface quality (\Cref{subsec:surface_quality_analysis}).
 
 
 \subsection{Overview of Pipeline}
@@ -100,7 +100,7 @@ In this section, we start by giving a high-level overview of our data processing
     \label{fig:overview}
 \end{figure}
 The tasks of our data processing pipelines are distributed over the edge (i.e., on the smartphone) and the cloud, see also \Cref{fig:overview}.
-After collecting data in the SimRa app (see \cref{sec:simra} using the built-in motion sensors, data is preprocessed locally before upload to our backend servers.
+After collecting data in the SimRa app (see \Cref{sec:simra} using the built-in motion sensors, data is preprocessed locally before upload to our backend servers.
 There, additional preprocessing steps are executed before the actual surface quality analysis.
 
 The parts of the preprocessing which reduce the amount of data need to be run on the edge to preserve user privacy and to reduce bandwidth consumption.
@@ -124,15 +124,15 @@ As a metric for the bumpiness of that cell, we use the average of all values -- 
 \section{Using Road Surface Quality Information}
 \label{sec:using_road_surface_quality_information}
 In this section, we describe how such surface quality results can be used.
-In \cref{subsec:routing_with_surface_quality}, we describe how we implement a navigation feature into the SimRa app that uses the road surface quality as an additional parameter in routing.
-We then show in \cref{subsec:output_data_and_visualization} how we can expose the output data of our pipeline to city administrators.
+In \Cref{subsec:routing_with_surface_quality}, we describe how we implement a navigation feature into the SimRa app that uses the road surface quality as an additional parameter in routing.
+We then show in \Cref{subsec:output_data_and_visualization} how we can expose the output data of our pipeline to city administrators.
 
 
 \subsection{Routing with Surface Quality}
 \label{subsec:routing_with_surface_quality}
 With the surface quality scores calculated, it is possible to provide a route planning feature, where not only distance and time are considered, but also the surface quality.
 The main question here is how much the surface quality should be weighed when calculating the best route from A to B or rather what detour lengths are acceptable.
-We decided to give the user the opportunity to influence this factor with the usage of a slider, that can be set between 0 for not considering surface quality in the routing and 10 for the highest importance of the surface quality (\cref{fig:routing}).
+We decided to give the user the opportunity to influence this factor with the usage of a slider, that can be set between 0 for not considering surface quality in the routing and 10 for the highest importance of the surface quality (\Cref{fig:routing}).
  \begin{figure}
     \centering
     \includegraphics[width=0.7\columnwidth]{fig/routing_settings_2.png}
@@ -156,7 +156,7 @@ It contains the cells with a surface area of 10m² in a grid as \codeword{Featur
 A visualization of the output file showing the surface quality of the boxes when hovering over them with the mouse cursor. Color coding is based on the average value.}%
     \label{fig:visualization}
 \end{figure}
-With such an output file, it is very easy to create a simple visualization\footnote{https://simra-project.github.io/surfaceQuality/Berlin.html}, e.g., with Leaflet\footnote{https://leafletjs.com/}, as depicted in \cref{fig:visualization}.
+With such an output file, it is very easy to create a simple visualization\footnote{https://simra-project.github.io/surfaceQuality/Berlin.html}, e.g., with Leaflet\footnote{https://leafletjs.com/}, as depicted in \Cref{fig:visualization}.
 Using a visualization like this, also non-tech-savvy users can easily monitor the bicycle road surface quality of a large area and take action where needed.
 
 
@@ -168,8 +168,8 @@ Based on the intuition that different surface types will also be partially corre
 To also show the limitations of our approach, we then explored the dataset and manually picked four additional spots where our approach appears to have returned the wrong results.
 Each evaluated section has a surface area of 10 m² and to compare them to each other we analyze their mean, median, and standard deviation values.
 
-We first describe the clear results from the first group (\cref{subsec:sections_with_clear_results}).
-Afterwards, we categorize the additional four ``problem spots'' as mixed results (\cref{subsec:sections_with_mixed_results}) or seemingly incorrect results (\cref{subsec:sections_with_seemingly_confusing_results}).
+We first describe the clear results from the first group (\Cref{subsec:sections_with_clear_results}).
+Afterwards, we categorize the additional four ``problem spots'' as mixed results (\Cref{subsec:sections_with_mixed_results}) or seemingly incorrect results (\Cref{subsec:sections_with_seemingly_confusing_results}).
 
 
 \subsection{Sections with Clear Results}
@@ -178,7 +178,7 @@ We evaluate at least one example for each of the following surface types, which 
 We chose the sections in a way that (i) asserted that we have sufficient data for them and (ii) to cover all different surface types.
 After filtering based on these criteria, we randomly picked four sections.
 
-\cref{tab:clear} and \cref{fig:clear} show the results of the surface quality analysis of the selected sections with very clear and intuitive results.
+\Cref{tab:clear} and \Cref{fig:clear} show the results of the surface quality analysis of the selected sections with very clear and intuitive results.
 
 \begin{figure}
     \centering
@@ -193,7 +193,7 @@ It can be observed, that the aforementioned list of surface types, which was sor
 A newly maintained asphalt section in \textit{Straße des 17. Juni} has a nearly perfect score, which means that its surface quality was in the top 20\% in almost all rides crossing this section.
 Followed by that are two sections with flat paving stones and fine gravel as their surface type, which have very similar results.
 This means, that both flat paving stones and fine gravel have comparable surface quality in terms of bumpiness from the perspective of a cyclist.
-However, it should be noted, that fine gravel can be less favorable in areas with a lot of precipitation (more on that in \cref{sec:discussion_cyclequality}).
+However, it should be noted, that fine gravel can be less favorable in areas with a lot of precipitation (more on that in \Cref{sec:discussion_cyclequality}).
 Not very surprisingly, the \textit{Liebauer Straße} has very bad surface quality scores, since it is paved with cobblestones and has very busy sidewalks with restaurants and cafes, which prevent cyclists from (illegaly) cycling there instead of on the street.
 
 \begin{table}%
@@ -217,7 +217,7 @@ Liebauer Straße      & Cobblestones  & 52.509132,13.453806 & 4.15 & 4      & 1.
 
 \subsection{Sections with Mixed Results}
 \label{subsec:sections_with_mixed_results}
-While most results are intuitive, e.g., new bicycle roads paved with asphalt and separated from the motorized vehicle traffic having very good surface conditions, some other sections (see \cref{fig:mixed}) seem confusing at the first glance.
+While most results are intuitive, e.g., new bicycle roads paved with asphalt and separated from the motorized vehicle traffic having very good surface conditions, some other sections (see \Cref{fig:mixed}) seem confusing at the first glance.
 
 \begin{figure}
     \centering
@@ -248,7 +248,7 @@ Kaiserin-Augusta-Allee      & Asphalt  & 52.524429,13.327253 & 2.17 & 2      & 1
 }
 \end{table}
 
-In \textit{Invalidenstraße}, there are a bus lane, a bus stop, and an on-curb bike lane (see \cref{fig:invaliden}).
+In \textit{Invalidenstraße}, there are a bus lane, a bus stop, and an on-curb bike lane (see \Cref{fig:invaliden}).
 Most bus lanes in Berlin can be legally used by cyclists, however, some cyclist may still prefer the relatively bumpy bike lane.
 \begin{figure}
     \centering
@@ -268,7 +268,7 @@ Both directions, however, regularly end up in the same 10x10m box as the street 
 \subsection{Sections with (Seemingly) Confusing Results}
 \label{subsec:sections_with_seemingly_confusing_results}
 There are also sections where the surface quality result seem to be completely wrong, when compared to the OSM surface type labels.
-\Cref{tab:mismatch} shows two sections, that are -- according to OSM -- paved with cobblestones and without separate bike lanes, but with very good results, which is confirmed by the PDFs depicted in \cref{fig:mismatched}.
+\Cref{tab:mismatch} shows two sections, that are -- according to OSM -- paved with cobblestones and without separate bike lanes, but with very good results, which is confirmed by the PDFs depicted in \Cref{fig:mismatched}.
 
 \begin{figure}
     \centering
@@ -280,7 +280,7 @@ There are also sections where the surface quality result seem to be completely w
 \end{figure}
 
 The possibility, that this section has a wrong label and is in fact, not paved with cobblestones may come to mind.
-However, as \cref{fig:sidewalk} reveals, both streets are indeed paved with cobblestones.
+However, as \Cref{fig:sidewalk} reveals, both streets are indeed paved with cobblestones.
 
 \begin{figure*}[t]
     %\vspace{-3em}
@@ -301,7 +301,7 @@ First, the cobblestones on the streets make it very unpleasant for cyclists to c
 Second, the sidewalks are wide, quiet, and paved with large flat-surfaced paving stones.
 Third, the streets are contested by parking cars, or by cars searching for a parking spot, service vehicles, construction vehicles, etc. which will often block cyclists and also create safety hazards.
 Considering these circumstances, it is not surprising to see good surface quality values in these two and other similar streets as cyclists are likely to (illegaly) use the sidewalks instead.
-In fact, photos on Apple Maps (not included in this paper) actually show cyclists using the sidewalk instead.
+In fact, photos on Apple Maps (not included in this chapter) actually show cyclists using the sidewalk instead.
 
 \begin{table}%
 \centering
@@ -322,15 +322,15 @@ Goethestraße       & Cobblestone & 52.508889,13.308333 & 1    & 1      & 0\\%
 
 \section{Discussion}
 \label{sec:discussion_cyclequality}
-Overall, the results presented in this paper show, that our approach can derive surface quality information using data recorded in the SimRa app.
+Overall, the results presented in this chapter show, that our approach can derive surface quality information using data recorded in the SimRa app.
 Nevertheless, it still has a number of limitations which we discuss in this section.
-Note that we also discuss some limitations in \cref{cha:discussion_and_outlook}, that may also apply to this approach.
+Note that we also discuss some limitations in \Cref{cha:discussion_and_outlook}, that may also apply to this approach.
 
 
 \subsection{Behavior of Cyclists}
 \label{subsec:behavior_of_cyclists}
 Due to the GPS inaccuracy, it is impossible to identify whether a cyclist used the actual road or the sidewalk.
-For instance, as discussed in the previous section, \cref{fig:sidewalk} showing \textit{Straßburger Straße} in Berlin, would be expected to have poor results but in fact has surprisingly good values.
+For instance, as discussed in the previous section, \Cref{fig:sidewalk} showing \textit{Straßburger Straße} in Berlin, would be expected to have poor results but in fact has surprisingly good values.
 We believe that this is due to cyclists illegaly using the smooth sidewalk instead of the bumpy road.
 
 Furthermore, cyclists will in practice also avoid the worst potholes and similar bumps if possible, i.e., these will usually be missing from our analysis.
@@ -390,7 +390,7 @@ Cities all over the world aim to increase the modal share of bicycle traffic, e.
 Aside from safety, a key influence factor for this is comfort, particularly in the form of the surface quality of cycling infrastructure.
 Monitoring the surface quality manually, however, is infeasible due to the dimensions of such infrastructure.
 
-In this paper, we proposed a crowdsourcing approach in which cyclists record their daily rides using a smartphone app and the phone's built-in motion sensors.
+In this chapter, we proposed a crowdsourcing approach in which cyclists record their daily rides using a smartphone app and the phone's built-in motion sensors.
 We proposed a data processing pipeline that starts on the edge (i.e., the phone) and ends in a cloud backend.
 Furthermore, we showed that our crowdsourcing approach can indeed derive surface quality and implemented two use cases for using such data.
 

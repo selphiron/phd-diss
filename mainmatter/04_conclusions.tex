@@ -1,24 +1,24 @@
 \vspace*{\fill}
 In this closing part, we conclude our work.
-We do this by first giving a summary of our three main contributions in \cref{cha:summary}: (i) The SimRa platform along with the mechanism to automatically derive incidents, (ii) an approach to derive road surface quality from smartphone-based \ac{imu} data and its integration into SimRa, and (iii) the derivation of a more realistic cyclist simulation for the traffic simulation software \ac{sumo}.
-In the last \cref{cha:discussion_and_outlook}, we discuss the general constraints of our work and give an outlook on future work.
+We do this by first giving a summary of our three main contributions in \Cref{cha:summary}: (i) The SimRa platform along with the mechanism to automatically derive incidents, (ii) an approach to derive road surface quality from smartphone-based \ac{imu} data and its integration into SimRa, and (iii) the derivation of a more realistic cyclist simulation for the traffic simulation software \ac{sumo}.
+In the last \Cref{cha:discussion_and_outlook}, we discuss the general constraints of our work and give an outlook on future work.
 \vspace*{\fill}
 \chapter{Summary}
 \label{cha:summary}
 Increasing the modal share of bicycle traffic comes with a plethora of benefits.
 The reduction of greenhouse gas emissions has a positive impact both locally and globally.
 The air, especially in urban areas, gets more clean and this comes with a higher quality of living and lower medical problems.
-The decrease in greenhouse gas emissions also slow down the global climate crisis, which is one of the main challenges of the 21st century.
-Another benefit of an increase of bicycle traffic is, is that bicycle infrastructure needs less space than car infrastructure.
+The decrease in greenhouse gas emissions also slows down the global climate crisis, which is one of the main challenges of the 21st century.
+Another benefit of an increase in bicycle traffic is, is that bicycle infrastructure needs less space than car infrastructure.
 In many cities, a lack of space leads to a housing crisis and less space for car infrastructure means more space for housing, which in turn can decrease the severity of the housing crisis.
 These are just some benefits of increasing the modal share of bicycle traffic, which is why both government agencies and citizens want to boost cycling as a means to commute.
-However, we identified these problems in \cref{sec:problem} of \cref{cha:introduction}:
+However, we identified these problems in \Cref{sec:problem} of \Cref{cha:introduction}:
 
 \begin{itemize}
-\item While there are accident statistics with bicycle accidents, there are no information about incidents.
+\item While there are accident statistics for bicycle accidents, there is no information about incidents.
 This information is needed, however, to understand where and why incidents accumulate in bicycle traffic.
 Knowing where and why incidents accumulate, city planners can initiate changes in the infrastructure to make cycling more safe and attractive, since safety concerns are one of the main reasons for people not to cycle or to cycle less than they would want to.
-Even without any changes to the infrastructure, cyclists can circumvent the dangerous spots or be more vigilant while passing trough them, if they know about them.
+Even without any changes to the infrastructure, cyclists can circumvent the dangerous spots or be more vigilant while passing through them, if they know about them.
 However, gathering this information the traditional way, with surveys and studies is expensive and difficult to do right, so a possible solution needs to be easy and resource-saving to implement.
 \item Similar to safety concerns, a lack of comfort is also detrimental to cycling.
 Cycling comfort is heavily influenced by the quality of the cycling infrastructure, especially the surface quality thereof.
@@ -27,9 +27,9 @@ So, an efficient means of measuring the road surface quality of cycling infrastr
 Since changes to traffic infrastructure are expensive to undertake, these changes need to be planned thoroughly and for changes to be approved by the administration, they need to be sure, that the changes will in fact improve the traffic situation as desired.
 This is where traffic simulation software can be used.
 The new infrastructure can be modeled and, with a realistic simulation, it can be compared to the current state, to see any improvements.
-A realistic cyclist simulation model is crucial for that, since the insights won't be representative otherwise.
+A realistic cyclist simulation model is crucial for that since the insights won't be representative otherwise.
 However, creating cyclist simulation models is complex, since it is not very easy to obtain the relevant data for that.
-This arises the need for an approach using existing data to derive realistic cycling models off of it.
+This raises the need for an approach using existing data to derive realistic cycling models from it.
 \end{itemize}
 
 To address these three problems, we presented one solution for each of them in our work:
@@ -37,51 +37,51 @@ To address these three problems, we presented one solution for each of them in o
 \begin{itemize}
 \item We created \textit{SimRa}, a platform for detecting hazardous hotspots in bicycle traffic.
 SimRa uses a crowdsourcing approach, where users of a smartphone application record their cycling trips and after each trip give detailed information about incidents that happened during the ride.
-They can then upload their ride, which is a time series containing the GPS trace, as well as \ac{imu} data, together with the incidents, if any happened during the ride.
-In fact, the SimRa project can even be considered as a Citizen Science project.
+They can then upload their ride, which is a time series containing the GPS trace, as well as \ac{imu} data, together with the incidents if any happened during the ride.
+In fact, the SimRa project can even be considered a Citizen Science project.
 Since remembering every incident and its specifics during a ride is a difficult task for the user, we implemented a feature to automatically detect incidents using a \ac{dl} model called \textit{CycleSense}.
-\textit{CycleSense} can confidently propose exact locations long the cycling trip where an incident might have happened, which makes the reporting of the incidents easier for the users.
+\textit{CycleSense} can confidently propose exact locations along the cycling trip where an incident might have happened, which makes the reporting of the incidents easier for the users.
 This, in turn, helps to record every incident that occurred during a ride without forgetting one and due to a better user experience event contributes to a higher user count and thus more representative data. 
-With the SimRa dataset, city planners have an important information source where they need to focus their attention to, when working to improve the bicycle safety of their area of responsibility.
-On the other hands, citizens can use the data to increase pressure on the policy makers to act and to improve the situation for cyclists.
+With the SimRa dataset, city planners have an important information source where they need to focus their attention when working to improve bicycle safety in their area of responsibility.
+On the other hand, citizens can use the data to increase pressure on the policymakers to act and to improve the situation for cyclists.
 Additionally, they can inform themselves about the dangerous locations in bicycle traffic and avoid them.
 \item We developed an approach to derive the road surface quality from cycling trip data, that contains GPS and \ac{imu} data readings.
-Notably, we designed our approach, so that it can easily be integrated in any preexisting solution or dataset containing cycling trip data, fulfilling the requirements mentioned before.
-We also have shown how we integrated this approach to \textit{SimRa} and created a visualization of the results.
+Notably, we designed our approach, so that it can easily be integrated into any preexisting solution or dataset containing cycling trip data, fulfilling the requirements mentioned before.
+We also have shown how we integrated this approach into \textit{SimRa} and created a visualization of the results.
 With this information, the transportation department can easily track the state of their bicycle infrastructure and organize the maintenance in a more efficient way.
 Also, have more information to plan their cycling trips.
 \item We improved the cyclist simulation model of \ac{sumo}.
 We did this by first examining the lateral movement and intersection behavior of cyclists with the SimRa dataset and comparing it with the cyclist simulation model that was already in \ac{sumo}. 
 Our analysis has shown, that \ac{sumo}'s cyclist model is very unrealistic, which is hardly surprising, considering the fact, that \ac{sumo} simulates cyclists either as fast pedestrians or slow cars.
-We then inferred the three different cyclist types \textit{slow}, \textit{medium} and \textit{fast} by splitting  the rides of the SimRa dataset into three parts by their speed.
-For each subset, we calculated the acceleration, deceleration, maximum velocity distributions, as well as their left-turn behavior at intersections.
-We implemented our findings as \ac{sumo} plugins, so that users can use them in their simulations.
+We then inferred the three different cyclist types \textit{slow}, \textit{medium}, and \textit{fast} by splitting  the rides of the SimRa dataset into three parts by their speed.
+For each subset, we calculated the acceleration, deceleration, and maximum velocity distributions, as well as their left-turn behavior at intersections.
+We implemented our findings as \ac{sumo} plugins so that users can use them in their simulations.
 With that, city planners, e.g., can use three different cyclist types, which are all more realistic than the default cyclist model of \ac{sumo}.
 In doing so, they can better plan the way they want to change the bicycle infrastructure. 
 \end{itemize}
 
-This thesis consists of three parts. \Cref{part:foundations}, Foundations, begins with an introduction into the topic, a motivation of this thesis, the problem statements, as well as the structure.
+This thesis consists of three parts. \Cref{part:foundations}, Foundations, begins with an introduction to the topic, the motivation of this thesis, the problem statements, as well as the structure.
 
 \Cref{part:contributions}, Improving Safety in Bicycle Traffic, contains all of our main contributions.
-In \cref{cha:cyclesense} we introduced \textit{SimRa}, a platform for gathering cycling trip and incident data, as well as our approach to automatically detect incidents from \ac{imu} data from cycling trips, called \textit{CycleSense}.
-We then presented an approach to derive road surface quality from bicycle trip data in \cref{cha:cyclequality}.
-There, we also showed how to integrate our approach in an existing cycling trip recording app by integrating the approach into \textit{SimRa} and how the results can be visualized.
-In \cref{cha:sumo}, which is the last chapter of \cref{part:contributions}, we showed how we extract parameters for acceleration, deceleration and velocity of cyclists, as well as their left-turn behavior at intersections.
+In \Cref{cha:cyclesense} we introduced \textit{SimRa}, a platform for gathering cycling trip and incident data, as well as our approach to automatically detect incidents from \ac{imu} data from cycling trips, called \textit{CycleSense}.
+We then presented an approach to derive road surface quality from bicycle trip data in \Cref{cha:cyclequality}.
+There, we also showed how to integrate our approach into an existing cycling trip recording app by integrating the approach into \textit{SimRa} and how the results can be visualized.
+In \Cref{cha:sumo}, which is the last chapter of \Cref{part:contributions}, we showed how we extract parameters for acceleration, deceleration, and velocity of cyclists, as well as their left-turn behavior at intersections.
 We also showed, how we implement our findings as a plugin for \ac{sumo}.
 \Cref{cha:cyclesense,cha:cyclequality,cha:sumo} are structured very similarly.
 They start with a brief introduction, continue with background information, a description, an evaluation, a discussion of the approach, and end with an overview of alternative approaches and a conclusion.
 
-In \cref{part:conclusions}, Conclusions, we concluded this thesis with a summary in \cref{cha:summary} and a discussion of our work and and outlook for future work in \cref{sec:outlook}.
+In \Cref{part:conclusions}, Conclusions, we concluded this thesis with a summary in \Cref{cha:summary} a discussion of our work, and an outlook for future work in \Cref{sec:outlook}.
 \chapter{Discussion and Outlook}
 \label{cha:discussion_and_outlook}
-In this chapter, we discuss limitations of our approach and give an outlook for future work.
-While we discuss the limitations of each contribution in their respective chapters in \cref{part:contributions}, there are some limitations, that they share, which we collect here.
+In this chapter, we discuss the limitations of our approach and give an outlook for future work.
+While we discuss the limitations of each contribution in their respective chapters in \Cref{part:contributions}, there are some limitations, that they share, which we collect here.
 This chapter contains partially adapted material published in \cite{karakaya2020simra,karakaya2022cyclesense,karakaya2022realistic,karakaya2023achieving,karakaya2023crowdsensing}.
 
 \section{Limitations of Crowdsourced Data}
 \label{sec:limitations_of_crowdsourced_data}
 Crowdsourced data are generally noisy which could contribute to a reduced model performance.
-They do also contain several biases, e.g., the Selection Bias, Device Positioning Bias, Extreme Aversion Bias, or Confirmation Bias~\cite{basiri2019crowdsourced, chakraborty2017makes, kahneman1991anomalies}.
+They also contain several biases, e.g., Selection Bias, Device Positioning Bias, Extreme Aversion Bias, or Confirmation Bias~\cite{basiri2019crowdsourced, chakraborty2017makes, kahneman1991anomalies}.
 In this context, the heterogeneity across devices and platforms is likely another factor of influence.
 As already described, the application that is used by contributors to record their rides is available on two platforms. 
 Those platforms are supported by a wide range of different devices and models with different hardware inside. 
@@ -89,18 +89,18 @@ Phone manufacturers use different \ac{gps}, gyroscope, and accelerometer sensors
 Stisen et al.~\cite{stisen2015smart} have shown that there is major heterogeneity when it comes to the accuracy of sensor readings. 
 While the main focus of that study was on accelerometer data, Kuhlmann et al.~\cite{kuhlmann2021smartphone} have shown that orientation sensor data is also affected by this variability.
 \subsection*{Implications for Gathering Cycling Trip Data and Detecting Incidents}
-This is in contrast to the \ac{har} tasks, we compare our task to in \cref{cha:cyclesense}.
+This is in contrast to the \ac{har} tasks, we compare our task to in \Cref{cha:cyclesense}.
 The \ac{har} data set~\cite{anguita2013public} was generated under laboratory conditions that always used the same smartphone type body mounted to the exact same position on selected study participants.
 This significantly simplifies the classification task.
 Another factor that contributes to the issue of noisy crowdsourcing data in the SimRa data set is the fact that some users misinterpret the purpose of the SimRa app.
 Instead of labeling incidents, they report, e.g., dangerous areas or annoying traffic lights.
 These can of course not be captured by the sensors used.
 Many such ``incidents'' can be identified through the comment column of the data set.
-It should also be noted that the SimRa data set was not recorded and labeled with the goal of developing ML models -- the goal was to record data which will be analyzed and processed by humans.
+It should also be noted that the SimRa data set was not recorded and labeled with the goal of developing ML models -- the goal was to record data that will be analyzed and processed by humans.
 
 \subsection*{Implications for Deriving Road Surface Quality from Cycling Trip Data}
-Heterogeneous \ac{imu} data poses also a challenge when deriving road surface quality, as we do in \cref{cha:cyclequality}.
-This comes from the fact that different smartphone models have different GPS modules and motions sensors, which leads to the problem that a road can be very smooth according to one smartphone and very rough according to another.
+Heterogeneous \ac{imu} data poses also a challenge when deriving road surface quality, as we do in \Cref{cha:cyclequality}.
+This comes from the fact that different smartphone models have different GPS modules and motion sensors, which leads to the problem that a road can be very smooth according to one smartphone and very rough according to another.
 This problem is further aggravated by the wide range of different bicycle types, e.g., racing bicycles or mountain bikes, which in turn also heavily influence the vibrations the smartphone can sense.
 To solve these problems, we rely on the \textit{law of large numbers} and compare how a section's surface quality was relative to the ride. 
 
@@ -124,7 +124,7 @@ The achieved \ac{auc} \ac{roc} for uncleaned newer Android data was 0.870, while
 	\label{fig:emp-measurements}
 \end{figure}
 
-Aside from that, the moving average that is used in the SimRa app to condense the data and comply to users' upload volume constraints~\cite{karakaya2020simra} reduces the amplitude and shifts the exact point in time of incidents and other events.
+Aside from that, the moving average that is used in the SimRa app to condense the data and comply with users' upload volume constraints~\cite{karakaya2020simra} reduces the amplitude and shifts the exact point in time of incidents and other events.
 This has the effect that incidents and non-incidents are hard to distinguish as illustrated in Figure~\ref{fig:heavy-vs-normal-braking}.
 Both these factors could hurt the model's ability to classify incidents correctly based on the data.
 It is important to acknowledge that this issue becomes less severe when the sampling frequency is higher, as it is the case for the older Android data.
@@ -148,20 +148,20 @@ It is important to acknowledge that this issue becomes less severe when the samp
 
 \subsection*{Implications for Gathering Cycling Trip Data and Detecting Incidents}
 A higher resolution of data points would allow us to develop a more sophisticated measurement approach.
-This would, however, further increase the disk space, memory, battery and bandwidth usage of the SimRa app and as we have shown in \cref{sec:evaluation_cyclequality}, the surface quality we derive are sufficiently precise for our intended use cases.
+This would, however, further increase the disk space, memory, battery, and bandwidth usage of the SimRa app, and as we have shown in \Cref{sec:evaluation_cyclequality}, the surface quality we derive is sufficiently precise for our intended use cases.
 
 \section{Outlook}
 \label{sec:outlook}
 A promising direction for future work is to explore the relationship between incidents and traffic infrastructure.
 Since the \textit{SimRa} dataset contains incidents with their location and incident type, it might be possible to find out which conditions dangerous spots in traffic have in common.
 E.g., it seems apparent that a narrow street without a protected bicycle lane would have a high risk for close passes.
-But such an analysis could reveal far more subtle connections between a certain traffic infrastructure characteristic and an incident type.
+However, such an analysis could reveal far more subtle connections between a certain traffic infrastructure characteristic and an incident type.
 
-Similarly, climate and weather conditions can have an impact on the frequency and type of incidents, which also poses to be a promising topic.
+Similarly, climate and weather conditions can have an impact on the frequency and type of incidents, which also poses a promising topic.
 Since the \textit{SimRa} dataset contains timestamps of the rides and incidents, the weather information can be considered to see if there are any correlations.
-E.g., a stormy weather, that impacts the perception of car drivers, could lead them to not see cyclists and thus make a right-turn, cutting the cyclists behind them, that wanted to cycle straight forward.
+E.g., stormy weather, which impacts the perception of car drivers, could lead them to not see cyclists and thus make a right-turn, cutting the cyclists behind them, that wanted to cycle straight forward.
 
 While we developed and provide visualizations\footnote{https://simra-project.github.io/dashboard/} showing the results of the \textit{SimRa} project, further tools can be developed to analyze the dataset in an intuitive manner.
-In fact, the cities of Walldorf and Wiesloch, as well as the municipalities Zeuthen, Eichwalde and Schulzendorf approached us with a request to develop tools with advanced analysis features for the \textit{SimRa} dataset.
+In fact, the cities of Walldorf and Wiesloch, as well as the municipalities Zeuthen, Eichwalde, and Schulzendorf approached us with a request to develop tools with advanced analysis features for the \textit{SimRa} dataset.
 This also shows that the \textit{SimRa} project is considered and used by administration bodies to improve the state of their bicycle traffic.
  
