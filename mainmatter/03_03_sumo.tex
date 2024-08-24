@@ -115,7 +115,7 @@ We have chosen against an equal split and in favor of a \num{25}\%-\num{50}\%-\n
   \centering
     \includegraphics[width=0.7\columnwidth]{fig/analysis_avg_velo_all.pdf}
     \caption{%
-        Histogram of the empirical average velocity capabilities of cyclists found in the SimRa dataset. The average velocity of all bicycle rides after the preprocessing is \SI{4.38}{\metre\per\second} with a standard deviation of \num{0.89} and a median of \SI{4.42}{\metre\per\second}.
+        Histogram of the empirical average velocity capabilities of cyclists found in the SimRa dataset. The average velocity of all cycling trips after the preprocessing is \SI{4.38}{\metre\per\second} with a standard deviation of \num{0.89} and a median of \SI{4.42}{\metre\per\second}.
     }%
     \label{fig:analysis_avg_vel_all}
 \end{figure}
@@ -147,9 +147,9 @@ Then, we consider only segments with a distance from \SI{20}{\metre} to \SI{350}
 We also make sure to filter out segments where the variance in velocity is too low, i.e., such that $ \frac{|v_{s} - v_{e}|}{max(v_{s},v_{e})} > 0.5 $, where $v_{s}$ and $v_{e}$ are the velocities at the start and end of a segment.
 With that approach we found \num{228347} acceleration maneuvers in the cleaned dataset.
 Distribution fitting processes, which were done with SciPy\footnote{https://scipy.org/}, showed that the Burr (Type XII) distribution~\cite{burr1942cumulative} $Burr12(x; c,d) = c*d*\frac{x^{c-1}}{(1+x^c)^{d+1}}$ for $x = a_{max} \geq 0$ and $c,d > 0$  fits the data best for the general cyclist model (see also \Cref{fig:analysis_max_acceleration_dist_fit_all}).
-For the models of the slow and fast cyclist models, the Burr (Type III) distribution~\cite{burr1942cumulative} 
+For the models of the slow and fast cyclist models, the Burr (Type III) distribution~\cite{burr1942cumulative}
 
-$Burr3(x; c,d) = c*d*\frac{x^{-c-1}}{(1+x^c)^{d+1}}$ for $x = a_{max} \geq 0$ and $c,d > 0$ fits the data best, while the Mielke Beta-Kappa distribution~\cite{mielke1973distribution} 
+$Burr3(x; c,d) = c*d*\frac{x^{-c-1}}{(1+x^c)^{d+1}}$ for $x = a_{max} \geq 0$ and $c,d > 0$ fits the data best, while the Mielke Beta-Kappa distribution~\cite{mielke1973distribution}
 
 $M\beta\kappa(x; c,d) = \frac{k*x^{k-1}}{(1+x^s)^{1+k/s}}$ for $x = a_{max} > 0$ and $k,s > 0$ is the best fit for the medium cyclist model's acceleration distribution (see also \Cref{fig:analysis_max_acceleration_dist_fit_groups}).
 
@@ -194,7 +194,7 @@ Furthermore, the empirical distributions are rather wide, indicating a broad var
 % \___ \| | | | |\/| | | | | \ \ / / __|   \___ \| | '_ ` _ \| |_) / _` |
 %  ___) | |_| | |  | | |_| |  \ V /\__ \_   ___) | | | | | | |  _ < (_| |
 % |____/ \___/|_|  |_|\___/    \_/ |___(_) |____/|_|_| |_| |_|_| \_\__,_|
-                                                                        
+
 \begin{figure*}
     %\vspace{-3em}
     \centering
@@ -290,7 +290,7 @@ For this, we use the distributions derived in \Cref{subsec:left-turn_behavior_at
 Users, however, can adjust the distributions if desired or needed for their specific purposes (see also the exception cases in \Cref{subsec:left-turn_behavior_at_intersections_preprocessing}).
 
 In order to simplify the process and to improve performance, we decided to integrate this feature into the \ac{sumo} core.
-The implementation provides a new parameter that lets the user adjust the indirect left turn probability of a bicycle ride.
+The implementation provides a new parameter that lets the user adjust the indirect left turn probability of a cycling trip.
 To detail the workflow, the cyclist makes a decision before each intersection, where there is at least one direct and indirect left-turn available to choose from.
 This delegates decisions inside \ac{sumo} just by using the bicycle vehicle type parameter.
 
