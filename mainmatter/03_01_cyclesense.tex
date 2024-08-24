@@ -625,7 +625,7 @@ Detecting these shifts \cite{polyzotis_data_2018, rabanser_failing_2018, breck_d
 Some approaches aim at model specific improvements to alleviate data set shift \cite{sugiyama_machine_2012}. These approaches have a decisive disadvantage, most of these approaches only work for one model class and require access to the inner workings of the ML pipeline, often after the feature extraction step.
 More promising and easier to build and maintain are model agnostic solutions that focus on the data, rather than the models, to detect and counteract data set shifts \cite{biessmann_automated_2021}.
 Extending the training data sets to account for all variation and shifts in the data that the ML model should be invariant to, often called \textit{augmentation}, is a popular and effective way of counteracting data set shift, see for instance \cite{cubuk_autoaugment_2019}.
-In our work we follow this line of thought of a data centric AI approach.
+In our work, we follow this line of thought of a data-centric AI approach.
 
 
 \section{Alternative Approaches}
@@ -644,7 +644,7 @@ Unsurprisingly, bicycles crossing bus lanes can cause slight delays for the buse
 
 In addition, Kobana et al.~\cite{kobana2014detection} focus on the detection of road damage via smartphone data, and Candefjord et al.~\cite{candefjord2014using} evaluate the development of a crash detection algorithm for cycling accidents.
 
-Most closely related to our work, Aldred and Goodman~\cite{aldred2018predictors} analyze near-miss incidents using road diaries of cyclists and our previous work~\cite{karakaya2020simra} proposed the SimRa platform as well as the heuristic for detecting (near-miss) incidents.
+Most closely related to our work, Aldred and Goodman~\cite{aldred2018predictors} analyze near-miss incidents using road diaries of cyclists.
 A first extension of our own detection approach~\cite{sanchez2020detecting} developed an \ac{ann} to solve the problem of incident detection on the SimRa data set.
 While offering some improvement over the original heuristic, CycleSense clearly outperforms that approach.
 Furthermore, Ibrahim et al.~\cite{ibrahim2021cycling} discuss the potential of detecting incidents using image and video data in combination with computer vision techniques.
@@ -663,10 +663,13 @@ Yao et al.\ \cite{yao2017deepsense} use a combination of \acp{rnn} and \acp{cnn}
 \label{sec:summary_cyclesense}
 An increased modal share of bicycles is necessary for solving emission and traffic related urban problems.
 A key challenge for this, is the lack of (perceived) safety for cyclists.
-Improving the situation requires detailed insights into safety levels of street segments -- the SimRa platform~\cite{karakaya2020simra} has been proposed as a data collecting mechanism for incidents and cycling tracks.
+Improving the situation requires detailed insights into safety levels of street segments -- the SimRa platform has been proposed as a data collecting mechanism for incidents and cycling tracks.
 While this is an important step towards data collection, the platform relies on manual annotation of tracks which limits the number of potential users.
 
-In this chapter, we have proposed CycleSense -- a model for automatic detection of such incidents.
+In this chapter, we have proposed SimRa -- a Citizen Science project and a crowdsourcing platform for collecting records of cycling trips and incidents in bicycle traffic and CycleSense -- a model for automatic detection of such incidents.
+
+SimRa is being used by cyclist to create a cycling trip record dataset, that includes the GPS trace, motion sensor readings and incident details of the trips in form of time series.
+
 Using the SimRa data set, we have shown that CycleSense is capable of detecting incidents on the basis of accelerometer and gyroscope time series data in a real-world scenario.
 It can correctly distinguish between an incident and a non-incident with a probability of up to 90.5\%.
 We have also compared it to the heuristic currently used in the SimRa platform and an existing \ac{fcn} that was specifically developed for SimRa.
