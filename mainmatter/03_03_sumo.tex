@@ -1,4 +1,4 @@
-\chapter{Creating a Realistic Cyclist Model out of Bicycle Ride Data}
+\chapter{Creating a Realistic Cyclist Model out of Cycling Trip Data}
 \label{cha:sumo}
 In this chapter, we describe how we created a realistic cyclist model out of the SimRa dataset for \ac{sumo}.
 The main idea is, to deduce the lateral movement specifications, i.e. acceleration, deceleration and maximum velocity, as well as the left-turn behavior at intersections of cyclists by analyzing the SimRa dataset and adapting it to \ac{sumo}.
@@ -115,7 +115,7 @@ We have chosen against an equal split and in favor of a \num{25}\%-\num{50}\%-\n
   \centering
     \includegraphics[width=0.7\columnwidth]{fig/analysis_avg_velo_all.pdf}
     \caption{%
-        Histogram of the empirical average velocity capabilities of cyclists found in the SimRa dataset. The average velocity of all bicycle rides after the preprocessing is \SI{4.38}{\metre\per\second} with a standard deviation of \num{0.89} and a median of \SI{4.42}{\metre\per\second}.
+        Histogram of the empirical average velocity capabilities of cyclists found in the SimRa dataset. The average velocity of all cycling trips after the preprocessing is \SI{4.38}{\metre\per\second} with a standard deviation of \num{0.89} and a median of \SI{4.42}{\metre\per\second}.
     }%
     \label{fig:analysis_avg_vel_all}
 \end{figure}
@@ -290,7 +290,7 @@ For this, we use the distributions derived in \Cref{subsec:left-turn_behavior_at
 Users, however, can adjust the distributions if desired or needed for their specific purposes (see also the exception cases in \Cref{subsec:left-turn_behavior_at_intersections_preprocessing}).
 
 In order to simplify the process and to improve performance, we decided to integrate this feature into the \ac{sumo} core.
-The implementation provides a new parameter that lets the user adjust the indirect left turn probability of a bicycle ride.
+The implementation provides a new parameter that lets the user adjust the indirect left turn probability of a cycling trip.
 To detail the workflow, the cyclist makes a decision before each intersection, where there is at least one direct and indirect left-turn available to choose from.
 This delegates decisions inside \ac{sumo} just by using the bicycle vehicle type parameter.
 

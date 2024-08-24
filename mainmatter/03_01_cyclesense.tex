@@ -103,7 +103,7 @@ For data acquisition we rely on an app installed on the smartphones of participa
 This app collects data and detects incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see \Cref{subsec:data_acquisition}).
 The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated trip statistics.
 Finally, we continuously process and analyze collected data to gain insights into dangerous street segments and intersections.
-For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection~\footnote{\url{https://simra-project.github.io/dashboard/}}.
+For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection~\footnote{https://simra-project.github.io/dashboard/}.
 
 \subsection{Data Acquisition}
 \label{subsec:data_acquisition}
@@ -115,7 +115,7 @@ While dedicated hardware has certain benefits, e.g., higher measurement precisio
     \caption{In the data acquisition process, collected data is manually annotated and anonymized before being uploaded to our backend servers.}
     \label{fig:data_acquisition_process}
 \end{figure}
-An example of this is the Radmesser project~\footnote{\url{https://interaktiv.tagesspiegel.de/radmesser/}} which built custom sensors to track close pass incidents.
+An example of this is the Radmesser project~\footnote{https://interaktiv.tagesspiegel.de/radmesser/} which built custom sensors to track close pass incidents.
 While the data quality is indeed rather high, the project was limited to a total of 100 cyclists (only partly in parallel).
 As a result, the project could not achieve full coverage of Berlin streets.
 For example, some incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single bicyle trip in the Radmesser data.
@@ -252,7 +252,7 @@ SimRa can clearly be considered a Citizen Science project, as it fulfills the Te
 \item While the benefits of the citizen scientists are not as apparent as the professional scientists, they also profit in the long run, if the project goal of improving bicycle traffic safety increases.
 \item While the citizen scientists' main task is to contribute cycling trip and incident data, they are free and encouraged to also participate in other stages of the scientific process.
 E.g., the dataset is published as open data and everyone can analyze the data for insights about traffic safety.
-\item We provide multiple channels for the citizen scientists to inform themselves about the progress of the project, such as through our social media account\footnote{\url{https://twitter.com/SimRa_App}} as well as a website\footnote{\url{https://simra-project.github.io/}}.
+\item We provide multiple channels for the citizen scientists to inform themselves about the progress of the project, such as through our social media account\footnote{\url{https://twitter.com/SimRa_App}} as well as a website\footnote{https://simra-project.github.io/}.
 \item In each of our published papers, as well as in this thesis, we point to possible limitations and biases (see \Cref{sec:discussion_cyclesense,sec:discussion_cyclequality,sec:discussion_sumo,sec:limitations_of_crowdsourced_data}). 
 \item We publish the SimRa dataset as open data~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3}
 \item While we don't mention any citizen scientists directly, since there would be too many, we make sure that it is obvious, that we rely on participating citizen scientists.
@@ -626,6 +626,27 @@ In our work we follow this line of thought of a data centric AI approach.
 
 \section{Alternative Approaches}
 \label{sec:related_work_cyclesense}
+In this section, we discuss related work starting with publications related to traffic safety (Section~\ref{subsec:trafficsafety}) before continuing with work regarding \acl{tsc} (Section~\ref{subsec:tsc}).
+
+\subsection{Traffic Safety\label{subsec:trafficsafety}}
+Studies on safety in bicycle traffic often rely on crowdsourcing, e.g., using Strava\footnote{https://www.strava.com/} as a data source.
+While the Strava data are heavily biased towards recreational trips, some studies rely on them for analyzing various aspects of safety in bicycle traffic, e.g.,~\cite{hochmair2019estimating,ferster2021strava}.
+Blanc and Figliozzi~\cite{blanc2016modeling, blanc2017safety} study the perceived comfort levels of cyclists based on routes taken.
+Wu et al.~\cite{wu2018predicting} predict perceived bicycle safety by combining data from, e.g., OpenStreetMap\footnote{https://www.openstreetmap.com/}, crime statistics, and parking volumes.
+Similarly, Yasmin and Eluru~\cite{yasmin2016latent} use various open data sources to characterize and provide estimates for bicycle safety in urban areas.
+He et al.~\cite{he2018detecting} analyze trajectories of a bike sharing service to detect events of illegally parked vehicles which frequently affect cycling safety.
+Figliozzi et al.~\cite{figliozzi2019evaluation} evaluate video recordings to identify safety and delay related problems in bicycle and bus traffic.
+Unsurprisingly, bicycles crossing bus lanes can cause slight delays for the buses.
+
+In addition, Kobana et al.~\cite{kobana2014detection} focus on the detection of road damage via smartphone data, and Candefjord et al.~\cite{candefjord2014using} evaluate the development of a crash detection algorithm for cycling accidents.
+
+Most closely related to our work, Aldred and Goodman~\cite{aldred2018predictors} analyze near-miss incidents using road diaries of cyclists and our previous work~\cite{karakaya2020simra} proposed the SimRa platform as well as the heuristic for detecting (near-miss) incidents.
+A first extension of our own detection approach~\cite{sanchez2020detecting} developed an \ac{ann} to solve the problem of incident detection on the SimRa data set.
+While offering some improvement over the original heuristic, CycleSense clearly outperforms that approach.
+Furthermore, Ibrahim et al.~\cite{ibrahim2021cycling} discuss the potential of detecting incidents using image and video data in combination with computer vision techniques.
+
+\subsection{\acl{tsc}}
+\label{subsec:tsc}
 One of the most common tasks for \ac{tsc} are Natural Language Processing, speech recognition, and audio recognition in general.
 Another field that deals with this problem is \acf{har} which is concerned with identifying the specific activity of a human based on sensory time series data.
 Time windows of a few seconds are classified into activity categories (e.g., walking, sitting, running, lying).
