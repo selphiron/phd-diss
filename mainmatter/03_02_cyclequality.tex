@@ -1,6 +1,6 @@
 \chapter{Deriving Road Surface Quality from Cycling Trip Data}
 \label{cha:cyclequality}
-In this chapter we present an approach for deriving the surface quality (or rather the lack of it), which can be measured as vibrations or bumps, using the \ac{imu} included in smartphones.
+In this chapter, we present an approach for deriving the surface quality (or rather the lack of it), which can be measured as vibrations or bumps, using the \ac{imu} included in smartphones.
 In the second step, we can then combine data from multiple rides to derive an estimate for the surface quality.
 This way, monitoring of surface quality can be automated to a high degree at little cost and the resulting data can be used for maintenance planning or surface quality-aware routing.
 Especially for highly frequented cycling tracks, surface quality problems can be detected quickly.
@@ -11,24 +11,25 @@ The latter is also an advantage because, unlike related approaches, which use a 
 This chapter contains material published in \cite{karakaya2023crowdsensing} with the following contributions:
 \begin{itemize}
 	\item We present a data processing pipeline for deriving surface quality which combines signal processing with geographical clustering techniques in the form of edge-based preprocessing on the phone and cloud analytics.
-	\item We describe how we integrate this data processing pipeline in the existing crowdsourcing project SimRa~\cite{karakaya2020simra}(see \Cref{sec:simra}) which previously only focused on incidents.
+	\item We describe how we integrate this data processing pipeline in the existing crowdsourcing project SimRa (See \ref{sec:simra}) which previously only focused on incidents.
 	\item We describe how the resulting data can be used to increase the comfort of cyclists through surface quality-aware routing and how the data can be exposed to city administrations.
 	\item We evaluate our approach by analyzing the SimRa dataset~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} and comparing its on-site conditions in eight streets with different surface quality.
 	\item We discuss to which degree our approach can automate surface quality monitoring and how additional sensors could possibly help to improve data quality.
 \end{itemize}
 
-We outlined this chapter as follows:
-In \Cref{sec:surface_quality_background} we give background information about the measurement of road surface quality.
-We then continue with \Cref{sec:scenarios_and_constraints}, where we clarify the scenarios and constraints of our approach.
-We explain our approach and how it is integrated into SimRa (see \Cref{sec:simra}) in \Cref{sec:data_processing_pipeline}.
-After that, we describe two ways in which the road surface quality information can be used in \Cref{sec:using_road_surface_quality_information}.
-We follow this up with an evaluation and discussion of our approach in \Cref{sec:evaluation_cyclequality} and \Cref{sec:evaluation_cyclequality} respectively.
-We conclude this chapter in \Cref{sec:summary_cyclequality} after giving an overview of alternative approaches in \Cref{sec:related_work_cyclequality}.
+The following outline details the structure of this chapter:
+
+First, we give background information about the measurement of road surface quality (\Cref{sec:surface_quality_background}).
+We then continue with the scenarios and constraints of our approach \Cref{sec:scenarios_and_constraints}.
+We explain our approach and how it is integrated into SimRa (\Cref{sec:data_processing_pipeline}).
+After that, we describe two ways in which the road surface quality information can be used (\Cref{sec:using_road_surface_quality_information}).
+We follow this up with an evaluation and discussion of our approach in \Cref{sec:evaluation_cyclequality} and \Cref{sec:discussion_cyclequality} respectively.
+We conclude this chapter (\Cref{sec:summary_cyclequality}) after giving an overview of alternative approaches (\Cref{sec:related_work_cyclequality}).
 
 \section{Road Surface Quality}
 \label{sec:surface_quality_background}
-Traffic departments frequently analyze the road surface quality to find out road segments that need to be repaired to increase the traffic safety.
-There are mainly three types of methods used for, which we briefly introduce here.
+Traffic departments frequently analyze the road surface quality to identify road segments that need to be repaired to increase the traffic safety.
+There are mainly three types of methods used for this, which we briefly introduce here.
 \textit{Profilographs} are one of the oldest devices used to measure road surface quality.
 They consist of a profiling wheel in the center and multiple support wheels held together by a rigid frame.
 They measure the road quality by tracking the vertical movement of the profiling wheel.
@@ -100,7 +101,7 @@ In this section, we start by giving a high-level overview of our data processing
     \label{fig:overview}
 \end{figure}
 The tasks of our data processing pipelines are distributed over the edge (i.e., on the smartphone) and the cloud, see also \Cref{fig:overview}.
-After collecting data in the SimRa app (see \Cref{sec:simra} using the built-in motion sensors, data is preprocessed locally before upload to our backend servers.
+After collecting data in the SimRa app (see \ref{sec:simra}) using the built-in motion sensors, data is preprocessed locally before uploading it to our backend servers.
 There, additional preprocessing steps are executed before the actual surface quality analysis.
 
 The parts of the preprocessing which reduce the amount of data need to be run on the edge to preserve user privacy and to reduce bandwidth consumption.
@@ -287,7 +288,8 @@ However, as \Cref{fig:sidewalk} reveals, both streets are indeed paved with cobb
     \centering
     \subfloat[Straßburger Straße]{\includegraphics[width=0.4\columnwidth]{fig/straßburger_str_2.png}}
     \hfill
-    \subfloat[Goethestraße]{\includegraphics[width=0.4\columnwidth]{fig/goethestr22.png}}
+    \subfloat[\label{fig:goethe}Goethestraße]{\includegraphics[width=0.4\columnwidth]{fig/goethestr22.png}}
+    %
     \caption{%
         Straßburger Straße and Goethestraße in Berlin are paved with large cobblestones and the roads are contested by cars that are parking or searching for a parking spot. In contrast, the sidewalks are paved with flat-surfaced paving stones and are quiet due to the absence of shops, restaurants or cafes. (Source: Apple Maps)
     }%
@@ -300,8 +302,7 @@ The infrastructural conditions incentivize cyclists to prefer the sidewalks over
 First, the cobblestones on the streets make it very unpleasant for cyclists to cycle on them.
 Second, the sidewalks are wide, quiet, and paved with large flat-surfaced paving stones.
 Third, the streets are contested by parking cars, or by cars searching for a parking spot, service vehicles, construction vehicles, etc. which will often block cyclists and also create safety hazards.
-Considering these circumstances, it is not surprising to see good surface quality values in these two and other similar streets as cyclists are likely to (illegaly) use the sidewalks instead.
-In fact, photos on Apple Maps (not included in this chapter) actually show cyclists using the sidewalk instead.
+Considering these circumstances, it is not surprising to see good surface quality values in these two and other similar streets as cyclists are likely to (illegaly) use the sidewalks instead, as shown in~\Cref{fig:goethe}.
 
 \begin{table}%
 \centering
