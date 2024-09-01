@@ -325,8 +325,22 @@ Goethestraße       & Cobblestone & 52.508889,13.308333 & 1    & 1      & 0\\%
 \label{sec:discussion_cyclequality}
 Overall, the results presented in this chapter show, that our approach can derive surface quality information using data recorded in the SimRa app.
 Nevertheless, it still has a number of limitations which we discuss in this section.
-Note that we also discuss some limitations in \Cref{cha:discussion_and_outlook}, that may also apply to this approach.
 
+\subsection{Limitations of Crowdsourced Data}
+\label{subsec:limitation_of_crowdsourced_data}
+As discussed in~\Cref{subsec:limitations_of_crowdsourced_data}, crowdsourced data comes with some limitations.
+However, there is an additional challenge when deriving road surface quality.
+This stems from the fact that different smartphone models have different GPS modules and motion sensors, which leads to the problem that a road can be very smooth according to one smartphone and very rough according to another.
+This problem is further aggravated by the wide range of different bicycle types, e.g., racing bicycles or mountain bikes, which in turn also heavily influence the vibrations the smartphone can sense.
+To solve these problems, we rely on the \textit{law of large numbers} and compare how a section's surface quality was relative to the ride. 
+
+\subsection{Preprocessing in SimRa}
+\label{sec:problem_simra}
+As input for our surface quality analysis pipeline, we used the SimRa dataset, since it is to our knowledge the only public dataset containing a very high number of anonymized individual rides in a non-aggregated form.
+However, it is important to note, that SimRa was developed for identifying near miss incident hotspots in bicycle traffic.
+For that, a relatively low accelerometer sampling rate of 50 Hz is used before further reducing the level of detail by calculating the moving average with a window size of 30 and then taking every fifth value.
+While with this, it is possible to automatically detect near-miss incidents (see ~\cref{cha:cyclesense}), a higher resolution of data points would allow us to develop a more sophisticated measurement approach.
+This would, however, further increase the disk space, memory, battery and bandwidth usage of the SimRa app and as we have shown in \cref{sec:evaluation_cyclequality}, the surface quality we derive are sufficiently precise for our intended use cases.
 
 \subsection{Behavior of Cyclists}
 \label{subsec:behavior_of_cyclists}

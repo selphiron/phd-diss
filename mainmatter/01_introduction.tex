@@ -56,29 +56,29 @@ Third, we improve the bicycle simulation of a widely used traffic simulation sof
 
 \subsection{SimRa: A Platform for Crowdsourcing Cycling Trip Data and Detecting Near Miss Incidents in Bicycle Traffic}
 \label{subsec:simra_contribution}
-The SimRa\footnote{SimRa is a German acronym for ‘‘Sicherheit im Radverkehr’’, which translates to Safety in Bicycle Traffic.} platform comprises all things related to the collection, storage, and analysis of crowdsourced cycling data.
-The data acquisition relies on a free app, which is available on both major smartphone operating systems Android and iOS, installed on the smartphones of participating cyclists.
-This app collects data and detects near miss incidents\footnote{In the remainder of this thesis, we will also refer to them as ‘‘incidents’’.} during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to the SimRa servers.
-Initially, the detection of incidents used a heuristic, where the accelerometer data of the recorded bicycle trip were analyzed and the biggest differences in consecutive values were considered an incident.
-We then built a second incident detection option that relies on a deep learning model.
-The anonymized data comprises information on cyclist routes, incidents and user demographics, as well as some aggregated bicycle trip statistics.
-Finally, the collected data gets processed and analyzed continuously to gain insights into dangerous street segments and intersections.
-For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis which automatically derives a ‘‘dangerousness’’ score per street segment and intersection. 
+The SimRa\footnote{SimRa is a German acronym for ‘‘Sicherheit im Radverkehr’’, which translates to Safety in Bicycle Traffic.} platform encompasses all aspects of the collection, storage, and analysis of crowdsourced cycling data.
+The data acquisition process relies on a free mobile application, which is available on both major smartphone operating systems, Android and iOS, and installed on the smartphones of participating cyclists.
+The app collects data and detects near miss incidents\footnote{In the remainder of this thesis, we will also refer to them as ‘‘incidents’’.} that occur in proximity to cyclists during their journeys, allows users to add comments or labels, and anonymizes the data before uploading it to the SimRa servers.
+In the initial phase of the project, an incident detection heuristic was employed, whereby the recorded bicycle trip's accelerometer data were analyzed, and consecutive values exhibiting the greatest discrepancy were identified as incidents.
+Subsequently, a second incident detection option was constructed that relies on a deep learning model.
+The anonymized data set includes information on cyclist routes, incidents, and user demographics, as well as aggregated bicycle trip statistics.
+Subsequently, the accumulated data is subjected to continuous processing and analysis with the objective of identifying potential risks associated with specific street segments and intersections.
+To this end, we have developed two distinct approaches to data analysis. The first is an interactive exploratory data analysis method based on a web application, while the second is a confirmatory data analysis approach that automatically derives a ‘‘dangerousness’’ score for each street segment and intersection. 
 
 We have published this contribution in~\cite{karakaya2020simra,karakaya2022cyclesense}.
 
 \subsection{Deriving Road Surface Quality from Cycling Trip Data}
 \label{subsec:road_surface_contribution}
-Since the SimRa dataset also contains implicit information about the surface quality of the roads the bicycle trip was recorded on as part of the accelerometer sensor track.
-While the automatic detection of incidents views the vibrations stemming from the uneven surface of the roads as noise data, here we can use them to derive the ‘‘bumpiness’’ of the road.
-One major challenge, though, is the heterogeneity  of the user base who contribute to the SimRa dataset.
-Different bicycle types and the place of the smartphone during the bicycle trip have a big impact on how intensive the vibrations caused by the road surface are detected by the accelerometer sensors.
-The bicycle trip data contain information about the bicycle type and the position of the smartphone during the bicycle trip, however, this information can be given voluntarily by the user.
-Heterogeneous cyclists also mean different styles of cycling.
-While some may cycle rather quietly and relaxed, others may tend to cycle fast and sporty, which can also influence the resulting motion sensor readings.
-Additionally, a wide variety of different smartphone models result in many different hardware and software, when it comes to reading motion sensor data.
-The aforementioned aspects can result in different ‘‘bumpiness’’ values, from many bicycle trips that go through the same road.
-This is why our approach considers the relative road surface quality that makes it possible to successfully compare different streets with each other.
+As the SimRa dataset also comprises implicit data regarding the surface quality of the roads traversed by the bicycle, this information was also recorded as part of the accelerometer sensor track.
+While the automatic detection of incidents treats the vibrations resulting from the uneven surface of the roads as noise data, in this case, they can be utilized to ascertain the degree of unevenness of the road surface.
+A significant challenge arises from the heterogeneity of the user base contributing to the SimRa dataset.
+The type of bicycle and the position of the smartphone during the bicycle trip have a significant impact on the intensity of the vibrations caused by the road surface, which are detected by the accelerometer sensors.
+The data pertaining to the bicycle trip include information regarding the bicycle type and the position of the smartphone during the bicycle trip. However, this information is not mandatory and can be provided voluntarily by the user.
+The heterogeneous nature of cyclists also gives rise to a diversity of cycling styles.
+While some cyclists may cycle in a relatively quiet and relaxed manner, others may tend to cycle at a faster and more athletic pace, which can also influence the resulting motion sensor readings.
+Furthermore, the multitude of available smartphone models results in a vast array of hardware and software configurations when it comes to reading motion sensor data.
+The aforementioned aspects can result in disparate ‘‘bumpiness’’ values for numerous bicycle trips traversing the same road.
+This is why our approach considers the relative quality of the road surface, thus enabling comparisons between different streets.
 
 We have published this contribution in~\cite{karakaya2023crowdsensing}.
 

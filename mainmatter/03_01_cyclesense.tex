@@ -105,7 +105,7 @@ For data acquisition we rely on an app installed on the smartphones of participa
 This app collects data and detects incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see \Cref{subsec:data_acquisition}).
 The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated trip statistics.
 Finally, we continuously process and analyze collected data to gain insights into dangerous street segments and intersections.
-For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection~\footnote{https://simra-project.github.io/dashboard/}.
+For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection (see \Cref{subsec:data_analysis}).
 
 \subsection{Data Acquisition}
 \label{subsec:data_acquisition}
@@ -141,7 +141,7 @@ Second, we query the smartphone's accelerometer at 50Hz.
 While such a high sampling rate allows us to detect sudden peaks, this also leads to an unnecessary large data set which typically needs to be uploaded via mobile networks.
 Thus, we aggregate the data based on a moving average across 30 values of which we only consider every sixth value.
 This reduces the amount of data while still retaining all peaks in sensor readings.
-Third, we store the device orientation based on the smartphone's gyroscope sensor every three seconds.
+Third, we store the device orientation based on the smartphone's gyroscope sensor at 50Hz and aggregate the data like we do for the accelerometer data.
 These values describe the rate of rotation around the X/Y/Z axis in rad/s and allow us to correctly interpret the direction of the acceleration values.
 Each sensor measurement, together with a timestamp, is stored locally on the device.
 
@@ -261,8 +261,90 @@ We also ran analyses and app design workshops with citizens.
 \item We publish the SimRa dataset as open data~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3}
 \item While we do not mention any citizen scientists directly, since there would be too many, we make sure that it is obvious, that we rely on participating citizen scientists.
 \item In each of our published papers, as well as in this thesis, we evaluate the scientific output (see \Cref{sec:evaluation_cyclesense,sec:evaluation_cyclequality,sec:evaluation_sumo}).
-\item We designed SimRa to be as privacy-friendly as possible and have a very strict privacy policy statement\footnote{https://www.tu.berlin/en/mcc/research/projects/simra-privacy-policy-statement}.
+\item We designed SimRa to be as privacy-friendly as possible and have a very strict privacy policy statement\footnote{https://www.tu.berlin/en/3s/research/projects/simra-privacy-policy-statement}.
 \end{enumerate}
+
+\subsection{Data Analysis}
+\label{subsec:data_analysis}
+The SimRa platform offers two options for data analysis: exploratory and confirmatory data analysis~\cite{book_bermbach_benchmarking}.
+While the first is used to identify new and possibly unexpected insights in an interactive way, the latter is used to calculate predefined metrics in a fully automated way.
+
+\paragraph{Exploratory Data Analysis} \label{subsec:exploratory}
+For exploratory data analysis, we have designed a web application that allows users to interactively explore the collected data based on visual analysis.
+The web application plots rides as lines and incidents as markers layered on a map.
+
+A key feature is the set of filters through which users can filter rides and incidents based on time or ride data properties as described in~\Cref{subsec:data_acquisition}.
+
+Based on the web application, users can identify incident hotspots by first looking for incident clusters and then comparing them to the number of rides on a particular street segment or intersection.
+
+
+\paragraph{Confirmatory Data Analysis}
+Our main goal here is to identify incident hotspots, i.e., the most dangerous street segments, so this approach focuses on achieving this goal.
+
+\textit{Data Model:} To identify incident hotspots, we first translate the collected data into a form where incidents can be mapped to intersections or street segments.
+For this purpose, we have designed a simple graph model that abstracts a map: nodes represent intersections\footnote{For our purposes, an intersection is a place more than two streets meet and a street is any public way which may legally be used by cyclists.}, and edges represent street segments in between intersections.
+Figure~\ref{fig:map_to_graph} shows an example of this.
+
+\begin{figure}
+    \center
+    \includegraphics[width=0.65\columnwidth]{fig/map_to_graph.pdf}
+		\caption{Example: Map and graph representation of an area in Berlin\protect\footnotemark}
+    \label{fig:map_to_graph}
+\end{figure}
+\footnotetext{Map data copyrighted by OpenStreetMap and available from \url{openstreetmap.org}}
+Beyond this, our graph model is in fact a weighted graph so that we can enrich it with ride and incident data.
+Each node has three weights.
+The first (in the following $r$) describes the number of rides which we have recorded for the respective intersection.
+The second and third are vectors of length eight (there are eight incident types) and describe the number of scary ($s$) and non-scary ($n$) incidents which we recorded for the respective intersection.
+
+Edges also use the same weights as nodes.
+In contrast to nodes, however, the vectors $s$ and $n$ are eight-by-two matrices as we also need to consider the ride direction during the incident.
+For the same reason, the number of rides $r$ is a vector of length two.
+Finally, edges also store the length $l$ of the respective street segment as some street segments, especially in downtown areas, might be very short while others may span several kilometers.
+
+
+\textit{Scoring:} Based on this data model, we can calculate a score that describes how dangerous a particular street segment or an intersection is.
+Intuitively, more incidents means higher danger score.
+This, however, is not necessarily true as dangerousness is essentially the ratio of incidents to rides.
+We, hence, need to consider the number of rides in our scoring function.
+Furthermore, we believe that scary incidents should have more impact on the score than non-scary ones.
+Hence, we propose the following formula to calculate the dangerousness score for street segments and intersections:
+\begin{equation} \label{eq:score} score = \frac{1}{r} \cdot (\alpha \cdot s + n)\end{equation}
+
+In that formula, $\alpha$ is the severity factor which affects how much more weight we assign to scary incidents than to non-scary ones.
+A survey among cyclists in Berlin indicates that $4.4$ might be a good value for $\alpha$.
+
+For street segments, $score$ is a matrix with the incident categories as rows and street direction as columns; for intersections, $score$ is a vector.
+Both will usually be further aggregated based on the respective needs:
+First, when the direction information of street segments is not relevant, the $score$ can further be simplified by summing up both columns pairwise.
+This makes the comparison of streets and intersections easier since intersections do not have a direction in our model.
+Similarly, the incident categories, i.e., the respective row entries, can be summed up so that the result is one score value for intersections and one score value per direction for street segments.
+Of course, both aggregation methods can and will be combined in practice.
+
+For improved comparability of street segments, we also need to account for the length differences, especially when the length of the shortest and the longest street segment is very different.
+For this purposes, we propose a length-adjusted score for street segments:
+\begin{equation} \label{eq:score2} score = \frac{1}{r\cdot l} \cdot (\alpha \cdot s + n)\end{equation}
+
+Length-adjusted scores can be aggregated in the same way as the standard scores.
+Although they are useful for better comparison of street segments, they further complicate the comparison of street segments and intersections.
+
+Based on these scores, we can identify incident hotspots by using either a top-k approach or by manually defining a threshold score.
+We suggest to only accept nodes or edges as incident hotspots if the respective number of rides exceeds a minimum, e.g., depending on the size of the data set.
+
+\textit{Model Population:}
+For automated data analysis, the model above needs to be populated with data.
+As the SimRa data set specifies incidents and rides based on a sequence of GPS locations and not based on street segments and intersections, we first need a mapping from coordinates to our model.
+For this, we propose to enhance the edges and nodes in our model with a polygon each describing the geo-shape of the respective intersection or street segment.
+Such data can be obtained manually for small areas or automatically from digital cadastres and public sources such as OpenStreetMap.
+
+In a second step, the SimRa data set can then be mapped onto the model by checking for each location contained in a ride file in which polygon it is contained.
+While we discard GPS values with low accuracy in the smartphone app, it may still be necessary to smooth the GPS trace.
+In practice, this is usually done either based on Kalman filters or the least squares method.
+Especially the latter approach is likely to be a good fit as the set of correct values, i.e., streets and intersections, is limited.
+
+After smoothing and matching, we can easily determine how many rides are going through an intersection or street segment and can also map incidents to the corresponding street segment or intersection.
+
+We publish the resulting interactive maps online~\footnote{https://simra-project.github.io/dashboard/} so that (citizen) scientists, cyclists, city planners, and policy makers can analyze the data.
 
 \section{Detecting Incidents with Deep Learning}
 \label{sec:detecting_near_miss_incidents}
@@ -547,7 +629,6 @@ Nevertheless, the \ac{auc} \ac{roc} for Berlin is still the highest and clearly 
 \label{sec:discussion_cyclesense}
 Our results demonstrate that the proposed CycleSense model outperforms every other model that we have compared to.
 While improving the model's architecture and other components, we identified a number of challenges inherent to the problem setting that we discuss in the following.
-Note that we also discuss some limitations in \Cref{cha:discussion_and_outlook}, that may also apply to this approach.
 
 
 \subsection{Impact of Preprocessing \& Training Steps}
@@ -561,6 +642,26 @@ Therefore, Figure~\ref{fig:impact} illustrates the performance of CycleSense whe
 	\caption{Impact of different preprocessing and training steps on the performance of CycleSense.}
 	\label{fig:impact}
 \end{figure}
+
+\subsection{Limitations of Crowdsourced Data}
+\label{subsec:limitations_of_crowdsourced_data}
+Crowdsourced data are generally noisy which could contribute to a reduced model performance.
+They also contain several biases, e.g., Selection Bias, Device Positioning Bias, Extreme Aversion Bias, or Confirmation Bias~\cite{basiri2019crowdsourced, chakraborty2017makes, kahneman1991anomalies}.
+In this context, the heterogeneity across devices and platforms is likely another factor of influence.
+As already described, the application that is used by contributors to record their rides is available on two platforms. 
+Those platforms are supported by a wide range of different devices and models with different hardware inside. 
+Phone manufacturers use different \ac{gps}, gyroscope, and accelerometer sensors that can vary immensely in sensitivity and overall behavior.
+Stisen et al.~\cite{stisen2015smart} have shown that there is major heterogeneity when it comes to the accuracy of sensor readings. 
+While the main focus of that study was on accelerometer data, Kuhlmann et al.~\cite{kuhlmann2021smartphone} have shown that orientation sensor data is also affected by this variability.
+
+This is in contrast to the \ac{har} tasks, we compared our task to in \Cref{cha:cyclesense}.
+The \ac{har} data set~\cite{anguita2013public} was generated under laboratory conditions that always used the same smartphone type body mounted to the exact same position on selected study participants.
+This significantly simplifies the classification task.
+Another factor that contributes to the issue of noisy crowdsourcing data in the SimRa data set is the fact that some users misinterpret the purpose of the SimRa app.
+Instead of labeling incidents, they report, e.g., dangerous areas or annoying traffic lights.
+These can of course not be captured by the sensors used.
+Many such ``incidents'' can be identified through the comment column of the data set.
+It should also be noted that the SimRa data set was not recorded and labeled with the goal of developing ML models -- the goal was to record data that will be analyzed and processed by humans.
 
 \subsection{Technical Limitations of the SimRa Data Set}
 \label{subsec:technical_limitations_of_the_simra_data_set}
