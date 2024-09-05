@@ -76,10 +76,75 @@ In \Cref{part:conclusions}, Conclusions, we concluded this thesis with a summary
 \chapter{Discussion and Outlook}
 \label{cha:discussion_and_outlook}
 In this chapter, we discuss the limitations of our approach and give an outlook for future work.
-While we discuss the limitations of each contribution in their respective chapters in \Cref{part:contributions}, there are some limitations, that they share, which we collect here.
-This chapter contains partially adapted material published in \cite{karakaya2020simra,karakaya2022cyclesense,karakaya2022realistic,karakaya2023achieving,karakaya2023crowdsensing}.
+While we discuss the limitations of the individual contributions in their respective chapters in \Cref{part:contributions},
+the approach here is to take the perspective of the three groups \textit{city planners}, \textit{cyclists} and \textit{policy makers} and discuss to what extent our contributions help them with their challenges regarding cycling safety.
 
-\section{Outlook}
+\section*{City Planners' Perspective}
+Despite the best intentions of city planners to enhance the appeal of cycling in their urban areas, they may still encounter obstacles to achieving this goal.
+
+It is essential to gain insight into the specific issues that cyclists encounter when traversing certain areas.
+This necessitates a comprehensive understanding of the challenges faced by cyclists in these locations.
+These challenges may pertain to the condition of the cycling infrastructure, perceived safety concerns, or other factors.
+Identifying these issues is crucial for developing effective solutions to enhance the safety and comfort of cyclists in these areas.
+Obtaining this information manually is a time-consuming and resource-intensive process.
+The primary focus of our initial two contributions is to address this issue.
+By utilizing the SimRa platform, cyclists can contribute to the creation of a comprehensive dataset regarding hazardous locations within the cycling infrastructure.
+This data can then be utilized by city planners to identify areas requiring heightened attention and to initiate targeted improvements.
+The maps we provide offer more than just a visual representation of areas with higher risk; they provide insights into the types of incidents occurring in these areas, enabling the development of more targeted solutions to address specific problems.
+Furthermore, our approach for deriving road surface quality provides city planners with essential data regarding the condition of the cycling infrastructure.
+By identifying which sections of the cycling lane network are in a state of greater disrepair, city planners can direct their maintenance resources to these areas, thereby ensuring the continued optimal functionality of the cycling infrastructure.
+Our third contribution, namely the realistic cyclist models in SUMO, can assist city planners in evaluating the impact of planned changes in a traffic simulation before implementing them in the real world.
+This allows them to not only test different solutions and compare them, but also to persuade stakeholders, who are responsible for approving the plans, of the advantages of the proposed solutions.
+
+The city planners informed us that it would be beneficial to gain more detailed information about each uploaded cycling trip.
+For example, knowledge of whether a particular street is frequently used by children and elderly cyclists would provide city planners with valuable insights.
+Nevertheless, data privacy has been a significant concern for SimRa from the outset, and the incorporation of additional information about cyclists into the cycling trip data could potentially compromise this crucial aspect.
+
+Notwithstanding these challenges, our work can be regarded as a success from the perspective of urban planners. 
+The SimRa dataset offers them invaluable insights into bicycle traffic patterns, enabling more sophisticated simulations of alternative cycling infrastructure models. 
+
+
+\section*{Cyclists' Perspective}
+A total of 120,000 recorded cycling trips have been uploaded via SimRa.  
+This demonstrates that SimRa has garnered the attention of cyclists throughout Germany, indicating a prevalent concern regarding the safety of bicycle traffic.
+Consequently, there has been a notable level of participation.
+Nevertheless, this is expected to result in enhanced bicycle safety.
+Our initial contribution, SimRa, provides the cycling community with a tool that is both powerful and effective.
+The data set provided by SimRa, along with the visualizations of bicycle traffic, can be utilized by the cycling community to reinforce the demands that policy makers and city planners should prioritize the concerns of cyclists and improve the safety of bicycle traffic.
+Cyclists may utilize the maps we have published, which illustrate areas of higher risk in bicycle traffic, to identify those areas in which they should exercise caution or, alternatively, to identify areas in which they should pay particular attention when traversing.
+Similarly, our methodology for determining road surface quality can assist the cycling community in identifying areas of deficiency in the cycling infrastructure and advocating for enhanced maintenance.
+Furthermore, they can educate themselves to enhance the comfort of their cycling excursions.
+The realistic cyclist models in \ac{sumo}, our third contribution, indirectly benefit cyclists, as they facilitate the acceleration of the process of implementing infrastructure changes that are necessary for enhancing bicycle traffic.
+One of the key limitations of SimRa for cyclists is that it does not offer any immediate tangible benefits.
+They must utilize the platform with the expectation that their input will contribute to the achievement of SimRa's objective.
+In order to address this limitation, we have included statistical data regarding the cyclists' journeys and have made the analysis results accessible, with subsequent updates occurring on a regular basis.
+
+As cyclists, we consider SimRa to be a success, as evidenced by the observable changes in real life that can be attributed to SimRa.
+The municipalities of Zeuthen, Eichwalde, and Schulzendorf, in addition to the city of Walldorf, have implemented the SimRa project and developed plans for enhancing the cycling infrastructure in accordance with the project's findings.
+
+\section*{Policy Makers' Perspective} 
+Similarly, those engaged in policy-making, who seek to improve the situation of bicycle traffic, are confronted with a number of challenges.
+It is essential that those engaged in policy-making maintain a commitment to public accountability.
+It is their responsibility to provide justification for budget allocations and changes to urban design codes, which city planners are obliged to adhere to.
+It is crucial for policy makers to ascertain that the changes they implement are essential and that the current state of urban infrastructure is incapable of meeting the needs of cyclists.
+Moreover, it is essential for policy makers to demonstrate how specific actions and decisions taken by their administration positively impact the actual situation of cyclists in traffic.
+The SimRa dataset, in conjunction with the visualization and analysis tools we provide, as well as our approach for deriving the surface quality of roads, can assist policy makers in addressing these challenges.
+The more realistic cycling model for \ac{sumo} allows city planners to gain a deeper understanding of how proposed changes will affect bicycle traffic, thereby facilitating the final approval or modification of these changes.
+
+One limitation of our work that affects policy makers is the technology dependency.
+The use of SimRa is confined to those with a smartphone, a limitation that excludes a significant proportion of the elderly population. The lack of smartphone usage by this demographic, compounded by a lack of familiarity with the technology and a general aversion to it, represents a substantial barrier to the implementation of the SimRa approach.
+In order to circumvent this limitation, the SimRa application was designed in such a way that it is straightforward to use.
+To illustrate, the application allows users to record and upload rides with minimal effort.
+A further challenge for users is the accurate annotation of incidents.
+It is a challenging task to recall each incident and its precise location.
+To address this issue, two approaches to automatic incident detection were implemented, with the objective of assisting with the location of incidents.
+
+Furthermore, a new feature was introduced that enables the OpenBikeSensor\footnote{\url{https://www.openbikesensor.org/}}, a compact device comprising distance sensors, to be connected to SimRa via Bluetooth.
+Cyclists may attach the device to their bicycle to measure the distance between vehicles overtaking them. This allows for the automatic addition of data regarding close pass incidents.
+
+In conclusion, our work can be considered a success from the perspective of policy makers.
+
+\section*{Outlook}
 \label{sec:outlook}
 A promising direction for future work is to explore the relationship between incidents and traffic infrastructure.
 Since the \textit{SimRa} dataset contains incidents with their location and incident type, it might be possible to identify which conditions dangerous spots in traffic have in common.
