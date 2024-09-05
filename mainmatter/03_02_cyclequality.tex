@@ -1,7 +1,7 @@
 \chapter{Deriving Road Surface Quality from Cycling Trip Data}
 \label{cha:cyclequality}
 In this chapter, we present an approach for deriving the surface quality (or rather the lack of it), which can be measured as vibrations or bumps, using the \ac{imu} included in smartphones.
-In the second step, we can then combine data from multiple rides to derive an estimate for the surface quality.
+In the second step, we can then combine data from multiple trips to derive an estimate for the surface quality.
 This way, monitoring of surface quality can be automated to a high degree at little cost and the resulting data can be used for maintenance planning or surface quality-aware routing.
 Especially for highly frequented cycling tracks, surface quality problems can be detected quickly.
 
@@ -64,15 +64,15 @@ We do this to clarify why existing approaches, which we discuss in the next sect
 
 First, our work focuses on the experience in terms of ``bumpiness'' for cyclists.
 Therefore, we try to quantify the roughness of a road surface and not its type.
-As an example, a ride on asphalt will usually be smoother than one on a cobblestone road.
+As an example, cycling on asphalt will usually be smoother than doing so on a cobblestone road.
 In practice, though, an asphalt road might have lots of (small) potholes and repair patches while a cobblestone road might use relatively flat (instead of rounded) stones  with mostly filled-in gaps between the stones.
 See \Cref{fig:cobblestone_vs_asphalt} for an example.
-In such a setup, a ride on the cobblestone road can be much smoother.
+In such a setup, cycling on the cobblestone road can be much smoother.
 Quantifying the surface \emph{quality} and not the surface \emph{type} will thus yield different results -- a large body of related work is hence not applicable to the problem we target.
 
-Second, due to the width of bicycle tires, a single ride on a street segment will only cover a very small percentage of the surface.
+Second, due to the width of bicycle tires, a single trip on a street segment will only cover a very small percentage of the surface.
 Furthermore, cyclists are likely to swerve around the worst potholes and tree roots.
-Both aspects combined show that it is crucial to base the roughness measurements on a large number of rides, thus, following a ``wisdom of the crowds'' approach.
+Both aspects combined show that it is crucial to base the roughness measurements on a large number of trips, thus, following a ``wisdom of the crowds'' approach.
 We hence have to attract a large user group -- this has a number of implications.
 \begin{enumerate}
 	\item The approach needs to go easy on the phone's resources (battery, data transmission, compute power, app size) as users will otherwise uninstall or not use the corresponding app. As a result, the approach will have to prefilter data on the phone but is unlikely to run on the phone completely, machine learning-based approaches may be problematic, and the approach cannot expect high resolution raw data.
@@ -110,15 +110,15 @@ The data cleaning parts are too compute-intensive and are executed in the cloud 
 \subsection{Surface Quality Analysis}
 \label{subsec:surface_quality_analysis}
 Each cyclist creates a different data track on a given road, and without calibration, it is not possible to accurately analyze each track individually.
-Ideally, we would at least use cyclist-specific profiles (i.e., per cyclist aggregates) which, however, are not available due to privacy reasons (rides are pseudonymized individually~\cite{karakaya2020simra}).
+Ideally, we would at least use cyclist-specific profiles (i.e., per cyclist aggregates) which, however, are not available due to privacy reasons (triüs are pseudonymized individually~\cite{karakaya2020simra}).
 The idea behind our approach is to take advantage of the size of the data set and use the law of large numbers to obtain robust results without having to calibrate the data and without affecting the results too much by noise.
 
-For this, we consider in the first step each ride individually:
-We take the preprocessed ride (which is a single time series of aggregated motion sensor readings without stops plus the GPS trace) and calculate the percentiles (0.2, 0.4, 0.6, 0.8, and 1) of the time series.
+For this, we consider in the first step each trip individually:
+We take the preprocessed trip (which is a single time series of aggregated motion sensor readings without stops plus the GPS trace) and calculate the percentiles (0.2, 0.4, 0.6, 0.8, and 1) of the time series.
 For normalization, we then replace all motion sensor readings with values 1 to 5 depending on which interval they fall into, i.e., a motion sensor reading from the interval $(0.2;0.4]$ would be replaced with the value 2.
-The intuition behind this is that longer rides are likely to encounter very different surface quality, hence we calculate the relative bumpiness of an area in comparison to the rest of the ride's bumpiness.
+The intuition behind this is that longer trips are likely to encounter very different surface quality, hence we calculate the relative bumpiness of an area in comparison to the rest of the trip's bumpiness.
 
-In the second step, we use the data from all such normalized rides and, using the GPS trace, map them to a grid of 10m² cells.
+In the second step, we use the data from all such normalized trips and, using the GPS trace, map them to a grid of 10m² cells.
 For each cell, we hence have a distribution of values 1 to 5.
 As a metric for the bumpiness of that cell, we use the average of all values -- e.g., when color-coding a map -- but make other statistical metrics available as well (see, e.g., the distribution function charts in our evaluation section).
 
@@ -149,7 +149,7 @@ This is where we use the surface quality by increasing the weight depending on s
 \subsection{Output Data and Visualization}
 \label{subsec:output_data_and_visualization}
 Our bicycle road surface quality pipeline creates a GeoJSON file as an output.
-It contains the cells with a surface area of 10m² in a grid as \codeword{Features} of the \codeword{geometry} type \codeword{Polygon} with the surface quality score information such as mean, median, standard deviation, number of rides going through the cell and coloring information in the \codeword{properties} key.
+It contains the cells with a surface area of 10m² in a grid as \codeword{Features} of the \codeword{geometry} type \codeword{Polygon} with the surface quality score information such as mean, median, standard deviation, number of trips going through the cell and coloring information in the \codeword{properties} key.
  \begin{figure}
     \centering
     \includegraphics[width=0.7\columnwidth]{fig/visualization.png}
@@ -164,7 +164,7 @@ Using a visualization like this, also non-tech-savvy users can easily monitor th
 \section{Evaluation}
 \label{sec:evaluation_cyclequality}
 In this section, we evaluate the surface quality analysis by comparing the calculated surface quality of selected street segments across Berlin with their surface type in the real world, which we get from OpenStreetMap (OSM).
-As data input, we use the existing SimRa datasets~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} (almost 90,000 rides with more than 650,000km in total\footnote{All numbers in this chapter regarding the SimRa dataset are as of September 2022}).
+As data input, we use the existing SimRa datasets~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} (almost 90,000 trips with more than 650,000km in total\footnote{All numbers in this chapter regarding the SimRa dataset are as of September 2022}).
 Based on the intuition that different surface types will also be partially correlated with surface quality, we randomly picked four spots with different surface types.
 To also show the limitations of our approach, we then explored the dataset and manually picked four additional spots where our approach appears to have returned the wrong results.
 Each evaluated section has a surface area of 10 m² and to compare them to each other we analyze their mean, median, and standard deviation values.
@@ -191,7 +191,7 @@ After filtering based on these criteria, we randomly picked four sections.
 \end{figure}
 
 It can be observed, that the aforementioned list of surface types, which was sorted in descending surface quality order, was ordered correctly.
-A newly maintained asphalt section in \textit{Straße des 17. Juni} has a nearly perfect score, which means that its surface quality was in the top 20\% in almost all rides crossing this section.
+A newly maintained asphalt section in \textit{Straße des 17. Juni} has a nearly perfect score, which means that its surface quality was in the top 20\% in almost all trips crossing this section.
 Followed by that are two sections with flat paving stones and fine gravel as their surface type, which have very similar results.
 This means, that both flat paving stones and fine gravel have comparable surface quality in terms of bumpiness from the perspective of a cyclist.
 However, it should be noted, that fine gravel can be less favorable in areas with a lot of precipitation (more on that in \Cref{sec:discussion_cyclequality}).
@@ -224,7 +224,7 @@ While most results are intuitive, e.g., new bicycle roads paved with asphalt and
     \centering
     \includegraphics[width=0.7\columnwidth]{fig/pdf_mixed.png}
     \caption{%
-        The Probability Density Function of the Derived Surface Qualities shows that these segments have confusing road surface quality values: Depending on the ride, they appear to have either very good or very bad surface quality (multiple peaks).
+        The Probability Density Function of the Derived Surface Qualities shows that these segments have confusing road surface quality values: Depending on the trip, they appear to have either very good or very bad surface quality (multiple peaks).
     }%
     \label{fig:mixed}
 \end{figure}
@@ -263,7 +263,7 @@ Additionally, when a bus stops at the bus station, cyclists that used the bus la
 These two factors most certainly are the reason for the distinct two-peak distribution of recordings in that spot.
 
 A closer look at the near-miss incident data in \textit{Kaiserin-Augusta-Allee} indicates that people use the bike lane in one direction and the street in the other direction~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} as one side seems to be in an unusable condition while the other is acceptable.
-Since the bicycle lane is paved with paving stones and the street with asphalt, this leads to different surface quality of the road, depending on which direction the ride was.
+Since the bicycle lane is paved with paving stones and the street with asphalt, this leads to different surface quality of the road, depending on the cycling direction.
 Both directions, however, regularly end up in the same 10x10m box as the street is not overly wide, especially considering GPS accuracy.
 
 \subsection{Sections with (Seemingly) Confusing Results}
@@ -332,11 +332,11 @@ As discussed in~\Cref{subsec:limitations_of_crowdsourced_data}, crowdsourced dat
 However, there is an additional challenge when deriving road surface quality.
 This stems from the fact that different smartphone models have different GPS modules and motion sensors, which leads to the problem that a road can be very smooth according to one smartphone and very rough according to another.
 This problem is further aggravated by the wide range of different bicycle types, e.g., racing bicycles or mountain bikes, which in turn also heavily influence the vibrations the smartphone can sense.
-To solve these problems, we rely on the \textit{law of large numbers} and compare how a section's surface quality was relative to the ride. 
+To solve these problems, we rely on the \textit{law of large numbers} and compare how a section's surface quality was relative to the trip. 
 
 \subsection{Preprocessing in SimRa}
 \label{sec:problem_simra}
-As input for our surface quality analysis pipeline, we used the SimRa dataset, since it is to our knowledge the only public dataset containing a very high number of anonymized individual rides in a non-aggregated form.
+As input for our surface quality analysis pipeline, we used the SimRa dataset, since it is to our knowledge the only public dataset containing a very high number of anonymized individual trips in a non-aggregated form.
 However, it is important to note, that SimRa was developed for identifying near miss incident hotspots in bicycle traffic.
 For that, a relatively low accelerometer sampling rate of 50 Hz is used before further reducing the level of detail by calculating the moving average with a window size of 30 and then taking every fifth value.
 While with this, it is possible to automatically detect near-miss incidents (see ~\cref{cha:cyclesense}), a higher resolution of data points would allow us to develop a more sophisticated measurement approach.
@@ -354,18 +354,18 @@ Furthermore, cyclists will in practice also avoid the worst potholes and similar
 \label{subsec:sensor_inaccuracy}
 The inaccuracy of the GPS sensors~\cite{merry2019smartphone} combined with noise produced by the motion sensors of the smartphones form another limitation of the dataset.
 We tried to partially address these limitations with our preprocessing steps but they can, of course, not be fully mitigated.
-The only alternative would be using dedicated hardware which, however, will result in significantly less recorded rides due to the adoption barrier.
+The only alternative would be using dedicated hardware which, however, will result in significantly less recorded trips due to the adoption barrier.
 
 \subsection{Temporal Influences}
 \label{subsec:temporal_influences}
-The rides in the SimRa dataset date back up to 2019 and it is possible that the surface quality changed throughout the time.
+The trips in the SimRa dataset date back up to 2019 and it is possible that the surface quality changed throughout the time.
 One reason for that could be that the surface type is changed for example from cobblestones to asphalt or potholes and cracks are repaired.
 This would presumably lead to better results after the change, but show up as two-peak distribution in our dataset.
-When using this approach in practice, we hence propose to only consider the most recent rides.
+When using this approach in practice, we hence propose to only consider the most recent trips.
 
 Another temporal influence might be the weather.
 On rainy, windy or snowy days, the surface quality of the road, especially with wet gravel, can suffer significantly, which is not considered by our surface quality analysis approach.
-However, adding this factor to the analysis, would in our dataset reduce the validity of the results, since it would reduce the number of considered rides.
+However, adding this factor to the analysis, would in our dataset reduce the validity of the results, since it would reduce the number of considered trips.
 
 
 \section{Alternative Approaches}
@@ -390,7 +390,7 @@ While their approach is similar to ours regarding hardware, constantly recording
 Furthermore, the phone needs to be mounted in an awkward angle which makes it impractical for every day use.
 
 Luedemann et al.~\cite{luedemann2022bikevibes} use a smartphone app to record accelerometer data as an indicator for surface quality.
-Their approach, however, relies on single rides and has no concept of aggregating data from multiple rides.
+Their approach, however, relies on single trips and has no concept of aggregating data from multiple trips.
 
 Similar to us, Yamaguchi et al.~\cite{yamaguchi2015simple} want to measure the surface quality.
 To achieve highly precise results, they combine the smartphone motion sensors with a cyclometer.
@@ -405,7 +405,7 @@ Cities all over the world aim to increase the modal share of bicycle traffic, e.
 Aside from safety, a key influence factor for this is comfort, particularly in the form of the surface quality of cycling infrastructure.
 Monitoring the surface quality manually, however, is infeasible due to the dimensions of such infrastructure.
 
-In this chapter, we proposed a crowdsourcing approach in which cyclists record their daily rides using a smartphone app and the phone's built-in motion sensors.
+In this chapter, we proposed a crowdsourcing approach in which cyclists record their daily trips using a smartphone app and the phone's built-in motion sensors.
 We proposed a data processing pipeline that starts on the edge (i.e., the phone) and ends in a cloud backend.
 Furthermore, we showed that our crowdsourcing approach can indeed derive surface quality and implemented two use cases for using such data.
 
