@@ -25,26 +25,26 @@ For this, we first show that the default cyclist model of SUMO is not realistic 
 We then split the cycling trips in the SimRa dataset into three parts for slow, medium, and fast cyclists and implement our findings as a plugin that can be added to SUMO for a more realistic cyclist simulation.
 This new cyclist simulation can provide a strong tool for city planners to better to study effects of potential changes in the traffic infrastructure. 
 
-
-\newpage
-\addcontentsline{toc}{section}{Zusammenfassung}
+\afterpage{\null\thispagestyle{empty}\newpage}
+\addcontentsline{toc}{section}{Kurzdarstellung}
 \section*{Kurzdarstellung}
 Eine Erhöhung des Fahrradverkehrs trägt zur Verringerung der Treibhausgasemissionen und zur Lösung verkehrsbedingter Probleme bei.
 Mangelnder Komfort und (gefühlte) Unsicherheit halten die Menschen jedoch davon ab, öfter Fahrrad zu fahren.
 Um den Komfort und die Sicherheit im Radverkehr zu erhöhen, benötigen Stadtplanende (a) einen Überblick über Unfälle und Gefahrensituationen, (b) einen Überblick über den Wartungszustand der Radverkehrsinfrastruktur und (c) eine Möglichkeit, die geplanten Änderungen an der Radverkehrsinfrastruktur zu testen, bevor sie umgesetzt werden.
-In dieser Arbeit präsentieren wir drei Beiträge zur Lösung dieser Probleme, an denen auch Radfahrende und politische Entscheidungstragende interessiert sind.
+In dieser Arbeit präsentieren wir drei Beiträge zur Lösung dieser Probleme.
 
-Zunächst stellen wir SimRa vor, ein Crowdsourcing-basiertes Citizen-Science-Projekt zur Erfassung vons Gefahrensituationen im Radverkehr.
+Zunächst stellen wir SimRa vor, ein Crowdsourcing-basiertes Citizen-Science-Projekt zur Erfassung von Gefahrensituationen im Radverkehr.
 Im Rahmen dieses Beitrags stellen wir auch CycleSense vor, einen auf Deep-Learning basierenden Ansatz zur automatischen Erkennung von Gefahrensituationen aus aufgezeichneten Radfahrdaten.
 Stadtplanende und politische Entscheidungstragende können die mit SimRa aufgedeckten gefährlichen Stellen im Radverkehr mit Baumaßnahmen verbessern.
-Radfahrende wiederum können diese Informationen nutzen, um diese Stellen zu umfahren.
+Radfahrende können diese Informationen nutzen, um diese Stellen zu umfahren.
 
-In unserem zweiten Beitrag beschreiben wir einen Ansatz zur Ableitung der Straßenoberflächenqualität aus Fahrradfahrtdaten.
-Unser Ansatz verwendet Daten, die von den Bewegungssensoren des Smartphones erzeugt werden, um Unebenheiten der Straßenoberfläche anhand der Vibrationen zu berechnen, die durch das Befahren der Straße mit einem Fahrrad verursacht werden. 
-Wir zeigen am Beispiel der SimRa-App wie unser Ansatz in eine App zur Aufzeichnung von Fahrradrouten integriert werden kann.
-Dieser Beitrag enthält auch eine Visualisierung der Ergebnisse und hilft sowohl Stadtplanenden und politischen Entscheidungstragenden als auch Radfahrenden auf ähnliche Weise wie unser erster Beitrag.
+Im zweiten Beitrag beschreiben wir, wie wir die Straßenoberflächenqualität aus Fahrradfahrtdaten ermitteln.
+Dazu verwenden wir Daten, die von den Bewegungssensoren des Smartphones erzeugt werden, um Unebenheiten der Straßenoberfläche anhand der Fahrtvibrationen zu berechnen.
+Wir zeigen am Beispiel der SimRa-App, wie unser Ansatz in eine App zur Aufzeichnung von Fahrradrouten integriert werden kann.
+Dieser Beitrag enthält auch eine Visualisierung der Ergebnisse und hilft sowohl Stadtplanenden als auch Radfahrenden.
 
-In unserem dritten Beitrag verbessern wir das Radfahrersimulationsmodell der Verkehrssimulationssoftware SUMO.
-Dazu zeigen wir zunächst, dass das Standard-Radfahrermodell von SUMO nicht realistisch ist, indem wir es mit dem Verhalten von Radfahrenden im SimRa-Datensatz vergleichen.
-Anschließend teilen wir die Radfahrten im SimRa-Datensatz in drei Teile für langsame, mittlere und schnelle Radfahrende auf und implementieren unsere Ergebnisse als Plugin, das zu SUMO hinzugefügt werden kann, um eine realistischere Radfahrendensimulation zu ermöglichen.
-Dies kann ein starkes Werkzeug für Stadtplanende sein, um ihre geplanten Änderungen an der Verkehrsinfrastruktur besser zu testen. 
+Im dritten Beitrag verbessern wir das Radfahrersimulationsmodell der Verkehrssimulationssoftware SUMO.
+Wir zeigen die Schwächen des Radfahrermodells von SUMO, indem wir es mit dem Verhalten von Radfahrenden im SimRa-Datensatz vergleichen.
+Anschließend teilen wir die Radfahrten im SimRa-Datensatz in drei Teile für langsame, mittlere und schnelle Radfahrende auf und implementieren einen realistischeres Modell für SUMO.
+Dies kann ein starkes Werkzeug für Stadtplanende sein, um ihre geplanten Änderungen an der Verkehrsinfrastruktur besser zu testen.
+\afterpage{\null\thispagestyle{empty}\newpage}

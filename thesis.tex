@@ -104,9 +104,13 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 \include{frontmatter/front} % This is the titlepage
 \setcounter{page}{0}
 \pagenumbering{Roman}
-\include{frontmatter/declaration}
+%\include{frontmatter/declaration}
 \include{frontmatter/summary}
+%\include{frontmatter/acknowledgments}
 \tableofcontents
+\afterpage{\null\thispagestyle{empty}\newpage}
+\include{frontmatter/acronyms}
+\afterpage{\null\thispagestyle{empty}\newpage}
 
 %%=========================================
 % Mainmatter
@@ -132,9 +136,8 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 %%=========================================
 %Backmatter
 
-\appendix
+%\appendix
 %\include{backmatter/00_lessImportantText}
-\include{backmatter/01_acronyms}
 %\include{backmatter/02_lexicon}
 %\include{backmatter/03_listings}
 % Include more appendices as required.
