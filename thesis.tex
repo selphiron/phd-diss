@@ -10,7 +10,10 @@
 \usepackage[
     citestyle=numeric-comp,
     backend=biber,
-    bibencoding=inputenc
+    bibencoding=inputenc,
+    maxcitenames=2,
+    minbibnames=20,
+    maxbibnames=20
     ]{biblatex}
 \addbibresource{refs.bib}
 
@@ -106,9 +109,9 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 \pagenumbering{Roman}
 %\include{frontmatter/declaration}
 \include{frontmatter/summary}
-%\include{frontmatter/acknowledgments}
+\include{frontmatter/acknowledgments}
 \tableofcontents
-\afterpage{\null\thispagestyle{empty}\newpage}
+%\afterpage{\null\thispagestyle{empty}\newpage}
 \include{frontmatter/acronyms}
 \afterpage{\null\thispagestyle{empty}\newpage}
 
@@ -127,6 +130,7 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 \input{mainmatter/03_01_cyclesense}
 \input{mainmatter/03_02_cyclequality}
 \input{mainmatter/03_03_sumo}
+\afterpage{\null\thispagestyle{empty}\newpage}
 \part{Conclusions}
 \label{part:conclusions}
 \include{mainmatter/04_conclusions.tex}
@@ -144,6 +148,7 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 
 \cleardoublepage
 \addcontentsline{toc}{chapter}{Bibliography}
+\afterpage{\null\thispagestyle{empty}\newpage}
 \defbibheading{notonline}{\chapter*{Bibliography}}
 \printbibliography[heading=notonline]
 %%=============================================

@@ -11,7 +11,7 @@ The latter is also an advantage because, unlike related approaches, which use a 
 This chapter contains material published in \cite{karakaya2023crowdsensing} with the following contributions:
 \begin{itemize}
 	\item We present a data processing pipeline for deriving surface quality which combines signal processing with geographical clustering techniques in the form of edge-based preprocessing on the phone and cloud analytics.
-	\item We describe how we integrate this data processing pipeline in the existing crowdsourcing project SimRa (See \ref{sec:simra}) which previously only focused on incidents.
+	\item We describe how we integrate this data processing pipeline in the existing crowdsourcing project SimRa (See \Cref{sec:simra}) which previously only focused on incidents.
 	\item We describe how the resulting data can be used to increase the comfort of cyclists through surface quality-aware routing and how the data can be exposed to city administrations.
 	\item We evaluate our approach by analyzing the SimRa dataset~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} and comparing its on-site conditions in eight streets with different surface quality.
 	\item We discuss to which degree our approach can automate surface quality monitoring and how additional sensors could possibly help to improve data quality.
@@ -20,10 +20,10 @@ This chapter contains material published in \cite{karakaya2023crowdsensing} with
 The following outline details the structure of this chapter:
 
 First, we give background information about the measurement of road surface quality (\Cref{sec:surface_quality_background}).
-We then continue with the scenarios and constraints of our approach \Cref{sec:scenarios_and_constraints}.
+We then continue with the scenarios and constraints of our approach (\Cref{sec:scenarios_and_constraints}).
 We explain our approach and how it is integrated into SimRa (\Cref{sec:data_processing_pipeline}).
 After that, we describe two ways in which the road surface quality information can be used (\Cref{sec:using_road_surface_quality_information}).
-We follow this up with an evaluation and discussion of our approach in \Cref{sec:evaluation_cyclequality} and \Cref{sec:discussion_cyclequality} respectively.
+We follow this up with an evaluation and discussion of our approach (\Cref{sec:evaluation_cyclequality} and \Cref{sec:discussion_cyclequality}).
 We conclude this chapter (\Cref{sec:summary_cyclequality}) after giving an overview of alternative approaches (\Cref{sec:related_work_cyclequality}).
 
 \section{Road Surface Quality}
@@ -50,7 +50,7 @@ The idea to use smartphones and crowdsourcing for tracking surface quality is no
 For this reason, we use this dedicated section to briefly discuss the specific goals of our work and the unique constraints of the scenarios we target.
 We do this to clarify why existing approaches, which we discuss in the next section, cannot solve the problem we target.
 
-\begin{figure}[t]
+\begin{figure}%[t]
     %\vspace{-3em}
     \centering
     \subfloat[Smooth cobblestones]{\includegraphics[width=0.4\columnwidth, height=4cm]{fig/cobblestone.jpg}}
@@ -89,9 +89,15 @@ As a soft constraint, we tried (and succeeded) to design our approach in a way t
 \label{sec:data_processing_pipeline}
 In this section, we start by giving a high-level overview of our data processing pipeline for deriving surface quality (\Cref{subsec:overview_of_pipeline}) before describing how we derive the surface quality (\Cref{subsec:surface_quality_analysis}).
 
-
 \subsection{Overview of Pipeline}
 \label{subsec:overview_of_pipeline}
+The tasks of our data processing pipelines are distributed over the edge (i.e., on the smartphone) and the cloud, see also \Cref{fig:overview}.
+After collecting data in the SimRa app (see \ref{sec:simra}) using the built-in motion sensors, data is preprocessed locally before uploading it to our backend servers.
+There, additional preprocessing steps are executed before the actual surface quality analysis.
+
+The parts of the preprocessing which reduce the amount of data need to be run on the edge to preserve user privacy and to reduce bandwidth consumption.
+The data cleaning parts are too compute-intensive and are executed in the cloud to reduce power consumption on the phone.
+
 \begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{fig/overview.pdf}
@@ -100,12 +106,6 @@ In this section, we start by giving a high-level overview of our data processing
     }%
     \label{fig:overview}
 \end{figure}
-The tasks of our data processing pipelines are distributed over the edge (i.e., on the smartphone) and the cloud, see also \Cref{fig:overview}.
-After collecting data in the SimRa app (see \ref{sec:simra}) using the built-in motion sensors, data is preprocessed locally before uploading it to our backend servers.
-There, additional preprocessing steps are executed before the actual surface quality analysis.
-
-The parts of the preprocessing which reduce the amount of data need to be run on the edge to preserve user privacy and to reduce bandwidth consumption.
-The data cleaning parts are too compute-intensive and are executed in the cloud to reduce power consumption on the phone.
 
 \subsection{Surface Quality Analysis}
 \label{subsec:surface_quality_analysis}
@@ -114,11 +114,11 @@ Ideally, we would at least use cyclist-specific profiles (i.e., per cyclist aggr
 The idea behind our approach is to take advantage of the size of the data set and use the law of large numbers to obtain robust results without having to calibrate the data and without affecting the results too much by noise.
 
 For this, we consider in the first step each trip individually:
-We take the preprocessed trip (which is a single time series of aggregated motion sensor readings without stops plus the GPS trace) and calculate the percentiles (0.2, 0.4, 0.6, 0.8, and 1) of the time series.
+We take the preprocessed trip (which is a single time series of aggregated motion sensor readings without stops plus the \ac{gps} trace) and calculate the percentiles (0.2, 0.4, 0.6, 0.8, and 1) of the time series.
 For normalization, we then replace all motion sensor readings with values 1 to 5 depending on which interval they fall into, i.e., a motion sensor reading from the interval $(0.2;0.4]$ would be replaced with the value 2.
 The intuition behind this is that longer trips are likely to encounter very different surface quality, hence we calculate the relative bumpiness of an area in comparison to the rest of the trip's bumpiness.
 
-In the second step, we use the data from all such normalized trips and, using the GPS trace, map them to a grid of 10m² cells.
+In the second step, we use the data from all such normalized trips and, using the \ac{gps} trace, map them to a grid of 10m² cells.
 For each cell, we hence have a distribution of values 1 to 5.
 As a metric for the bumpiness of that cell, we use the average of all values -- e.g., when color-coding a map -- but make other statistical metrics available as well (see, e.g., the distribution function charts in our evaluation section).
 
@@ -141,7 +141,7 @@ We decided to give the user the opportunity to influence this factor with the us
 With a slider in the settings menu, the weight of the surface quality in the routing can be set.}%
     \label{fig:routing}
 \end{figure}
-We host a modified GraphHopper\footnote{https://github.com/graphhopper/} for routing.
+We host a modified GraphHopper\footnote{\url{https://github.com/graphhopper/}} for routing.
 GraphHopper uses edges for streets, that are connected via nodes.
 Each has a weight for routing purposes and it is possible to change the weight according to custom data.
 This is where we use the surface quality by increasing the weight depending on surface quality and user-specified influence factor.
@@ -157,13 +157,13 @@ It contains the cells with a surface area of 10m² in a grid as \codeword{Featur
 A visualization of the output file showing the surface quality of the boxes when hovering over them with the mouse cursor. Color coding is based on the average value.}%
     \label{fig:visualization}
 \end{figure}
-With such an output file, it is very easy to create a simple visualization\footnote{https://simra-project.github.io/surfaceQuality/Berlin.html}, e.g., with Leaflet\footnote{https://leafletjs.com/}, as depicted in \Cref{fig:visualization}.
+With such an output file, it is very easy to create a simple visualization\footnote{\url{https://simra-project.github.io/surfaceQuality/Berlin.html}}, e.g., with Leaflet\footnote{\url{https://leafletjs.com/}}, as depicted in \Cref{fig:visualization}.
 Using a visualization like this, also non-tech-savvy users can easily monitor the bicycle road surface quality of a large area and take action where needed.
 
 
 \section{Evaluation}
 \label{sec:evaluation_cyclequality}
-In this section, we evaluate the surface quality analysis by comparing the calculated surface quality of selected street segments across Berlin with their surface type in the real world, which we get from OpenStreetMap (OSM).
+In this section, we evaluate the surface quality analysis by comparing the calculated surface quality of selected street segments across Berlin with their surface type in the real world, which we get from \ac{osm}.
 As data input, we use the existing SimRa datasets~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} (almost 90,000 trips with more than 650,000km in total\footnote{All numbers in this chapter regarding the SimRa dataset are as of September 2022}).
 Based on the intuition that different surface types will also be partially correlated with surface quality, we randomly picked four spots with different surface types.
 To also show the limitations of our approach, we then explored the dataset and manually picked four additional spots where our approach appears to have returned the wrong results.
@@ -204,7 +204,7 @@ Not very surprisingly, the \textit{Liebauer Straße} has very bad surface qualit
 \resizebox{\columnwidth}{!}{
 \begin{tabular}{cccccc}%
 \toprule%
-Street Name          & Surface       & GPS Location        & Mean & Median & Std. Dev.\\%
+Street Name          & Surface       & \ac{gps} Location        & Mean & Median & Std. Dev.\\%
 \midrule%
 \midrule%
 Straße des 17. Juni  & Asphalt       & 52.515369,13.630855 & 1.03 & 1      & 0.17\\%
@@ -239,7 +239,7 @@ A closer look into the specific sections reveal the causes:
 \resizebox{\columnwidth}{!}{
 \begin{tabular}{cccccc}%
 \toprule%
-Street Name          & Surface       & GPS Location        & Mean & Median & Std. Dev.\\%
+Street Name          & Surface       & \ac{gps} Location        & Mean & Median & Std. Dev.\\%
 \midrule%
 \midrule%
 Invalidenstraße           & Asphalt   & 52.526236,13.369196 & 2.24 & 3      & 0.96\\%
@@ -264,12 +264,12 @@ These two factors most certainly are the reason for the distinct two-peak distri
 
 A closer look at the near-miss incident data in \textit{Kaiserin-Augusta-Allee} indicates that people use the bike lane in one direction and the street in the other direction~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3} as one side seems to be in an unusable condition while the other is acceptable.
 Since the bicycle lane is paved with paving stones and the street with asphalt, this leads to different surface quality of the road, depending on the cycling direction.
-Both directions, however, regularly end up in the same 10x10m box as the street is not overly wide, especially considering GPS accuracy.
+Both directions, however, regularly end up in the same 10x10m box as the street is not overly wide, especially considering \ac{gps} accuracy.
 
 \subsection{Sections with (Seemingly) Confusing Results}
 \label{subsec:sections_with_seemingly_confusing_results}
-There are also sections where the surface quality result seem to be completely wrong, when compared to the OSM surface type labels.
-\Cref{tab:mismatch} shows two sections, that are -- according to OSM -- paved with cobblestones and without separate bike lanes, but with very good results, which is confirmed by the PDFs depicted in \Cref{fig:mismatched}.
+There are also sections where the surface quality result seem to be completely wrong, when compared to the \ac{osm} surface type labels.
+\Cref{tab:mismatch} shows two sections, that are -- according to \ac{osm} -- paved with cobblestones and without separate bike lanes, but with very good results, which is confirmed by the PDFs depicted in \Cref{fig:mismatched}.
 
 \begin{figure}
     \centering
@@ -283,7 +283,7 @@ There are also sections where the surface quality result seem to be completely w
 The possibility, that this section has a wrong label and is in fact, not paved with cobblestones may come to mind.
 However, as \Cref{fig:sidewalk} reveals, both streets are indeed paved with cobblestones.
 
-\begin{figure*}[t]
+\begin{figure}%[t]
     %\vspace{-3em}
     \centering
     \subfloat[Straßburger Straße]{\includegraphics[width=0.4\columnwidth]{fig/straßburger_str_2.png}}
@@ -295,7 +295,7 @@ However, as \Cref{fig:sidewalk} reveals, both streets are indeed paved with cobb
     }%
     \label{fig:sidewalk}
     \vspace{-.5em}
-\end{figure*}
+\end{figure}
 
 \Cref{fig:sidewalk} also shows very likely reasons why these sections have very smooth cycling trip.
 The infrastructural conditions incentivize cyclists to prefer the sidewalks over the actual streets.
@@ -311,7 +311,7 @@ Considering these circumstances, it is not surprising to see good surface qualit
 \resizebox{\columnwidth}{!}{
 \begin{tabular}{cccccc}%
 \toprule%
-Street Name        & Surface     & GPS Location        & Mean & Median & Std. Dev.\\%
+Street Name        & Surface     & \ac{gps} Location        & Mean & Median & Std. Dev.\\%
 \midrule%
 \midrule%
 Straßburger Straße & Cobblestone & 52.532273,13.416521 & 1.43 & 1      & 0.87\\%
@@ -330,7 +330,7 @@ Nevertheless, it still has a number of limitations which we discuss in this sect
 \label{subsec:limitation_of_crowdsourced_data}
 As discussed in~\Cref{subsec:limitations_of_crowdsourced_data}, crowdsourced data comes with some limitations.
 However, there is an additional challenge when deriving road surface quality.
-This stems from the fact that different smartphone models have different GPS modules and motion sensors, which leads to the problem that a road can be very smooth according to one smartphone and very rough according to another.
+This stems from the fact that different smartphone models have different \ac{gps} modules and motion sensors, which leads to the problem that a road can be very smooth according to one smartphone and very rough according to another.
 This problem is further aggravated by the wide range of different bicycle types, e.g., racing bicycles or mountain bikes, which in turn also heavily influence the vibrations the smartphone can sense.
 To solve these problems, we rely on the \textit{law of large numbers} and compare how a section's surface quality was relative to the trip. 
 
@@ -344,7 +344,7 @@ This would, however, further increase the disk space, memory, battery and bandwi
 
 \subsection{Behavior of Cyclists}
 \label{subsec:behavior_of_cyclists}
-Due to the GPS inaccuracy, it is impossible to identify whether a cyclist used the actual road or the sidewalk.
+Due to the \ac{gps} inaccuracy, it is impossible to identify whether a cyclist used the actual road or the sidewalk.
 For instance, as discussed in the previous section, \Cref{fig:sidewalk} showing \textit{Straßburger Straße} in Berlin, would be expected to have poor results but in fact has surprisingly good values.
 We believe that this is due to cyclists illegaly using the smooth sidewalk instead of the bumpy road.
 
@@ -352,7 +352,7 @@ Furthermore, cyclists will in practice also avoid the worst potholes and similar
 
 \subsection{Sensor Inaccuracy}
 \label{subsec:sensor_inaccuracy}
-The inaccuracy of the GPS sensors~\cite{merry2019smartphone} combined with noise produced by the motion sensors of the smartphones form another limitation of the dataset.
+The inaccuracy of the \ac{gps} sensors~\cite{merry2019smartphone} combined with noise produced by the motion sensors of the smartphones form another limitation of the dataset.
 We tried to partially address these limitations with our preprocessing steps but they can, of course, not be fully mitigated.
 The only alternative would be using dedicated hardware which, however, will result in significantly less recorded trips due to the adoption barrier.
 
