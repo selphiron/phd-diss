@@ -23,7 +23,7 @@ This mechanism has been available since the initial release of SimRa.
 The second mechanism relies on a \ac{dl} model which was trained with labeled data and is better at detecting incidents, which eases the task of the SimRa users to provide all incidents together with their details.
 The \ac{dl} approach has been live since March 2019.
 
-This chapter combines material published in \cite{karakaya2020simra,karakaya2022cyclesense} and has the following contributions:
+This chapter combines material published in \cite{karakaya2020simra,karakaya2023cyclesense} and has the following contributions:
 \begin{itemize}
 \item We describe the design of the SimRa platform, a crowdsourcing-based data collection and processing platform for cyclist routes and incidents.
 \item We propose an approach that combines signal processing and \ac{ml} techniques to detect incidents based on motion sensor data of cyclists with an \ac{auc} \ac{roc} of 0.906.
@@ -196,7 +196,7 @@ Note, that we store trips and user data per region so that we can analyze (geogr
 \paragraph{Resulting Data}
 The SimRa data set consists of more than 114,500 trips from over 100 regions.
 Berlin accounts for the majority of trips of any region: Almost half the trips and incidents have been recorded there.
-Hanover and Nuremberg are the next largest regions with approximately 8000 and 5500 trips respectively\footnote{65,000 trips from over 65 regions and 3500 trips for Hanover and Nuremberg each, when we submitted our paper~\cite{karakaya2022cyclesense}}.
+Hanover and Nuremberg are the next largest regions with approximately 8000 and 5500 trips respectively\footnote{65,000 trips from over 65 regions and 3500 trips for Hanover and Nuremberg each, when we submitted our paper~\cite{karakaya2023cyclesense}}.
 The SimRa data set and source code are available online and in data repositories\footnote{https://github.com/simra-project/}.
 Due to per trip pseudonymization, we used only trip data for our classifier and could not rely on profiles of individual cyclists.
 Each trip file has two parts: The incident part and the trip part.
@@ -720,11 +720,12 @@ This further complicates the matter.
 \label{subsec:data_set_shift}
 A major challenge in the context of crowdsourced data are data set shifts.
 Depending on the device (see also \autoref{subsec:technical_limitations_of_the_simra_data_set}), but also on other factors, such as the city of origin of the recorded data (see also \autoref{subsec:evaluation_results}), there could be non-stationarities in the data that violate the assumptions underlying almost all \ac{ml} models and thus could impact the generalization performance of the trained models.
-Several types of data set shifts can be distinguished, including \textit{covariate shifts}, meaning shifts in the input data \cite{sugiyama_machine_2012}, \textit{label shifts}, meaning shifts in the distribution of targets \cite{lipton_detecting_2018}, or mixtures thereof.
-Detecting these shifts \cite{polyzotis_data_2018, rabanser_failing_2018, breck_data_2019, abdar_review_2021, bates_testing_2021} and predicting \cite{schelter_learning_2020} or reducing their impact on the generalization performance is an active field of research \cite{schelter_challenges_2018, biessmann_automated_2021}.
-Some approaches aim at model specific improvements to alleviate data set shift \cite{sugiyama_machine_2012}. These approaches have a decisive disadvantage, most of these approaches only work for one model class and require access to the inner workings of the \ac{ml} pipeline, often after the feature extraction step.
-More promising and easier to build and maintain are model agnostic solutions that focus on the data, rather than the models, to detect and counteract data set shifts \cite{biessmann_automated_2021}.
-Extending the training data sets to account for all variation and shifts in the data that the \ac{ml} model should be invariant to, often called \textit{augmentation}, is a popular and effective way of counteracting data set shift, see for instance \cite{cubuk_autoaugment_2019}.
+Several types of data set shifts can be distinguished, including \textit{covariate shifts}, meaning shifts in the input data \cite{sugiyama2012machine}, \textit{label shifts}, meaning shifts in the distribution of targets \cite{lipton2018detecting}, or mixtures thereof.
+Detecting these shifts \cite{polyzotis2018data, rabanser2019failing, polyzotis2019data, abdar2021review, bates2023testing} and predicting \cite{schelter2020learning} or reducing their impact on the generalization performance is an active field of research \cite{schelter2015challenges, biessmann2021automated}.
+Some approaches aim at model specific improvements to alleviate data set shift \cite{sugiyama2012machine}.
+These approaches have a decisive disadvantage, most of these approaches only work for one model class and require access to the inner workings of the \ac{ml} pipeline, often after the feature extraction step.
+More promising and easier to build and maintain are model agnostic solutions that focus on the data, rather than the models, to detect and counteract data set shifts \cite{biessmann2021automated}.
+Extending the training data sets to account for all variation and shifts in the data that the \ac{ml} model should be invariant to, often called \textit{augmentation}, is a popular and effective way of counteracting data set shift, see for instance \cite{cubuk2019autoaugment}.
 In our work, we follow this line of thought of a data-centric AI approach.
 
 
@@ -734,7 +735,7 @@ In this section, we discuss related work starting with publications related to t
 
 \subsection{Traffic Safety\label{subsec:trafficsafety}}
 Studies on safety in bicycle traffic often rely on crowdsourcing, e.g., using Strava\footnote{\url{https://www.strava.com/}} as a data source.
-While the Strava data are heavily biased towards recreational trips, some studies rely on them for analyzing various aspects of safety in bicycle traffic, e.g.,~\cite{hochmair2019estimating,ferster2021strava}.
+While the Strava data are heavily biased towards recreational trips, some studies rely on them for analyzing various aspects of safety in bicycle traffic, e.g.,~\cite{hochmair2019estimating,ferster2021mapping}.
 Blanc and Figliozzi~\cite{blanc2016modeling, blanc2017safety} study the perceived comfort levels of cyclists based on routes taken.
 Wu et al.~\cite{wu2018predicting} predict perceived bicycle safety by combining data from, e.g., \ac{osm}, crime statistics, and parking volumes.
 Similarly, Yasmin and Eluru~\cite{yasmin2016latent} use various open data sources to characterize and provide estimates for bicycle safety in urban areas.

@@ -150,7 +150,7 @@ With that approach we found \num{228347} acceleration maneuvers in the cleaned d
 Distribution fitting processes, which were done with SciPy\footnote{\url{https://scipy.org/}}, showed that the Burr (Type XII) distribution~\cite{burr1942cumulative} $Burr12(x; c,d) = c*d*\frac{x^{c-1}}{(1+x^c)^{d+1}}$ for $x = a_{max} \geq 0$ and $c,d > 0$  fits the data best for the general cyclist model (see also \Cref{fig:analysis_max_acceleration_dist_fit_all}).
 For the models of the slow and fast cyclist models, the Burr (Type III) distribution~\cite{burr1942cumulative}
 
-$Burr3(x; c,d) = c*d*\frac{x^{-c-1}}{(1+x^c)^{d+1}}$ for $x = a_{max} \geq 0$ and $c,d > 0$ fits the data best, while the Mielke Beta-Kappa distribution~\cite{mielke1973distribution}
+$Burr3(x; c,d) = c*d*\frac{x^{-c-1}}{(1+x^c)^{d+1}}$ for $x = a_{max} \geq 0$ and $c,d > 0$ fits the data best, while the Mielke Beta-Kappa distribution~\cite{mielke1973another}
 
 $M\beta\kappa(x; c,d) = \frac{k*x^{k-1}}{(1+x^s)^{1+k/s}}$ for $x = a_{max} > 0$ and $k,s > 0$ is the best fit for the medium cyclist model's acceleration distribution (see also \Cref{fig:analysis_max_acceleration_dist_fit_groups}).
 
@@ -660,7 +660,7 @@ These biases will, of course, be reflected in our analysis results and cannot be
 The SimRa dataset which we used to analyse the longitudinal kinematic behavior contains trips from almost \num{100} regions from Germany, Switzerland and Austria, which increases the generalizability.
 However, to derive and evaluate the left-turn model, we need data from intersections with many left-turns, with the same orientation, e.g., entering the intersection from the south and leaving it to the west.
 Mind, that we also split the trips into three groups: slow, medium and fast.
-Only the regions Berlin, Munich and Nuremberg provide eligible data for this, since almost half the trips are from these regions~\cite{karakaya2022cyclesense}.
+Only the regions Berlin, Munich and Nuremberg provide eligible data for this, since almost half the trips are from these regions~\cite{karakaya2023cyclesense}.
 This is further aggravated by the fact that the preprocessing step (see \Cref{sec:cycling_behavior_in_simra_and_sumo}) further reduces the number of eligible trips and with that the number of intersections with sufficient left-turn maneuvers.
 Nevertheless, this does not pose a threat to the generalizability of our findings -- at least for Germany -- as traffic infrastructure guidelines throughout Germany are standardized.
 Furthermore, adjacent countries such as Austria often also have comparable infrastructure.
