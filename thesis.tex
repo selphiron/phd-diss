@@ -1,4 +1,12 @@
-\documentclass[12pt,oneside]{book}
+\documentclass[12pt,twoside]{book}
+\usepackage{fancyhdr} 
+\fancyhf{}
+\addtolength{\headwidth}{4cm}
+\fancyhead[RO,LE]{\textsl{\leftmark}}
+\fancyfoot[C]{\thepage}
+
+%\cfoot{\thepage}
+\pagestyle{fancy}    
 \DeclareUnicodeCharacter{0300}{\`}
 \DeclareUnicodeCharacter{0301}{\'}
 
@@ -104,16 +112,16 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 %%========================================
 % Frontmatter
 
-\include{frontmatter/front} % This is the titlepage
+\include{frontmatter/titlepage}
+%\include{frontmatter/front} % This is the titlepage
 \setcounter{page}{0}
 \pagenumbering{Roman}
 %\include{frontmatter/declaration}
 \include{frontmatter/summary}
 \include{frontmatter/acknowledgments}
 \tableofcontents
-%\afterpage{\null\thispagestyle{empty}\newpage}
 \include{frontmatter/acronyms}
-\afterpage{\null\thispagestyle{empty}\newpage}
+%\afterpage{\null\thispagestyle{empty}\newpage}
 
 %%=========================================
 % Mainmatter
@@ -145,7 +153,7 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 %\include{backmatter/03_listings}
 % Include more appendices as required.
 
-\cleardoublepage
+%\cleardoublepage
 \addcontentsline{toc}{chapter}{Bibliography}
 \afterpage{\null\thispagestyle{empty}\newpage}
 \defbibheading{notonline}{\chapter*{Bibliography}}

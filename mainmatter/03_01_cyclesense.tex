@@ -1,11 +1,11 @@
 \vspace*{\fill}
 In this part, we present the three main contributions of our work.
-First, we introduce SimRa, a mobile application for collecting cycling trip data, and focus on our approach to automatically detect incidents in bicycle traffic(\Cref{cha:cyclesense}).
-Second, we propose an approach to derive road surface quality from cycling trip data and use the data collected with SimRa to demonstrate how it works(\Cref{cha:cyclequality}).
-Third, we show our approach to improve the bicycle simulation of an urban traffic simulation software called SUMO by using the SimRa dataset to extract the lateral movement and left-turn behavior of cyclists at intersections(\Cref{cha:sumo}).
+First, we introduce SimRa, a mobile application for collecting cycling trip data, and focus on our approach to automatically detect incidents in bicycle traffic~(\Cref{cha:cyclesense}).
+Second, we propose an approach to derive road surface quality from cycling trip data and use the data collected with SimRa to demonstrate how it works~(\Cref{cha:cyclequality}).
+Third, we show our approach to improve the bicycle simulation of an urban traffic simulation software called SUMO by using the SimRa dataset to extract the lateral movement and left-turn behavior of cyclists at intersections~(\Cref{cha:sumo}).
 \vspace*{\fill}
-\cleardoublepage
-\newpage
+%\cleardoublepage
+%\newpage
 \chapter{Crowdsourcing Cycling Trip Data and Detecting Incidents}
 \label{cha:cyclesense}
 In this chapter, we present SimRa\footnote{SimRa is an acronym for \textbf{S}icherheit \textbf{im} \textbf{Ra}dverkehr, which translates to safety in bicycle traffic from German.}, which is a crowdsourcing (see \Cref{sec:crowdsourcing_crowdsensing_background}) platform for collecting cycling trip data.
@@ -151,7 +151,7 @@ We chose these rate settings based on initial experiments in which we identified
 
 \begin{figure}%[ht]
 	\centering
-	\includegraphics[width=\textwidth]{fig/screenshots.png}
+	\includegraphics[width=0.9\textwidth]{fig/screenshots.png}
 	\caption{Screenshots of the SimRa app depicting the user story from left to right.}
 	\label{fig:user-story}
 \end{figure}
@@ -371,7 +371,7 @@ Therefore we focus on the incidents that feature an additional description that 
 As it is very time-consuming, this is the only manual preprocessing step, and we apply it only to the newer Android data set.
 \begin{figure}%[t]
 	\centering
-	\includegraphics[width=0.5\textwidth]{fig/accelerometer-x-axis.png}
+	\includegraphics[width=1\textwidth]{fig/accelerometer-x-axis.png}
 	\caption{The accelerometer readings of an example cycling trip. The encircled spots could indicate an incident but also driving over a curb.}
 	\label{fig:x-axis}
 \end{figure}
@@ -576,14 +576,14 @@ This yields far better results (Figure~\ref{fig:individually}).
 
 \begin{figure}%[t]
 	\centering
-	\begin{subfigure}[b]{0.475\textwidth}
+	\begin{subfigure}[b]{0.462\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{fig/rocauctrainedon73.png}
 		\caption{\small CycleSense trained only on the newer Android trips and evaluated on all parts of the data set.}
 		\label{fig:traindonone}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[b]{0.475\textwidth}
+	\begin{subfigure}[b]{0.462\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{fig/rocauctrainedindividually.png}
 		\caption{\small CycleSense trained and evaluated individually on all parts of the data set. \newline}
