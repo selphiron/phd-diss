@@ -1,25 +1,29 @@
 \vspace*{\fill}
-In this part, we exhibit the three main contributions of our work.
-First, we introduce SimRa, which is a mobile application for gathering cycling trip data and we also focus on our approach to automatically detect incidents in bicycle traffic in \Cref{cha:cyclesense}.
-Second, we suggest an approach to derive the road surface quality from cycling trip data and use the data gathered with SimRa to demonstrate how it works in \Cref{cha:cyclequality}.
-Third, we show our approach to improve the bicycle simulation of an urban traffic simulation software called SUMO, by utilizing the SimRa dataset to extract the lateral movement and the left-turn behavior of cyclists at intersections in \Cref{cha:sumo}.
+In this part, we present the three main contributions of our work.
+First, we introduce SimRa, a mobile application for collecting cycling trip data, and focus on our approach to automatically detect incidents in bicycle traffic~(\Cref{cha:cyclesense}).
+Second, we propose an approach to derive road surface quality from cycling trip data and use the data collected with SimRa to demonstrate how it works~(\Cref{cha:cyclequality}).
+Third, we show our approach to improve the bicycle simulation of an urban traffic simulation software called SUMO by using the SimRa dataset to extract the lateral movement and left-turn behavior of cyclists at intersections~(\Cref{cha:sumo}).
 \vspace*{\fill}
-\chapter{Gathering Cycling Trip Data and Detecting Incidents}
+%\cleardoublepage
+%\newpage
+\chapter{Crowdsourcing Cycling Trip Data and Detecting Incidents}
 \label{cha:cyclesense}
-In this chapter, we present SimRa\footnote{SimRa is an acronym for \textbf{S}icherheit \textbf{im} \textbf{Ra}dverkehr, which translates to safety in bicycle traffic from German.}, which is a crowdsourcing (see \Cref{sec:crowdsourcing_crowdsensing_background}) platform for gathering cycling trip data.
+In this chapter, we present SimRa\footnote{SimRa is an acronym for \textbf{S}icherheit \textbf{im} \textbf{Ra}dverkehr, which translates to safety in bicycle traffic from German.}, which is a crowdsourcing (see \Cref{sec:crowdsourcing_crowdsensing_background}) platform for collecting cycling trip data.
 A special feature of SimRa is its capability to automatically detect incidents in bicycle traffic, which we also show in this chapter.
-SimRa's main objective is to find out hazardous hotspots in bicycle traffic.
-For this, we need to gather recordings of cycling trips, which have to contain user-generated information regarding the incidents, as well as a GPS trace, so that we can map the incidents and find out where they accumulate.
+SimRa's main objective is identifying incident hotspots in bicycle traffic.
+For this, we need to record cycling trips, which have to contain user-generated information regarding the incidents as well as a \ac{gps} trace, so we can map the incidents and identify clusters.
 
 However, a cycling trip can be very long, both in distance and time, which complicates this process for SimRa users since it can be difficult to remember every incident, its details, and its exact location.
-While automatically recording the GPS trace during a cycling trip via a smartphone app is trivial, automatically gathering detailed information such as exact location, type and other participants of the incidents is not.
-It is however possible for the SimRa app to make educated guesses \textit{where} an incident might have happened during a ride based on the data produced by the \ac{imu}, which provides us information about acceleration, orientation, and other gravitational forces.
+While automatically recording the \ac{gps} trace during a cycling trip via a smartphone app is trivial, automatically collecting detailed information such as exact location, type and other participants of the incidents is not.
+It is however possible for the SimRa app to make educated guesses \textit{where} an incident might have happened during a trip based on the data produced by the \ac{imu}, which provides us with information about acceleration, orientation, and other gravitational forces.
 With this information, the user only has to remember whether an incident really happened there and what kind of incident it was, which makes their task easier.
 For this, SimRa has two different mechanisms.
-The first mechanism relies only on the \ac{imu} readings of the ride to suggest points in the ride where an incident might have happened and was available since the initial release of SimRa.
+The first mechanism relies only on the \ac{imu} readings of the ride to suggest points in the trip where an incident might have happened.
+This mechanism has been available since the initial release of SimRa.
 The second mechanism relies on a \ac{dl} model which was trained with labeled data and is better at detecting incidents, which eases the task of the SimRa users to provide all incidents together with their details.
+The \ac{dl} approach has been live since March 2019.
 
-This chapter combines material published in \cite{karakaya2020simra,karakaya2022cyclesense} and has the following contributions:
+This chapter combines material published in \cite{karakaya2020simra,karakaya2023cyclesense} and has the following contributions:
 \begin{itemize}
 \item We describe the design of the SimRa platform, a crowdsourcing-based data collection and processing platform for cyclist routes and incidents.
 \item We propose an approach that combines signal processing and \ac{ml} techniques to detect incidents based on motion sensor data of cyclists with an \ac{auc} \ac{roc} of 0.906.
@@ -27,7 +31,7 @@ This chapter combines material published in \cite{karakaya2020simra,karakaya2022
 \item We discuss to which degree our approach can automate incident detection and which additional sensors are needed for full automation.
 \end{itemize}
 
-This chapter continues with background information about \ac{dl} and \ac{tsc} following Ismail Fawaz et al.~\cite{ismail2019deep} in \Cref{sec:deep_learning_background}, which is important to understand the second mechanism to automatically detect incidents, mentioned above.
+This chapter continues with background information about \ac{dl} and \ac{tsc} following Ismail Fawaz et al.~\cite{ismail2019deep} in \Cref{sec:deep_learning_background}, which is important to understand the second mechanism for automatically detecting incidents, mentioned above.
 Afterward, we give a more detailed description of the SimRa mobile application in \Cref{sec:simra}.
 In \Cref{sec:detecting_near_miss_incidents}, we explain how we use \ac{dl} to automatically detect incidents.
 We evaluate our approach in \Cref{sec:evaluation_cyclesense}, which we follow up with a discussion in \Cref{sec:discussion_cyclesense}.
@@ -35,7 +39,7 @@ Finally, we give an overview of alternative approaches and summarize this chapte
 
 \section{Deep Learning for Time Series Classification}
 \label{sec:deep_learning_background}
-In this section, we explain background information about time series classification and deep learning, which is used by SimRa to automatically detect the incidents.
+In this section, we discuss background information about time series classification and deep learning, which is used by SimRa for automatically detecting the incidents.
 
 \subsection{Time Series Classification}
 As we will see in \Cref{sec:simra}, the SimRa dataset consists of multivariate time series.
@@ -43,7 +47,7 @@ A multivariate time series consists of $n \in \mathbb{N}$ different univariate t
 In short, a multivariate time series is a chronologically ordered set of variables, in our case different \ac{imu} readings.
 An example of a univariate time series is the data produced by a distance sensor, where we have pairs of $(distance,timestamp)$, chronologically ordered by $timestamp$.
 An example of a multivariate time series is a weather station database, that reports the temperature, humidity, and wind force every hour.
-The task of \ac{tsc} is to assign a one-hot label to each entry of the time series, e.g., whether the weather is safe for an airplane to fly or not. 
+The task of \ac{tsc} is to assign a one-hot\footnote{One-hot encoding converts categorical variables into binary vectors, where each category is represented by a combination of 0s and 1s.} label to each entry of the time series, e.g., whether the weather is safe for an airplane to fly or not.
 
 \subsection{Deep Learning for Time Series Classification}
 With their rise, \acp{dnn} have drawn attraction to themselves from the field of \ac{tsc}.
@@ -51,11 +55,11 @@ With their rise, \acp{dnn} have drawn attraction to themselves from the field of
 \begin{figure}
     \center
     \includegraphics[width=\columnwidth]{fig/deep_learning_structure.pdf}
-    \caption{Structure of a Deep Learning approach to time series classification: A classifier that maps a time series to a probability distribution of classes\cite{chen2021deep}}
+    \caption{Structure of a Deep Learning approach to time series classification: A classifier that maps a time series to a probability distribution of classes~\cite{chen2021deep}}
     \label{fig:deep_learning_structure}
 \end{figure}
 
-As shown in figure~\ref{fig:deep_learning_structure}, a Deep Learning approach to \ac{tsc} consists of a classifier (in this case a \ac{mlp}, which is a type of a \ac{dnn}), that maps a time series to a probability distribution of $K$ classes.
+As shown in Figure~\ref{fig:deep_learning_structure}, a Deep Learning approach to \ac{tsc} consists of a classifier (in this case a \ac{mlp}, which is a type of a \ac{dnn}), that maps a time series to a probability distribution of $K$ classes.
 
 \begin{figure}
     \center
@@ -92,7 +96,7 @@ Contrary, in \textit{End-to-End} Deep Learning the feature extraction is include
 Distinctive Models of the \textit{End-to-End}-type have been realized with \acp{mlp}~\cite{wang2017time,geng2019cost}, \acp{cnn}~\cite{che2017boosting,ismail2018evaluating,liu2018time}, and hybrid networks~\cite{lin2017gcrnn,serra2018towards}.
 
 
-\section{SimRa - A Platform for Gathering Cycling Trips and Incidents in Bicycle Traffic}
+\section{SimRa -- A Platform for Crowdsourcing Cycling Trips and Incidents in Bicycle Traffic}
 \label{sec:simra}
 In this section, we give a general overview of the SimRa platform which comprises all things related to the collection, storage, and analysis of crowdsourced cycling data which we will focus on in the following sections.
 
@@ -100,52 +104,57 @@ In this section, we give a general overview of the SimRa platform which comprise
 \label{subsec:simra}
 
 For data acquisition we rely on an app installed on the smartphones of participating cyclists.
-This app collects data and detects incidents during bicycle trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see \Cref{subsec:data_acquisition}).
+This app collects data and detects incidents during cycling trips, lets users add comments or labels, and anonymizes the data before uploading it to our servers (see \Cref{subsec:data_acquisition}).
 The anonymized data comprises information on cyclist routes, incidents, user demographics, as well as some aggregated trip statistics.
 Finally, we continuously process and analyze collected data to gain insights into dangerous street segments and intersections.
-For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection~\footnote{https://simra-project.github.io/dashboard/}.
+For this, we have developed one approach for interactive exploratory data analysis based on a web application and one for confirmatory data analysis~\cite{bermbach2017cloud} which automatically derives a ``dangerousness'' score per street segment and intersection (see \Cref{subsec:data_analysis}).
 
 \subsection{Data Acquisition}
 \label{subsec:data_acquisition}
 For data acquisition, we could either rely on dedicated hardware or use commonly available hardware such as smartphones.
 While dedicated hardware has certain benefits, e.g., higher measurement precision, such projects are inherently limited in scale:
+
+An example of this is the Radmesser project~\footnote{https://interaktiv.tagesspiegel.de/radmesser/} which built custom sensors to track close pass incidents.
+While the data quality is indeed rather high, the project was limited to a total of 100 cyclists (only partly in parallel).
+As a result, the project could not achieve full coverage of Berlin streets.
+For example, some incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single cycling trip in the Radmesser data.
+We decided for project scalability and collect data with smartphones only.
+Our goal is to collect data in a way that allows us (i) to identify incident hotspots as well as the kind of incidents and (ii) to identify the routes of cyclists (in which unnecessary detours are likely to identify severe incident hotspots).
+%, and (iii) to collect additional data with the goal of improving automated incident detection.
+
+Overall, our data acquisition process has five steps and follows the structure shown in Figure~\ref{fig:data_acquisition_process} (we describe the steps in the following in detail).
+This process runs continuously and in parallel as cyclists may create data for individual cycling trips at any time.
+During a trip, we first record sensor data using the built-in sensors of a cyclist's smartphone.
+Upon completion of a trip, we analyze the raw data to automatically detect incidents.
+Afterwards, the cyclist can enrich collected data with labels and annotations, use a number of anonymization measures, and upload the data to our backend servers.
 \begin{figure}
     \center
     \includegraphics[width=0.5\columnwidth]{fig/data_acquisition_process.pdf}
     \caption{In the data acquisition process, collected data is manually annotated and anonymized before being uploaded to our backend servers.}
     \label{fig:data_acquisition_process}
 \end{figure}
-An example of this is the Radmesser project~\footnote{https://interaktiv.tagesspiegel.de/radmesser/} which built custom sensors to track close pass incidents.
-While the data quality is indeed rather high, the project was limited to a total of 100 cyclists (only partly in parallel).
-As a result, the project could not achieve full coverage of Berlin streets.
-For example, some incident hotspots in terms of close passes that we were able to identify in SimRa did not even have a single bicyle trip in the Radmesser data.
-We decided for project scalability and collect data with smartphones only.
-Our goal is to collect data in a way that allows us (i) to identify incident hotspots as well as the kind of incidents and (ii) to identify the routes of cyclists (in which unnecessary detours are likely to identify severe incident hotspots).
-%, and (iii) to collect additional data with the goal of improving automated incident detection.
-
-
-Overall, our data acquisition process has five steps and follows the structure shown in figure~\ref{fig:data_acquisition_process} (we describe the steps in the following in detail).
-This process runs continuously and in parallel as cyclists may create data for individual bicycle trips at any time.
-During a trip, we first record sensor data using the built-in sensors of a cyclist's smartphone.
-Upon completion of a trip, we analyze the raw data to automatically detect incidents.
-Afterwards, the cyclist can enrich collected data with labels and annotations, use a number of anonymization measures, and upload the data to our backend servers.
-
 \paragraph{Data Recording}
 In the SimRa app, users manually start recording before they begin cycling (left part of Figure~\ref{fig:user-story}).
 During a cycling trip, we track three sensors at varying rates per minute.
-First, we query the GPS sensor every three seconds; this returns the current location and a radius with an accuracy confidence value of 68\%.
+First, we query the \ac{gps} sensor every three seconds; this returns the current location and a radius with an accuracy confidence value of 68\%.
 Second, we query the smartphone's accelerometer at 50Hz.
 %These values include the effects of gravity and are in $m/s^2$.
 While such a high sampling rate allows us to detect sudden peaks, this also leads to an unnecessary large data set which typically needs to be uploaded via mobile networks.
 Thus, we aggregate the data based on a moving average across 30 values of which we only consider every sixth value.
 This reduces the amount of data while still retaining all peaks in sensor readings.
-Third, we store the device orientation based on the smartphone's gyroscope sensor every three seconds.
+Third, we store the device orientation based on the smartphone's gyroscope sensor at 50Hz and aggregate the data like we do for the accelerometer data.
 These values describe the rate of rotation around the X/Y/Z axis in rad/s and allow us to correctly interpret the direction of the acceleration values.
 Each sensor measurement, together with a timestamp, is stored locally on the device.
 
 We chose these rate settings based on initial experiments in which we identified the data collection rates and aggregation schemes as a sweet spot between system overload and information loss.
 
 
+\begin{figure}%[ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{fig/screenshots.png}
+	\caption{Screenshots of the SimRa app depicting the user story from left to right.}
+	\label{fig:user-story}
+\end{figure}
 
 \paragraph{Automated Incident Detection}
 After a cycling trip, as soon as the cyclist stops the recording, we analyze the recorded data to identify incidents.
@@ -162,7 +171,7 @@ In practice, this heuristic works well for cyclists with a ``relaxed'' cycling s
 For cyclists with a more ``rapid'' style of cycling, our heuristic usually identifies either accidents, severe bumps, or traffic lights but usually not incidents.
 The heuristic is also inherently limited as it cannot detect close passes and similar incidents which do not materialize as acceleration spikes.
 
-There was an alternative approach~\cite{sanchez2020detecting} using a simple Fully Connected Network (FCN) architecture without considering gyroscope sensor features yet.
+There was an alternative approach~\cite{sanchez2020detecting} using a simple \ac{fcn} architecture without considering gyroscope sensor features yet.
 
 \paragraph{Data Labeling and Annotation}
 
@@ -174,7 +183,7 @@ Instead, we ask the cyclist to edit the pre-detected set of incidents (i.e., add
 
 \paragraph{Data Anonymization}
 
-One of our side goals in SimRa is to preserve the privacy of our users, which is mainly achieved through three mechanisms: \emph{Delayed recording} allows users to define a time and a distance threshold after which a recording will start, \emph{trip cropping} allows users to crop their bicycle trip manually to hide where they started or arrived (middle part of Figure~\ref{fig:user-story}), and \emph{per-record pseudonymization} stores demographic and trip data separately so that they cannot be connected to individual users.
+One of our side goals in SimRa is to preserve the privacy of our users, which is mainly achieved through three mechanisms: \emph{Delayed recording} allows users to define a time and a distance threshold after which a recording will start, \emph{trip cropping} allows users to crop their cycling trip manually to hide where they started or arrived (middle part of Figure~\ref{fig:user-story}), and \emph{per-record pseudonymization} stores demographic and trip data separately so that they cannot be connected to individual users.
 Furthermore, each trip is pseudonymized separately.
 
 \paragraph{Data Upload and Storage}
@@ -184,24 +193,16 @@ This is necessary to avoid automated attacks on our backend as we do not have a 
 So far, this has sufficed as extracting the salt from the app binary requires enough manual effort to make this infeasible for automated attacks.
 Note, that we store trips and user data per region so that we can analyze (geographic) regions separately.
 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\textwidth]{fig/screenshots.png}
-	\caption{Screenshots of the SimRa app depicting the user story from left to right.}
-	\label{fig:user-story}
-\end{figure}
-
-
 \paragraph{Resulting Data}
-The SimRa data set consists of more than 114,500 rides from over 100 regions.
-Berlin accounts for the majority of rides of any region: Almost half the rides and incidents have been recorded there.
-Hanover and Nuremberg are the next largest regions with approximately 8000 and 5500 rides respectively\footnote{65,000 rides from over 65 regions and 3500 rides for Hanover and Nuremberg each, when we submitted our paper~\cite{karakaya2022cyclesense}}.
+The SimRa data set consists of more than 114,500 trips from over 100 regions.
+Berlin accounts for the majority of trips of any region: Almost half the trips and incidents have been recorded there.
+Hanover and Nuremberg are the next largest regions with approximately 8000 and 5500 trips respectively\footnote{65,000 trips from over 65 regions and 3500 trips for Hanover and Nuremberg each, when we submitted our paper~\cite{karakaya2023cyclesense}}.
 The SimRa data set and source code are available online and in data repositories\footnote{https://github.com/simra-project/}.
-Due to per ride pseudonymization, we used only ride data for our classifier and could not rely on profiles of individual cyclists.
-Each ride file has two parts: The incident part and the ride part.
-The incident part lists all incidents of the ride.
-The ride part consists of timestamps, GPS, accelerometer, and gyroscope sensor readings. In more recent versions of the app, linear accelerometer and rotation vector data are also included.
-The recording frequencies of the various sensors vary a lot (See table~\ref{tab:theoretical-measurements}) and as a result require a partition of the SimRa data set in three distinct parts: older Android rides, newer Android rides, and iOS rides.
+Due to per trip pseudonymization, we used only trip data for our classifier and could not rely on profiles of individual cyclists.
+Each trip file has two parts: The incident part and the trip part.
+The incident part lists all incidents of the trip.
+The trip part consists of timestamps, \ac{gps}, accelerometer, and gyroscope sensor readings. In more recent versions of the app, linear accelerometer and rotation vector data are also included.
+The recording frequencies of the various sensors vary a lot (See table~\ref{tab:theoretical-measurements}) and as a result require a partition of the SimRa data set in three distinct parts: older Android trips, newer Android trips, and iOS trips.
 
 
 
@@ -220,7 +221,7 @@ The recording frequencies of the various sensors vary a lot (See table~\ref{tab:
 		\hline
 	\end{tabular}%
 	}
-	\caption{Theoretical measurement frequencies of different sensors in different parts of the SimRa data set. 
+	\caption{Theoretical measurement frequencies of different sensors in different parts of the SimRa data set.
 		Note that these are only the theoretical frequencies that deviate significantly from the empirical measurement frequencies that can be observed in the data set (see Section \ref{sec:discussion_cyclesense}).}
 	\label{tab:theoretical-measurements}
 \end{table}
@@ -231,16 +232,16 @@ While SimRa could be classified as an \textit{infrastructure application} with a
 They are also asked to classify, annotate, and describe the incidents they encounter during their cycling trip.
 If we go through the different aspects that characterize a crowdsourcing application (see \Cref{sec:crowdsourcing_crowdsensing_background}) we can say that SimRa is a light-weight crowdsourced application.
 The \textit{degree of human involvement} is medium.
-While the users have to start and stop the recording and have to give additional information about the ride and incidents, no input is needed during the cycling trip and the app records the trip passively.
+While the users have to start and stop the recording and have to give additional information about the trip and incidents, no input is needed during the cycling trip and the app records the trip passively.
 There is a rather higher degree of \textit{location relevance}.
-Although the annotation of the ride can be done wherever, a cycling trip can only be recorded when the cyclist is physically at a location.
-It is not possible to record a ride in a location without being physically there (at least not without spoofing the GPS location of the smartphone).
+Although the annotation of the trip can be done at any place and time, a cycling trip can only be recorded when the cyclist is physically at a location.
+It is not possible to record a trip in a location without being physically there (at least not without spoofing the \ac{gps} location of the smartphone).
 There is a minimal \textit{knowledge requirement} the participants have to fulfill.
-They must know, that they only have to report incidents and not a static hazard or a nuisance such as a very long red light.
+They need to know, that they only have to report incidents and not a static hazard or a nuisance such as a very long red light.
 The \textit{participation incentive} in SimRa is purely intrinsic.
 There are no external benefits to using SimRa, such as monetary compensation.
 The \textit{data flow} is hybrid, since there is preprocessing involved in the SimRa app, that happens on the smartphone.
-However, it would be wrong to label SimRa as a fully-fledged crowdsourcing project, since the \textit{Application User} and \textit{Data Processing Platform}, are basically merged together and there is no allocation of tasks.
+However, it would be wrong to label SimRa as a fully-fledged crowdsourcing project, since the \textit{Application User} and \textit{Data Processing Platform}, are basically merged and there is no allocation of tasks.
 The task is to record cycling trips, add additional details about the trip and the incidents, and upload the data.
 Hence, we consider SimRa as a (lightweight) crowdsourcing project.
 
@@ -249,28 +250,112 @@ SimRa can clearly be considered a Citizen Science project, as it fulfills the Te
 \begin{enumerate}
 \item The users are crucial for the project, as they contribute their cycling trip data.
 \item There is a genuine scientific outcome, as this thesis shows, and the informing management decisions and environmental policies.
-\item While the benefits of the citizen scientists are not as apparent as the professional scientists, they also profit in the long run, if the project goal of improving bicycle traffic safety increases.
+\item The benefits of the citizen scientists, who are participants of the SimRa project, may not be immediately apparent, particularly in comparison to the professional scientists who initiated the project as part of their professional duties and who do it as part of their jobs.
+However, they also stand to profit over the long term, should the project succeed in improving bicycle traffic safety by having safer cycling trips.
 \item While the citizen scientists' main task is to contribute cycling trip and incident data, they are free and encouraged to also participate in other stages of the scientific process.
 E.g., the dataset is published as open data and everyone can analyze the data for insights about traffic safety.
-\item We provide multiple channels for the citizen scientists to inform themselves about the progress of the project, such as through our social media account\footnote{\url{https://twitter.com/SimRa_App}} as well as a website\footnote{https://simra-project.github.io/}.
-\item In each of our published papers, as well as in this thesis, we point to possible limitations and biases (see \Cref{sec:discussion_cyclesense,sec:discussion_cyclequality,sec:discussion_sumo,sec:limitations_of_crowdsourced_data}). 
+We also ran analyses and app design workshops with citizens.
+\item We provide multiple channels for the citizen scientists to inform themselves about the progress of the project, such as through our social media account\footnote{\url{https://twitter.com/SimRa_App}} as well as a website\footnote{\url{https://simra-project.github.io/}}.
+\item In each of our published papers, as well as in this thesis, we point to possible limitations and biases (see \Cref{sec:discussion_cyclesense,sec:discussion_cyclequality,sec:discussion_sumo,subsec:limitations_of_crowdsourced_data}).
 \item We publish the SimRa dataset as open data~\cite{dataset_simra_set1,dataset_simra_set2,dataset_simra_set3}
-\item While we don't mention any citizen scientists directly, since there would be too many, we make sure that it is obvious, that we rely on participating citizen scientists.
-\item In each of our published papers, as well as in this thesis, we evaluate the scientific output (see \Cref{sec:evaluation_cyclesense,sec:evaluation_cyclequality,sec:evaluation_sumo}). 
-\item We designed SimRa to be as privacy-friendly as possible and have a very strict privacy policy statement\footnote{https://www.tu.berlin/en/mcc/research/projects/simra-privacy-policy-statement}.
+\item While we do not mention any citizen scientists directly, since there would be too many, we make sure that it is obvious, that we rely on participating citizen scientists.
+\item In each of our published papers, as well as in this thesis, we evaluate the scientific output (see \Cref{sec:evaluation_cyclesense,sec:evaluation_cyclequality,sec:evaluation_sumo}).
+\item We designed SimRa to be as privacy-friendly as possible and have a very strict privacy policy statement\footnote{\url{https://www.tu.berlin/en/3s/research/projects/simra-privacy-policy-statement}}.
 \end{enumerate}
+
+\subsection{Data Analysis}
+\label{subsec:data_analysis}
+The SimRa platform offers two options for data analysis: exploratory and confirmatory data analysis~\cite{bermbach2017cloud}.
+While the first is used to identify new and possibly unexpected insights in an interactive way, the latter is used to calculate predefined metrics in a fully automated way.
+
+\paragraph{Exploratory Data Analysis} \label{subsec:exploratory}
+For exploratory data analysis, we have designed a web application that allows users to interactively explore the collected data based on visual analysis.
+The web application plots trips as lines and incidents as markers layered on a map.
+
+A key feature is the set of filters through which users can filter trips and incidents based on time or trip data properties as described in~\Cref{subsec:data_acquisition}.
+
+Based on the web application, users can identify incident hotspots by first looking for incident clusters and then comparing them to the number of trips on a particular street segment or intersection.
+
+
+\paragraph{Confirmatory Data Analysis}
+Our main goal here is to identify incident hotspots, i.e., the most dangerous street segments, so this approach focuses on achieving this goal.
+
+\textit{Data Model:} To identify incident hotspots, we first translate the collected data into a form where incidents can be mapped to intersections or street segments.
+For this purpose, we have designed a simple graph model that abstracts a map: nodes represent intersections\footnote{For our purposes, an intersection is a place more than two streets meet and a street is any public way which may legally be used by cyclists.}, and edges represent street segments in between intersections.
+Figure~\ref{fig:map_to_graph} shows an example of this.
+
+\begin{figure}
+    \center
+    \includegraphics[width=0.65\columnwidth]{fig/map_to_graph.pdf}
+		\caption{Example: Map and graph representation of an area in Berlin\protect\footnotemark}
+    \label{fig:map_to_graph}
+\end{figure}
+\footnotetext{Map data copyrighted by OpenStreetMap and available from \url{openstreetmap.org}}
+Beyond this, our graph model is in fact a weighted graph so that we can enrich it with trip and incident data.
+Each node has three weights.
+The first (in the following $t$) describes the number of trips which we have recorded for the respective intersection.
+The second and third are vectors of length eight (there are eight incident types) and describe the number of scary ($s$) and non-scary ($n$) incidents which we recorded for the respective intersection.
+
+Edges also use the same weights as nodes.
+In contrast to nodes, however, the vectors $s$ and $n$ are eight-by-two matrices as we also need to consider the cycling direction during the incident.
+For the same reason, the number of trips $t$ is a vector of length two.
+Finally, edges also store the length $l$ of the respective street segment as some street segments, especially in downtown areas, might be very short while others may span several kilometers.
+
+
+\textit{Scoring:} Based on this data model, we can calculate a score that describes how dangerous a particular street segment or an intersection is.
+Intuitively, more incidents means higher danger score.
+This, however, is not necessarily true as dangerousness is essentially the ratio of incidents to trips.
+We, hence, need to consider the number of trips in our scoring function.
+Furthermore, we believe that scary incidents should have more impact on the score than non-scary ones.
+Hence, we propose the following formula to calculate the dangerousness score for street segments and intersections:
+\begin{equation} \label{eq:score} score = \frac{1}{t} \cdot (\alpha \cdot s + n)\end{equation}
+
+In that formula, $\alpha$ is the severity factor which affects how much more weight we assign to scary incidents than to non-scary ones.
+A survey among cyclists in Berlin indicates that $4.4$ might be a good value for $\alpha$.
+
+For street segments, $score$ is a matrix with the incident categories as rows and street direction as columns; for intersections, $score$ is a vector.
+Both will usually be further aggregated based on the respective needs:
+First, when the direction information of street segments is not relevant, the $score$ can further be simplified by summing up both columns pairwise.
+This makes the comparison of streets and intersections easier since intersections do not have a direction in our model.
+Similarly, the incident categories, i.e., the respective row entries, can be summed up so that the result is one score value for intersections and one score value per direction for street segments.
+Of course, both aggregation methods can and will be combined in practice.
+
+For improved comparability of street segments, we also need to account for the length differences, especially when the length of the shortest and the longest street segment is very different.
+For this purposes, we propose a length-adjusted score for street segments:
+\begin{equation} \label{eq:score2} score = \frac{1}{t\cdot l} \cdot (\alpha \cdot s + n)\end{equation}
+
+Length-adjusted scores can be aggregated in the same way as the standard scores.
+Although they are useful for better comparison of street segments, they further complicate the comparison of street segments and intersections.
+
+Based on these scores, we can identify incident hotspots by using either a top-k approach or by manually defining a threshold score.
+We suggest to only accept nodes or edges as incident hotspots if the respective number of trips exceeds a minimum, e.g., depending on the size of the data set.
+
+\textit{Model Population:}
+For automated data analysis, the model above needs to be populated with data.
+As the SimRa data set specifies incidents and trips based on a sequence of \ac{gps} locations and not based on street segments and intersections, we first need a mapping from coordinates to our model.
+For this, we propose to enhance the edges and nodes in our model with a polygon each describing the geo-shape of the respective intersection or street segment.
+Such data can be obtained manually for small areas or automatically from digital cadastres and public sources such as \ac{osm}\footnote{\url{https://www.openstreetmap.com/}}.
+
+In a second step, the SimRa data set can then be mapped onto the model by checking for each location contained in a trip file in which polygon it is contained.
+While we discard \ac{gps} values with low accuracy in the smartphone app, it may still be necessary to smooth the \ac{gps} trace.
+In practice, this is usually done either based on Kalman filters or the least squares method.
+Especially the latter approach is likely to be a good fit as the set of correct values, i.e., streets and intersections, is limited.
+
+After smoothing and matching, we can easily determine how many trips are going through an intersection or street segment and can also map incidents to the corresponding street segment or intersection.
+
+We publish the resulting interactive maps online~\footnote{\url{https://simra-project.github.io/dashboard/}} so that (citizen) scientists, cyclists, city planners, and policy makers can analyze the data.
 
 \section{Detecting Incidents with Deep Learning}
 \label{sec:detecting_near_miss_incidents}
-This section describes the process of automatically detecting incidents. 
+This section describes the process of automatically detecting incidents.
 Please note that the SimRa data are not optimized for automated processing and \ac{ml} but rather for aggregated statistics and review by humans.
 Therefore, several preprocessing steps are needed (Section~\ref{subsec:preprocessing}).
-We describe our \ac{ml} model in Section~\ref{subsec:model_architecture} and the training process in Section~\ref{subsec:model_training}.
+We describe our \ac{dl} model in Section~\ref{subsec:model_architecture} and the training process in Section~\ref{subsec:model_training}.
 
 
 \subsection{Preprocessing}
 \label{subsec:preprocessing}
-To overcome some limitations of the SimRa data set, we use data cleaning and preprocessing steps, in a sequential multi-stage manner, some of which are specific to some model types that will be used afterwards to classify the incidents within bicycle trips.
+To overcome some limitations of the SimRa data set, we use data cleaning and preprocessing steps, in a sequential multi-stage manner, some of which are specific to some model types that will be used afterwards to classify the incidents within cycling trips.
 
 Before the preprocessing phase, a typical trip can be expressed by a $n \times d$ sparse matrix $X^{(i)}$, where $d$ describes the number of sensor features and $n$ represents the number of timestamps in a given trip $i \in \{1,...,R\}$.
 
@@ -279,21 +364,20 @@ Using the linear accelerometer features in addition did not lead to a significan
 Furthermore, the linear accelerometer and the rotation vector features are only available in the newer Android trips.
 The non-sensory features such as phone location and bike type have a non-logical strong correlation with incidents caused by issues in the data recording phase and are therefore not used.
 
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.5\textwidth]{fig/accelerometer-x-axis.png}
-	\caption{The accelerometer readings of an example bicycle trip. The encircled spots could indicate an incident but also driving over a curb.}
-	\label{fig:x-axis}
-\end{figure}
-
 The preprocessing pipeline starts off with a manual label cleaning procedure that aims to remove some of the wrongly labeled incidents.
 Identifying them solely based on time series data is practically impossible for a human.
 When visualizing the accelerometer sensor readings, incidents usually stand out as sudden spikes (see Figure~\ref{fig:x-axis}), but they also could be caused by driving over a curb or suddenly stopping due to a red light.
 Therefore we focus on the incidents that feature an additional description that was provided by the users.
 As it is very time-consuming, this is the only manual preprocessing step, and we apply it only to the newer Android data set.
+\begin{figure}%[t]
+	\centering
+	\includegraphics[width=1\textwidth]{fig/accelerometer-x-axis.png}
+	\caption{The accelerometer readings of an example cycling trip. The encircled spots could indicate an incident but also driving over a curb.}
+	\label{fig:x-axis}
+\end{figure}
 Note that this procedure did not result in a fully cleaned data set.
 Next, the timestamps within trips are sorted.
-Afterwards, we sort out invalid rides, i.e., rides that contain adjacent timestamps that have been recorded with a gap of more than 6 seconds.
+Afterwards, we sort out invalid trips, i.e., trips that contain adjacent timestamps that have been recorded with a gap of more than 6 seconds.
 Furthermore, we remove outliers based on the statistical definition of outliers by Tukey et al.~\cite{tukey1977exploratory} that characterizes a data point as an outlier if it fulfills one of the equations $Outlier < q_{25} - k \cdot IQR$ or $Outlier > q_{75} + k \cdot IQR$ where the \ac{iqr} is equal to the difference between the upper and lower quartiles \cite{upton1996understanding, zwillinger1999crc}.
 The $k$-values we are utilizing are 1.5 for \ac{gps} outliers regarding the accuracy feature and 3.0 for velocity outliers, as we have seen reasonable results for these values.
 
@@ -309,7 +393,7 @@ For better convergence of the stochastic gradient descent optimizer used in the 
 This is nearly always an advantageous preprocessing step as it improves model stability~\cite{bishop1995neural}.
 
 Training the model on individually labeled timestamps did not appear to be a promising approach since incidents have a certain duration, which is typically longer than 100 ms, and it is highly unlikely that the user correctly specifies the label at the exact timestamp when the incident occurred.
-For that reason, we split our ride data into 10-second buckets, following a non-overlapping sliding window approach~\cite{ortiz2011dynamic}.
+For that reason, we split our trip data into 10-second buckets, following a non-overlapping sliding window approach~\cite{ortiz2011dynamic}.
 These buckets are then labeled in the following manner: we define a bucket as an incident bucket if any timestamp inside that bucket was labeled as an incident.
 Otherwise, we define it as a non-incident bucket.
 
@@ -324,7 +408,7 @@ This results in a more advanced temporal feature extraction approach that exploi
 %	\label{fig:fft}
 %\end{figure}
 
-To cope with the heavy label imbalance (e.g., $\approx$ 1 : 170 on rides that have recently been recorded on Android devices) that is present in the data, we use a \ac{gan} with a \ac{cnn} architecture to generate augmented data and thereby lower the imbalance gap by 10\% as this has shown to produce good results in our experiments.
+To cope with the heavy label imbalance (e.g., $\approx$ 1 : 170 on trips that have recently been recorded on Android devices) that is present in the data, we use a Generative Adversarial Network with a \ac{cnn} architecture to generate augmented data and thereby lower the imbalance gap by 10\% as this has shown to produce good results in our experiments.
 The aforementioned $f$-point \ac{dft} is applied on these synthetic incident buckets as well.
 
 \subsection{Model Architecture}
@@ -334,23 +418,23 @@ As our problem setting is similar to the \ac{har} task (see Section~\ref{sec:rel
 In a first step, the network input is split based on the sensor that has produced it into accelerometer, gyroscope and \ac{gps} (i.e., velocity).
 Simultaneously, the previously Fourier transformed accelerometer and gyroscope data are separated into their real and imaginary parts.
 
-Then, \ac{sf} is applied, a method that considers each sensor individually in order to extract sensor-specific information~\cite{elmenreich2002sensor}. 
+Then, \ac{sf} is applied, a method that considers each sensor individually in order to extract sensor-specific information~\cite{elmenreich2002sensor}.
 Furthermore, it also enables the application of different individual subnets that are varying in complexity for each sensor input.
 Each subnet has three convolutional layers that use 64 kernels, kernel sizes between $(3,3,1)$ and $(3,3,3)$, and a stride size of $1$.
-While in the first convolutional layer no padding is used, the second and third convolutional layers apply zero-padding which differs from the original DeepSense framework proposed by Yao et al.~\cite{yao2017deepsense}. 
-Another difference is that we use 3D-convolution instead of the 2D- and 1D-convolution that were applied in the original model. 
-3D-\acp{cnn} are more suitable for detecting spatiotemporal features compared to 2D-\acp{cnn}~\cite{tran2015learning}. 
+While in the first convolutional layer no padding is used, the second and third convolutional layers apply zero-padding which differs from the original DeepSense framework proposed by Yao et al.~\cite{yao2017deepsense}.
+Another difference is that we use 3D-convolution instead of the 2D- and 1D-convolution that were applied in the original model.
+3D-\acp{cnn} are more suitable for detecting spatiotemporal features compared to 2D-\acp{cnn}~\cite{tran2015learning}.
 The described convolutional layers are complemented by batch normalization layers to reduce internal covariate shifts~\cite{ioffe2015batch}, by \ac{relu} activation, and by Dropout layers for regularization.
 
-Our addition of residual blocks is also a slight modification of the original framework. 
-The reasoning behind that change is that, in some cases, deeper models might have difficulties in approximating identity mappings by multiple nonlinear layers~\cite{he2016deep}. 
+Our addition of residual blocks is also a slight modification of the original framework.
+The reasoning behind that change is that, in some cases, deeper models might have difficulties in approximating identity mappings by multiple nonlinear layers~\cite{he2016deep}.
 Residual blocks have been applied with great success to overcome this issue~\cite{he2016deep}.
 
-Next, the outputs of the different subnets are merged in a convolutional fusion network. 
-Its architecture is similar to the individual subnets containing six convolutional layers, residual blocks, batch normalization, \ac{relu} activation, and Dropout. 
+Next, the outputs of the different subnets are merged in a convolutional fusion network.
+Its architecture is similar to the individual subnets containing six convolutional layers, residual blocks, batch normalization, \ac{relu} activation, and Dropout.
 The full process is shown in Figure~\ref{fig:sfn}.
 
-\begin{figure}[t]
+\begin{figure}%[t]
 \centering
     \includegraphics[width=0.4\columnwidth]{fig/sensor-and-fusion-networks.png}
     \caption{The model architecture in a nutshell: Using subnetworks for feature extraction of the different sensors (accelerometer, gyroscope, and \ac{gps}) and afterwards a fusion network to combine the features for final incident recognition~\cite{chen2021deep}.}
@@ -358,17 +442,17 @@ The full process is shown in Figure~\ref{fig:sfn}.
 \end{figure}
 
 The last big component of CycleSense is a \ac{rnn}.
-\ac{rnn} architectures such as \ac{lstm}~\cite{hochreiter1997long} or \acp{gru}~\cite{chung2014empirical} are capable of holding information the network has seen before and using it to make predictions in the current state. 
-In doing so, it is possible to identify patterns or relationships inside the timestamps of a bucket or between buckets. 
+\ac{rnn} architectures such as \ac{lstm}~\cite{hochreiter1997long} or \acp{gru}~\cite{chung2014empirical} are capable of holding information the network has seen before and using it to make predictions in the current state.
+In doing so, it is possible to identify patterns or relationships inside the timestamps of a bucket or between buckets.
 Similar to Yao et al.\ \cite{yao2017deepsense}, we also chose stacked \ac{gru} cells as they efficiently improve the model capacity~\cite{goodfellow2016deep}.
 
 To determine the optimal set of parameters for training CycleSense, we have conducted a grid search on a variety of hyperparameters, some of which are shown in Figure~\ref{fig:hpo}.
 
-In the following, we use \ac{gps}, accelerometer, and gyroscope data as model input if not indicated otherwise.  
+In the following, we use \ac{gps}, accelerometer, and gyroscope data as model input if not indicated otherwise.
 Linear accelerometer data was only used in a few experiments as it is not available in our iOS and older Android data sets.
-Our implementation of CycleSense is available on GitHub\footnote{https://github.com/simra-project/CycleSense}.
+Our implementation of CycleSense is available on GitHub\footnote{\url{https://github.com/simra-project/CycleSense}}.
 
-\begin{figure}[t]
+\begin{figure}%[t]
 	\centering
 	\includegraphics[width=\textwidth]{fig/hpo_results.png}
 	\caption{Results of the hyperparameter optimization for the four variables $f$ (the window size), the number of \ac{rnn} units used, the \ac{rnn} cell type utilized, and the learning rate from left to right.}
@@ -380,15 +464,15 @@ Our implementation of CycleSense is available on GitHub\footnote{https://github.
 For model training, the data set was split randomly into a training set (60\%), a validation set (20\%), and a test set (20\%).
 Furthermore, the exact same splits are used for each model to improve comparability.
 We trained the final model for 60 epochs on an NVIDIA K80 GPU.
-We utilized a \ac{bce} loss function that was updated with Adam optimization, a \ac{sgd} method, a learning rate of 0.0001, and early stopping with a patience value of 10 epochs on the \ac{auc} \ac{roc} of the validation set.
+We utilized a Binary Cross-Entropy loss function that was updated with Adam optimization, a Stochastic Gradient Descent method, a learning rate of 0.0001, and early stopping with a patience value of 10 epochs on the \ac{auc} \ac{roc} of the validation set.
 It is important to note that we did not use the complete SimRa data set.
-Instead, we used only a smaller subset of more recent rides recorded on Android devices since the heterogeneity of the data set across different versions and operating systems (see Section \ref{sec:discussion_cyclequality}) did not allow us to train a model properly on the full data set.
+Instead, we used only a smaller subset of more recent trips recorded on Android devices since the heterogeneity of the data set across different versions and operating systems (see Section \ref{sec:discussion_cyclequality}) did not allow us to train a model properly on the full data set.
 In addition, due to limited access to hardware, we focused predominantly on data originating from the Berlin region if not stated otherwise.
 
 As previously described, one notable challenge we were facing was the extreme label imbalance present in the data.
 This is due to the fact that incident buckets are far rarer than non-incident buckets.
 To cope with that, we trained our model by using a weighted loss function with the class weights of the train data set as weights.
-For example, the class weights were 1 and 170 for the rides that have recently been recorded on Android devices.
+For example, the class weights were 1 and 170 for the trips that have recently been recorded on Android devices.
 
 While the DeepSense model was trained in a standard fashion, we use stacking during the training of CycleSense.
 Stacking (or stacked generalization) is an ensemble learning method that combines the predictions of several different models in order to contribute equally to a collective prediction.
@@ -402,7 +486,7 @@ This learning procedure further improved our results as shown in Section~\ref{se
 
 \section{Evaluation}
 \label{sec:evaluation_cyclesense}
-To evaluate CycleSense' training results, we have to put them into context. 
+To evaluate CycleSense' training results, we have to put them into context.
 For this purpose, we compare them to the two detection methods currently used in the app as discussed in Section~\ref{sec:deep_learning_background}.
 We give an overview of the changes we made to the baseline methods with the goal of a fair comparison in Section~\ref{subsec:baselines}.
 We also describe the metrics that we use to compare our model to the baseline methods (Section~\ref{subsec:data_acquisition}) before presenting the results of our evaluation (Section~\ref{subsec:evaluation_results}).
@@ -434,7 +518,7 @@ Therefore, we focus on the \ac{auc} of the \ac{roc} metric, which is insensitive
 \subsection{Evaluation Results}
 \label{subsec:evaluation_results}
 In a first step, we compare CycleSense to the two baselines and common model architectures used in the context of \ac{dl} for \ac{tsc}~\cite{ismail2019deep}.
-All of these were trained on the Android data set consisting of more recent rides which provides the best results for all approaches.
+All of these were trained on the Android data set consisting of more recent trips which provides the best results for all approaches.
 Figure~\ref{fig:roc-auc-results} and Table~\ref{tab:roc-auc-results} show the differences in performance.
 
 The \ac{fcn} and CycleSense clearly outperform the modified heuristic (0.621 \ac{auc} \ac{roc}).
@@ -444,12 +528,12 @@ Furthermore, our model performs better than other model architectures that are c
 With regard to the increasing model complexity, we clearly see diminishing returns.
 We can see this in the example of the rather simple \ac{cnn}-\ac{lstm} model which exhibits a relatively close performance to the much more complex CycleSense model with stacking.
 The \ac{cnn}-\ac{lstm} model has $\approx$ 90,000 parameters, while the CycleSense model has $\approx$ 1,100,000 parameters.
-As a consequence, the time to evaluate the test set of the newer Android data consisting of 795 rides took 4 seconds with the \ac{cnn}-\ac{lstm} model and 56 seconds using CycleSense on the NVIDIA GPU.
+As a consequence, the time to evaluate the test set of the newer Android data consisting of 795 trips took 4 seconds with the \ac{cnn}-\ac{lstm} model and 56 seconds using CycleSense on the NVIDIA GPU.
 
-\begin{figure}[t]
+\begin{figure}%[t]
 	\centering
 	\includegraphics[width=0.8\textwidth]{fig/roc_auc_results_legend.png}
-	\caption{Comparison of the baselines and common model architectures used in the context of \ac{dl} for \ac{tsc}~\cite{ismail2019deep} with the CycleSense model. Note that all of these models have been trained and evaluated on rides contained in the SimRa data set that have been recorded with more recent versions of the SimRa Android app.}
+	\caption{Comparison of the baselines and common model architectures used in the context of \ac{dl} for \ac{tsc}~\cite{ismail2019deep} with the CycleSense model. Note that all of these models have been trained and evaluated on trips contained in the SimRa data set that have been recorded with more recent versions of the SimRa Android app.}
 	\label{fig:roc-auc-results}
 \end{figure}
 
@@ -459,17 +543,17 @@ As a consequence, the time to evaluate the test set of the newer Android data co
 	\begin{tabular}{cccccccccc}
 		\hline
 		\centering
-		& \textbf{TN} & \textbf{FP} & \textbf{FN} & \textbf{TP} & \textbf{\ac{auc} \ac{roc}} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{MCC} \\
+		& \textbf{TN} & \textbf{FP} & \textbf{FN} & \textbf{TP} & \textbf{\ac{auc} \ac{roc}} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{\ac{mcc}} \\
 		\hline\hline
 		\textbf{CycleSense} & 107934 & 10893 & 104 & 400 & \cellcolor{yellow}0.906 & \cellcolor{yellow}0.035 & 0.794 & \cellcolor{yellow}0.068 & \cellcolor{yellow}0.156 \\
 		\hline
-		\textbf{CNN-LSTM} & 106427 & 12400 & 127 & 377 & 0.878 & 0.030 & 0.748 & 0.057 & 0.135 \\
+		\textbf{\ac{cnn}-\ac{lstm}} & 106427 & 12400 & 127 & 377 & 0.878 & 0.030 & 0.748 & 0.057 & 0.135 \\
 		\hline
-		\textbf{FCN} & 100932 & 18500 & 98 & 402 & 0.847 & 0.021 & \cellcolor{yellow}0.804 & 0.041 & 0.115 \\
+		\textbf{\ac{fcn}} & 100932 & 18500 & 98 & 402 & 0.847 & 0.021 & \cellcolor{yellow}0.804 & 0.041 & 0.115 \\
 		\hline
 		\textbf{DeepSense} & 106192 & 12635 & 153 & 351 & 0.835 & 0.027 & 0.696 & 0.052 &  0.123 \\
 		\hline
-		\textbf{GAF} & 98782 & 20045 & 150 & 354 & 0.816 & 0.017 & 0.702 & 0.034 & 0.092 \\
+		\textbf{\ac{gaf}} & 98782 & 20045 & 150 & 354 & 0.816 & 0.017 & 0.702 & 0.034 & 0.092 \\
 		\hline
 		\textbf{ESN} & 101670 & 17157 & 138 & 366 & 0.810 & 0.021 & 0.726 & 0.041 & 0.107 \\
 		\hline
@@ -477,7 +561,7 @@ As a consequence, the time to evaluate the test set of the newer Android data co
 		\hline
 	\end{tabular}%
 }
-\caption{Comparison of the baselines and common model architectures used in the context of \ac{dl} for \ac{tsc}~\cite{ismail2019deep} with the CycleSense model. See the discussion in Section~\ref{subsec:metrics} about the usefulness of various metrics. Note also that all of these models have been trained and evaluated on rides contained in the SimRa data set that have been recorded with more recent versions of the SimRa Android app. For all models the threshold which optimizes Youden's index\cite{youden1950index} were chosen.}
+\caption{Comparison of the baselines and common model architectures used in the context of \ac{dl} for \ac{tsc}~\cite{ismail2019deep} with the CycleSense model. See the discussion in Section~\ref{subsec:metrics} about the usefulness of various metrics. Note also that all of these models have been trained and evaluated on trips contained in the SimRa data set that have been recorded with more recent versions of the SimRa Android app. For all models the threshold which optimizes Youden's index\cite{youden1950index} were chosen.}
 \label{tab:roc-auc-results}
 \end{table}
 
@@ -485,55 +569,56 @@ In another experiment, we include the linear accelerometer sensor values in addi
 The result for CycleSense is again an \ac{auc} \ac{roc} of 0.906, although the model requires more memory, training and processing time.
 Therefore, we leave out the linear accelerometer feature.
 
-So far, we have predominantly focused on newer rides recorded on the Android version of the SimRa app.
+So far, we have predominantly focused on newer trips recorded on the Android version of the SimRa app.
 As shown in Figure~\ref{fig:traindonone}, the model performs far worse on the other splits of the data set.
-Therefore, it was necessary to train an individual model for each part of the data set. 
+Therefore, it was necessary to train an individual model for each part of the data set.
 This yields far better results (Figure~\ref{fig:individually}).
 
-\begin{figure}[t]
+\begin{figure}%[t]
 	\centering
-	\begin{subfigure}[b]{0.475\textwidth}
+	\begin{subfigure}[b]{0.462\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{fig/rocauctrainedon73.png}
-		\caption{\small CycleSense trained only on the newer Android rides and evaluated on all parts of the data set.}
+		\caption{\small CycleSense trained only on the newer Android trips and evaluated on all parts of the data set.}
 		\label{fig:traindonone}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[b]{0.475\textwidth}
+	\begin{subfigure}[b]{0.462\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{fig/rocauctrainedindividually.png}
 		\caption{\small CycleSense trained and evaluated individually on all parts of the data set. \newline}
 		\label{fig:individually}
 	\end{subfigure}
-	\caption{Comparison of CycleSense trained only on the newer Android rides or individual CycleSense models trained for each part of the data set. Note that only the newer Android data set was manually cleaned.}
+	\caption{Comparison of CycleSense trained only on the newer Android trips or individual CycleSense models trained for each part of the data set. Note that only the newer Android data set was manually cleaned.}
 	\label{fig:comp-trainedonone-individually}
 \end{figure}
 
-As the Berlin region has by far recorded the most rides, we have so far used only those for tuning, training, and evaluating our model.
+As the Berlin region has by far recorded the most trips, we have so far used only those for tuning, training, and evaluating our model.
 The SimRa app, however, is deployed in many more regions, so our model is clearly required to perform there, too.
-For this reason, we have evaluated the Berlin CycleSense model on the newer Android rides coming from Hanover and Nuremberg.
+For this reason, we have evaluated the Berlin CycleSense model on the newer Android trips coming from Hanover and Nuremberg.
 
+\newpage
 The outcome of this experiment is visualized in Figure~\ref{fig:different-city-trained-on-berlin}.
 It clearly shows, that CycleSense does not perform as good as in Berlin.
 Since most regions lack training data, it would not be a feasible solution to train models individually per region in the current stage of the SimRa project.
-Instead, we retrain CycleSense on a data set that includes all the rides recorded on the newer versions of the Android app within the Berlin, Nuremberg, and Hanover regions.
+Instead, we retrain CycleSense on a data set that includes all the trips recorded on the newer versions of the Android app within the Berlin, Nuremberg, and Hanover regions.
 The results from Figure~\ref{fig:different-city-trained-individually} show that this clearly improves the performance in these additional regions.
 At the same time, the performance on the Berlin data set has declined only slightly (0.029 \ac{auc} \ac{roc}) by comparison.
 Nevertheless, the \ac{auc} \ac{roc} for Berlin is still the highest and clearly above Nuremberg, which is well ahead of Hanover.
 
-\begin{figure}[t]
+\begin{figure}%[t]
 	\centering
 	\begin{subfigure}[b]{0.475\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{fig/city_comp_before.png}
-		\caption{\small Performance of CycleSense trained on the new Android data set of rides recorded in Berlin. \newline}
+		\caption{\small Performance of CycleSense trained on the new Android data set of trips recorded in Berlin. \newline}
 		\label{fig:different-city-trained-on-berlin}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.475\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{fig/city_comp_after.png}
-		\caption{\small Performance of CycleSense trained on the new Android data set of rides recorded in Berlin, Nuremberg, and Hanover.}
+		\caption{\small Performance of CycleSense trained on the new Android data set of trips recorded in Berlin, Nuremberg, and Hanover.}
 		\label{fig:different-city-trained-individually}
 	\end{subfigure}
 	\caption{Comparison of the performance of CycleSense trained on Berlin and trained on the other regions combined.}
@@ -543,7 +628,6 @@ Nevertheless, the \ac{auc} \ac{roc} for Berlin is still the highest and clearly 
 \label{sec:discussion_cyclesense}
 Our results demonstrate that the proposed CycleSense model outperforms every other model that we have compared to.
 While improving the model's architecture and other components, we identified a number of challenges inherent to the problem setting that we discuss in the following.
-Note that we also discuss some limitations in \Cref{cha:discussion_and_outlook}, that may also apply to this approach.
 
 
 \subsection{Impact of Preprocessing \& Training Steps}
@@ -551,27 +635,47 @@ Note that we also discuss some limitations in \Cref{cha:discussion_and_outlook},
 In a first step, we want to highlight the importance of our preprocessing and training methods for the success of our model.
 Therefore, Figure~\ref{fig:impact} illustrates the performance of CycleSense when one of the preprocessing or training methods is skipped, resulting in a significant drop in performance in each of the four examples.
 
-\begin{figure}[t]
+\begin{figure}%[t]
 	\centering
 	\includegraphics[width=0.5\textwidth]{fig/impact.png}
 	\caption{Impact of different preprocessing and training steps on the performance of CycleSense.}
 	\label{fig:impact}
 \end{figure}
 
+\subsection{Limitations of Crowdsourced Data}
+\label{subsec:limitations_of_crowdsourced_data}
+Crowdsourced data are generally noisy which could contribute to a reduced model performance.
+They also contain several biases, e.g., Selection Bias, Device Positioning Bias, Extreme Aversion Bias, or Confirmation Bias~\cite{basiri2019crowdsourced, chakraborty2017makes, kahneman1991anomalies}.
+In this context, the heterogeneity across devices and platforms is likely another factor of influence.
+As already described, the application that is used by contributors to record their trips is available on two platforms. 
+Those platforms are supported by a wide range of different devices and models with different hardware inside. 
+Phone manufacturers use different \ac{gps}, gyroscope, and accelerometer sensors that can vary immensely in sensitivity and overall behavior.
+Stisen et al.~\cite{stisen2015smart} have shown that there is major heterogeneity when it comes to the accuracy of sensor readings. 
+While the main focus of that study was on accelerometer data, Kuhlmann et al.~\cite{kuhlmann2021smartphone} have shown that orientation sensor data is also affected by this variability.
+
+This is in contrast to the \ac{har} tasks, we compared our task to in \Cref{cha:cyclesense}.
+The \ac{har} data set~\cite{anguita2013public} was generated under laboratory conditions that always used the same smartphone type body mounted to the exact same position on selected study participants.
+This significantly simplifies the classification task.
+Another factor that contributes to the issue of noisy crowdsourcing data in the SimRa data set is the fact that some users misinterpret the purpose of the SimRa app.
+Instead of labeling incidents, they report, e.g., dangerous areas or annoying traffic lights.
+These can of course not be captured by the sensors used.
+Many such ``incidents'' can be identified through the comment column of the data set.
+It should also be noted that the SimRa data set was not recorded and labeled with the goal of developing \ac{ml} models -- the goal was to record data that will be analyzed and processed by humans.
+
 \subsection{Technical Limitations of the SimRa Data Set}
 \label{subsec:technical_limitations_of_the_simra_data_set}
 Recording rates of sensor readings deviate among devices and operating systems and impair model predictions~\cite{stisen2015smart}, this may also affect the performance of CycleSense:
-As illustrated in Figure~\ref{fig:emp-measurements}, the recording rates differ significantly in older and newer Android rides as well as in iOS rides.
-While the iOS rides' median ($\approx$ 300 ms) is similar to the one of newer Android rides, the \ac{iqr} is much greater and spans approximately 150 ms.
-This circumstance could indicate that the relatively weak model performance on this data set can partly be explained by that factor. 
-Furthermore, the gyroscope data is recorded with a higher frequency in newer Android rides than in older Android or iOS rides.
-This factor could also contribute to the different model evaluation results. 
+As illustrated in Figure~\ref{fig:emp-measurements}, the recording rates differ significantly in older and newer Android trips as well as in iOS trips.
+While the iOS trips' median ($\approx$ 300 ms) is similar to the one of newer Android trips, the \ac{iqr} is much greater and spans approximately 150 ms.
+This circumstance could indicate that the relatively weak model performance on this data set can partly be explained by that factor.
+Furthermore, the gyroscope data is recorded with a higher frequency in newer Android trips than in older Android or iOS trips.
+This factor could also contribute to the different model evaluation results.
 The achieved \ac{auc} \ac{roc} for uncleaned newer Android data was 0.870, while it was 0.823 for the older Android data.
 
-\begin{figure}[t]
+\begin{figure}%[t]
 	\centering
 	\includegraphics[width=0.45\textwidth]{fig/empirical_measurements.png}
-	\caption{Box plot showing the empirical measurement times observed in the SimRa data set for rides recorded with different versions of the SimRa app.}
+	\caption{Box plot showing the empirical measurement times observed in the SimRa data set for trips recorded with different versions of the SimRa app.}
 	\label{fig:emp-measurements}
 \end{figure}
 
@@ -580,7 +684,7 @@ This has the effect that incidents and non-incidents are hard to distinguish as 
 Both these factors could hurt the model's ability to classify incidents correctly based on the data.
 It is important to acknowledge that this issue becomes less severe when the sampling frequency is higher, as it is the case for the older Android data.
 
-\begin{figure}[t]
+\begin{figure}%[t]
 	\centering
 	\begin{subfigure}[b]{0.475\textwidth}
 		\centering
@@ -592,7 +696,7 @@ It is important to acknowledge that this issue becomes less severe when the samp
 		\centering
 		\includegraphics[width=\textwidth]{fig/mvn_avg_heavy_vs_normal_braking.png}
 		%\caption{\small Moving average applied on the scaled accelerometer data of the original signal of an artificially modeled incident with heavy braking vs.\ an artificially modeled moderate braking event.}
-	\end{subfigure}	
+	\end{subfigure}
 	\caption{Visualization of the sensor data of a simulated heavy braking incident vs.\ a moderate braking event before and after the moving average has been applied.}
 	\label{fig:heavy-vs-normal-braking}
 \end{figure}
@@ -600,14 +704,14 @@ It is important to acknowledge that this issue becomes less severe when the samp
 \subsection{Limitation of the Classification Task}
 \label{subsec:limitation_of_the_classification_task}
 There is an inherent label imbalance present in our data set.
-Only relatively few rides contain incidents. 
-Moreover, the ratio between timestamps that represent an incident and those that do not is even smaller. 
+Only relatively few trips contain incidents.
+Moreover, the ratio between timestamps that represent an incident and those that do not is even smaller.
 As a consequence, there is an enormous imbalance between the different label categories.
 
 Furthermore, some incident types such as tailgating or close passes might not be detectable at all in accelerometer and gyroscope sensors~\cite{aldred2018predictors, karakaya2020simra} as cyclists might not change their motion profile despite (or even due to) a dangerous situation.
 For detecting these kinds of incidents it may be necessary to include different sensors.
-In the SimRa project, this is already happening through an integration of \ac{obs}\footnote{https://www.openbikesensor.org/} data which measures the passing distance of cars.
-The current data set, however, only includes very few OBS-supported rides.
+In the SimRa project, this is already happening through an integration of \ac{obs}\footnote{\url{https://www.openbikesensor.org/}} data which measures the passing distance of cars.
+The current data set, however, only includes very few \ac{obs}-supported trips.
 
 In contrast to our classification task, the inherent classification problem of the \ac{har} data set \cite{anguita2013public}, is to classify reoccurring ongoing patterns such as walking or jogging, while an incident might need to be detected by one short non-reoccurring event such as sudden braking.
 This further complicates the matter.
@@ -615,13 +719,14 @@ This further complicates the matter.
 \subsection{Data Set Shift}
 \label{subsec:data_set_shift}
 A major challenge in the context of crowdsourced data are data set shifts.
-Depending on the device (see also \autoref{subsec:technical_limitations_of_the_simra_data_set}), but also on other factors, such as the city of origin of the recorded data (see also \autoref{subsec:evaluation_results}), there could be non-stationarities in the data that violate the assumptions underlying almost all ML models and thus could impact the generalization performance of the trained models.
-Several types of data set shifts can be distinguished, including \textit{covariate shifts}, meaning shifts in the input data \cite{sugiyama_machine_2012}, \textit{label shifts}, meaning shifts in the distribution of targets \cite{lipton_detecting_2018}, or mixtures thereof.
-Detecting these shifts \cite{polyzotis_data_2018, rabanser_failing_2018, breck_data_2019, abdar_review_2021, bates_testing_2021} and predicting \cite{schelter_learning_2020} or reducing their impact on the generalization performance is an active field of research \cite{schelter_challenges_2018, biessmann_automated_2021}.
-Some approaches aim at model specific improvements to alleviate data set shift \cite{sugiyama_machine_2012}. These approaches have a decisive disadvantage, most of these approaches only work for one model class and require access to the inner workings of the ML pipeline, often after the feature extraction step.
-More promising and easier to build and maintain are model agnostic solutions that focus on the data, rather than the models, to detect and counteract data set shifts \cite{biessmann_automated_2021}.
-Extending the training data sets to account for all variation and shifts in the data that the ML model should be invariant to, often called \textit{augmentation}, is a popular and effective way of counteracting data set shift, see for instance \cite{cubuk_autoaugment_2019}.
-In our work we follow this line of thought of a data centric AI approach. 
+Depending on the device (see also \autoref{subsec:technical_limitations_of_the_simra_data_set}), but also on other factors, such as the city of origin of the recorded data (see also \autoref{subsec:evaluation_results}), there could be non-stationarities in the data that violate the assumptions underlying almost all \ac{ml} models and thus could impact the generalization performance of the trained models.
+Several types of data set shifts can be distinguished, including \textit{covariate shifts}, meaning shifts in the input data \cite{sugiyama2012machine}, \textit{label shifts}, meaning shifts in the distribution of targets \cite{lipton2018detecting}, or mixtures thereof.
+Detecting these shifts \cite{polyzotis2018data, rabanser2019failing, polyzotis2019data, abdar2021review, bates2023testing} and predicting \cite{schelter2020learning} or reducing their impact on the generalization performance is an active field of research \cite{schelter2015challenges, biessmann2021automated}.
+Some approaches aim at model specific improvements to alleviate data set shift \cite{sugiyama2012machine}.
+These approaches have a decisive disadvantage, most of these approaches only work for one model class and require access to the inner workings of the \ac{ml} pipeline, often after the feature extraction step.
+More promising and easier to build and maintain are model agnostic solutions that focus on the data, rather than the models, to detect and counteract data set shifts \cite{biessmann2021automated}.
+Extending the training data sets to account for all variation and shifts in the data that the \ac{ml} model should be invariant to, often called \textit{augmentation}, is a popular and effective way of counteracting data set shift, see for instance \cite{cubuk2019autoaugment}.
+In our work, we follow this line of thought of a data-centric AI approach.
 
 
 \section{Alternative Approaches}
@@ -629,10 +734,10 @@ In our work we follow this line of thought of a data centric AI approach.
 In this section, we discuss related work starting with publications related to traffic safety (Section~\ref{subsec:trafficsafety}) before continuing with work regarding \acl{tsc} (Section~\ref{subsec:tsc}).
 
 \subsection{Traffic Safety\label{subsec:trafficsafety}}
-Studies on safety in bicycle traffic often rely on crowdsourcing, e.g., using Strava\footnote{https://www.strava.com/} as a data source.
-While the Strava data are heavily biased towards recreational trips, some studies rely on them for analyzing various aspects of safety in bicycle traffic, e.g.,~\cite{hochmair2019estimating,ferster2021strava}.
+Studies on safety in bicycle traffic often rely on crowdsourcing, e.g., using Strava\footnote{\url{https://www.strava.com/}} as a data source.
+While the Strava data are heavily biased towards recreational trips, some studies rely on them for analyzing various aspects of safety in bicycle traffic, e.g.,~\cite{hochmair2019estimating,ferster2021mapping}.
 Blanc and Figliozzi~\cite{blanc2016modeling, blanc2017safety} study the perceived comfort levels of cyclists based on routes taken.
-Wu et al.~\cite{wu2018predicting} predict perceived bicycle safety by combining data from, e.g., OpenStreetMap\footnote{https://www.openstreetmap.com/}, crime statistics, and parking volumes.
+Wu et al.~\cite{wu2018predicting} predict perceived bicycle safety by combining data from, e.g., \ac{osm}, crime statistics, and parking volumes.
 Similarly, Yasmin and Eluru~\cite{yasmin2016latent} use various open data sources to characterize and provide estimates for bicycle safety in urban areas.
 He et al.~\cite{he2018detecting} analyze trajectories of a bike sharing service to detect events of illegally parked vehicles which frequently affect cycling safety.
 Figliozzi et al.~\cite{figliozzi2019evaluation} evaluate video recordings to identify safety and delay related problems in bicycle and bus traffic.
@@ -640,7 +745,7 @@ Unsurprisingly, bicycles crossing bus lanes can cause slight delays for the buse
 
 In addition, Kobana et al.~\cite{kobana2014detection} focus on the detection of road damage via smartphone data, and Candefjord et al.~\cite{candefjord2014using} evaluate the development of a crash detection algorithm for cycling accidents.
 
-Most closely related to our work, Aldred and Goodman~\cite{aldred2018predictors} analyze near-miss incidents using road diaries of cyclists and our previous work~\cite{karakaya2020simra} proposed the SimRa platform as well as the heuristic for detecting (near-miss) incidents.
+Most closely related to our work, Aldred and Goodman~\cite{aldred2018predictors} analyze near-miss incidents using road diaries of cyclists.
 A first extension of our own detection approach~\cite{sanchez2020detecting} developed an \ac{ann} to solve the problem of incident detection on the SimRa data set.
 While offering some improvement over the original heuristic, CycleSense clearly outperforms that approach.
 Furthermore, Ibrahim et al.~\cite{ibrahim2021cycling} discuss the potential of detecting incidents using image and video data in combination with computer vision techniques.
@@ -659,10 +764,13 @@ Yao et al.\ \cite{yao2017deepsense} use a combination of \acp{rnn} and \acp{cnn}
 \label{sec:summary_cyclesense}
 An increased modal share of bicycles is necessary for solving emission and traffic related urban problems.
 A key challenge for this, is the lack of (perceived) safety for cyclists.
-Improving the situation requires detailed insights into safety levels of street segments -- the SimRa platform~\cite{karakaya2020simra} has been proposed as a data gathering mechanism for incidents and cycling tracks.
+Improving the situation requires detailed insights into safety levels of street segments -- the SimRa platform has been proposed as a data collecting mechanism for incidents and cycling tracks.
 While this is an important step towards data collection, the platform relies on manual annotation of tracks which limits the number of potential users.
 
-In this chapter, we have proposed CycleSense -- a model for automatic detection of such incidents.
+In this chapter, we have proposed SimRa -- a Citizen Science project and a crowdsourcing platform for collecting records of cycling trips and incidents in bicycle traffic and CycleSense -- a model for automatic detection of such incidents.
+
+SimRa is being used by cyclist to create a cycling trip record dataset, that includes the GPS trace, motion sensor readings and incident details of the trips in form of time series.
+
 Using the SimRa data set, we have shown that CycleSense is capable of detecting incidents on the basis of accelerometer and gyroscope time series data in a real-world scenario.
 It can correctly distinguish between an incident and a non-incident with a probability of up to 90.5\%.
 We have also compared it to the heuristic currently used in the SimRa platform and an existing \ac{fcn} that was specifically developed for SimRa.
@@ -673,5 +781,3 @@ While this is an important step towards fully automatic incident detection, we b
 Although this does not quite reach our long-term goal of full automation, it should significantly decrease the annotation effort and should also lead to improved labeling quality.
 In the future, this could, in turn, be used to further improve CycleSense.
 Since April 2022, the SimRa app has been using CycleSense for incident detection.
-
-

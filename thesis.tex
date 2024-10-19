@@ -1,4 +1,12 @@
-\documentclass[12pt,oneside]{book}
+\documentclass[12pt,twoside]{book}
+\usepackage{fancyhdr} 
+\fancyhf{}
+\addtolength{\headwidth}{4cm}
+\fancyhead[RO,LE]{\textsl{\leftmark}}
+\fancyfoot[C]{\thepage}
+
+%\cfoot{\thepage}
+\pagestyle{fancy}    
 \DeclareUnicodeCharacter{0300}{\`}
 \DeclareUnicodeCharacter{0301}{\'}
 
@@ -10,7 +18,10 @@
 \usepackage[
     citestyle=numeric-comp,
     backend=biber,
-    bibencoding=inputenc
+    bibencoding=inputenc,
+    maxcitenames=2,
+    minbibnames=20,
+    maxbibnames=20
     ]{biblatex}
 \addbibresource{refs.bib}
 
@@ -18,8 +29,7 @@
 \usepackage{setspace}
 \linespread{1.5}
 \setcounter{tocdepth}{2}
-\usepackage[colorlinks=true, pdfstartview=FitV,
-linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+\usepackage[pdfstartview=FitV]{hyperref}
 \usepackage{cleveref}
 \usepackage{xcolor}
 \usepackage{xparse}
@@ -93,20 +103,24 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 \renewcommand{\lstlistlistingname}{List of Listings}
 
 \NewDocumentCommand{\codeword}{v}{%
-\texttt{\textcolor{orange}{#1}}%
+\texttt{\textcolor{black}{#1}}%
 }
-
+\setcounter{tocdepth}{1}
 \begin{document}
 
 %%========================================
 % Frontmatter
 
-\include{frontmatter/front} % This is the titlepage
+\include{frontmatter/titlepage}
+%\include{frontmatter/front} % This is the titlepage
 \setcounter{page}{0}
 \pagenumbering{Roman}
-\include{frontmatter/declaration}
+%\include{frontmatter/declaration}
 \include{frontmatter/summary}
+\include{frontmatter/acknowledgments}
 \tableofcontents
+\include{frontmatter/acronyms}
+%\afterpage{\null\thispagestyle{empty}\newpage}
 
 %%=========================================
 % Mainmatter
@@ -132,15 +146,15 @@ linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
 %%=========================================
 %Backmatter
 
-\appendix
+%\appendix
 %\include{backmatter/00_lessImportantText}
-\include{backmatter/01_acronyms}
 %\include{backmatter/02_lexicon}
 %\include{backmatter/03_listings}
 % Include more appendices as required.
 
-\cleardoublepage
+%\cleardoublepage
 \addcontentsline{toc}{chapter}{Bibliography}
+\afterpage{\null\thispagestyle{empty}\newpage}
 \defbibheading{notonline}{\chapter*{Bibliography}}
 \printbibliography[heading=notonline]
 %%=============================================

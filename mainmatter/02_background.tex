@@ -1,13 +1,16 @@
 \cleardoublepage
 \chapter{Background and Related Work}
 \label{cha:background}
-The main contributions of this thesis revolve around the SimRa project (see \Cref{subsec:simra}), which is a crowdsourcing/crowdsensing citizen science application, with the goal of revealing hazardous hotspots in bicycle traffic, that are detrimental to cycling safety and comfort.
-In this chapter, we go through fundamental topics that are needed to better understand the nature of the SimRa project and thus, the contributions outlined in \Cref{part:contributions}.
+The main contributions of this thesis revolve around the SimRa project (see \Cref{subsec:simra}), which is a crowdsourcing citizen science application, with the goal of revealing dangerous hotspots in bicycle traffic, that are detrimental to cycling safety and comfort.
+This chapter provides an overview of the fundamental topics that are essential for a comprehensive understanding of the nature of the SimRa project and, consequently, the contributions outlined in \Cref{part:contributions}.
+Research shows that feeling comfortable and safe while cycling go hand in hand.
+Factors that make a cycling trip more comfortable also make it safer, and vice versa ~\cite{shoman2023evaluation, fitch2018relationship}.
 For this, we first outline which factors mainly influence cycling comfort and give an overview of recent studies from that research area in \Cref{sec:cycling_comfort_background}.
-We then continue with cycling safety in \Cref{sec:cycling_safety_background}, which is related to cycling comfort.
-There, we also differentiate between unilateral accidents and traffic crashes.
-In \Cref{sec:crowdsourcing_crowdsensing_background}, we point out similarities and differences between crowdsourcing and crowdsensing, so that we can later, in \Cref{sec:simra}, better categorize the SimRa project between them.
-Lastly, to complete this chapter, we take a brief look into the field of citizen science, namely what makes a project a citizen science project, which benefits and challenges it brings, and how the related work makes use of it in \Cref{sec:citizen_science_background}. 
+We then continue with cycling safety in \Cref{sec:cycling_safety_background}.
+There, we also differentiate between solitary and multi-participant accidents.
+In \Cref{sec:crowdsourcing_crowdsensing_background}, we point out similarities and differences between crowdsourcing and crowdsensing, so that we can later, in \Cref{sec:simra}, better categorize the SimRa project.
+The last topic we look into, is the field of citizen science, namely what makes a project a citizen science project, which benefits and challenges it brings, and how the related work uses it in \Cref{sec:citizen_science_background}.
+We conclude this chapter with a summary in \Cref{sec:summary_background}.
 
 \section{Cycling Comfort}
 \label{sec:cycling_comfort_background}
@@ -27,18 +30,18 @@ The shape of the saddle as well as the handlebar are also important, as differen
 Informing cyclists about the importance of cycling posture, so that they can buy the right bicycle for them, as well as adjust the bicycle they already have, seems to be a good way to improve the cycling postures of cyclists and thus increase their cycling comfort.
 
 \subsection*{Cycling Smoothness}
-Vibrations stemming from the rolling of the bicycle wheels on the surface can also lead to a decrease in comfort level.
+Vibrations stemming from the rolling of the bicycle wheels on the surface can also lead to a decrease in comfort.
 These vibrations are mainly conducted to the cyclist through the contact points with the bicycle, usually at the handlebar and the saddle.
 This means, that if the handlebar and the saddle absorb the vibrations of the ride, the cycling will be more smooth and thus more comfortable for the cyclist.
-Soft materials or good suspensions, as well as good, vibration-absorbing tires, can contribute here.
-But the biggest factor here is obviously the road surface.
-Without a well-built and well-maintained infrastructure, the best bicycle in terms of comfort cannot absorb the vibrations of the unevenness, the cracks, and the potholes of a badly maintained bicycle lane or road.
+The use of soft materials or effective suspensions, in conjunction with high-quality, vibration-absorbing tires, can contribute to a more comfortable ride.
+However, the road surface itself represents the most significant factor:
+Without a well-constructed and well-maintained infrastructure, even the most advanced bicycle will be unable to fully absorb the vibrations caused by uneven surfaces, cracks, and potholes in a poorly maintained bicycle lane or road.
 
 \subsection*{Environment}
 The environment is a significant factor that influences the comfort level of a cycling trip~\cite{hull2014bicycle}.
 Thereby, we can distinguish between the \textit{natural} and the \textit{built} environment.
 Climate, weather, scenery, and topography belong to the \textit{natural} environment.
-Most cyclists find bad weather, i.e., strong winds, precipitation too low, and even too high temperatures combined with humidity~\cite{nkurunziza2012examining}, detrimental to their cycling comfort.
+For the majority of cyclists, inclement weather, including strong winds, precipitation, low temperatures, and high temperatures combined with humidity~\cite{nkurunziza2012examining}, is a significant impediment to their comfort while cycling.
 The study by Boyce et al.~\cite{boyce2000perceptions} shows that people feel more comfortable during the daytime, so long winters with short daytimes, as is common near the poles, also lead to less comfortable cycling trips.
 Wessel et al.~\cite{wessel2022cycling} look further into this issue and find out, that adopting daylight saving time throughout the year would increase the amount of cycling.
 A nice scenery along the cycling trip route can increase cyclist satisfaction and thus result in a higher comfort level~\cite{wahlgren2012exploring,willis2013uniquely}.
@@ -49,10 +52,10 @@ Similarly, the \textit{built} environment can further enhance the positive and n
 As the name suggests, the \textit{built} environment refers to environmental circumstances realized by humans.
 The most obvious one to mention here is the bicycle infrastructure.
 Not only does a well-planned and maintained bicycle infrastructure reduce unpleasant vibrations and bumps during the cycling trip, but it also contributes to a comfortable ride by making clear how the cyclist has to behave in traffic, e.g., when approaching an intersection.
-A well-maintained infrastructure is also important to mitigate the downsides of bad weather, especially the removal of accumulated snow on bike lanes/paths is crucial~\cite{an2019weather,shoman2023evaluation}.
-Likewise, street lights illuminating the bicycle infrastructure leads to a more comfy cycling trip, because it makes it easier for the cyclist to perceive the surroundings and avoid potential hazards~\cite{digioia2017safety}.
+A well-maintained infrastructure is also important for mitigating the downsides of bad weather, especially the removal of accumulated snow on bike lanes/paths is crucial~\cite{an2019weather,shoman2023evaluation}.
+Likewise, street lights illuminating the bicycle infrastructure lead to a more comfortable cycling trip, because it makes it easier for the cyclist to perceive the surroundings and avoid potential hazards~\cite{digioia2017safety}.
 
-In general, physical well-being and a feeling of safety are very important for comfortably cycling, which is why the next section deals with cycling safety.
+In general, physical well-being and a feeling of safety are important factors for comfortably cycling, which is why the next section deals with cycling safety.
   
 
 \section{Cycling Safety}
@@ -65,66 +68,81 @@ On the other hand, when the safety of cycling is perceived to be lower than it a
 
 First, we look into the objective safety in bicycle traffic, before we highlight the issues regarding perceived safety.
 The main safety concern regarding cycling safety is accidents.
-These can be differentiated into two categories:  unilateral accidents, such as falling from the bike due to losing balance or slipping in winter conditions, and traffic crashes with other participants.
+These can be differentiated into two categories:  solitary accidents, such as falling from the bike due to losing balance or slipping in winter conditions, and multi-participant accidents.
 
-\subsection*{Unilateral Accidents}
+\subsection*{Solitary Accidents}
 In their studies, Juhra et al. and Naess et al. investigate bicycle accidents, that were not reported to the police by analyzing hospitalization reports, where the patient was admitted after a bicycle accident~\cite{juhra2012bicycle,naess2020number}.
-This is a good way to study unilateral accidents since these are usually not reported to the police.
-Unilateral accidents make up the majority of bicycle accidents~\cite{juhra2012bicycle,naess2020number} and the most common form is falling from the bicycle without external forces.
+This is a good way to study solitary accidents since these are usually not reported to the police.
+Solitary accidents make up the majority of bicycle accidents~\cite{juhra2012bicycle,naess2020number} and the most common form is falling from the bicycle without external forces.
 Reportedly, most of these accidents happen to young and middle-aged adults during rush hours, which correlates with increased bicycle traffic activity during these times.
-Interestingly, children, probably due to their inexperience, and the elderly, probably due to the tolls of age on the human body, experience much more unilateral accidents than traffic crashes with other participants.
-Better bicycle infrastructure, i.e. well maintained and well-lit bicycle roads, especially during winter, is needed to decrease the risk of falling from the bicycle without external forces since they likely happen due to bumps in the road that were seen too late to circumvent by the cyclists.
+Interestingly, children, probably due to their inexperience, and the elderly, probably due to the tolls of age on the human body, experience much more solitary accidents than multi-participant accidents.
+Better bicycle infrastructure, i.e. well maintained and well-lit bicycle roads, especially during winter, is needed to decrease the risk of falling from the bicycle without external forces since they likely happen due to bumps in the road that were seen too late to circumvent by the cyclists or due to black ice.
 Another interesting finding is, that at nighttimes the cyclists, who fall from the bicycle without external forces are young adults, probably returning from partying, thus raising awareness could also decrease this type of accident.
 
-Other types of unilateral accidents are collisions with fixed objects, such as trees, or accidents caused by a technical defect of the bicycle.
+Other types of solitary accidents are collisions with fixed objects, such as trees, or accidents caused by a technical defect of the bicycle.
 Statistics about collisions with fixed objects are very similar to falling from the bicycle without external forces, which further supports the above-mentioned causes and proposed solutions.
 Especially younger people such as students tend to have cheaper bicycles due to their lower income and fear of their bicycles getting stolen.
 Cheap and old bicycles are more susceptible to technical defects, which is probably why younger people have more accidents caused by them.
-More awareness and easier access to bicycle repair stations could mitigate this problem.
+More awareness and easier access to bicycle (self-)repair stations could mitigate this problem.
 
-\subsection*{Traffic Crashes}
+\subsection*{Multi-Participant Accidents}
 The predominant form of traffic crashes in bicycle traffic are accidents with motorized vehicles~\cite{juhra2012bicycle,naess2020number}.
-Similar to unilateral accidents, traffic crashes mostly happen to young and middle-aged adults during rush hours.
+Similar to solitary accidents, multi-participant accidents mostly happen to young and middle-aged adults during rush hours.
 This is no surprise since these are also the times with the biggest motorized vehicle traffic volumes, which lead to a bigger exposure of cyclists to motorized vehicle traffic.
-In contrast to unilateral accidents, traffic crashes happen more during the daytime.
+In contrast to solitary accidents, multi-participant accidents happen more during the daytime.
 The fact that there is more traffic during daytime in general and that motorized vehicle drivers drive more carefully, when the view is impaired, e.g., by darkness or bad light conditions~\cite{schepers2011road}.
-It is also worth noting, that traffic crashes usually result in more serious injuries and mortality than unilateral accidents. 
+It is also worth noting, that multi-participant accidents usually result in more serious injuries and mortality than solitary accidents. 
 These findings stress the necessity for a separation of bicycle and motorized vehicle traffic with physically separated bicycle tracks since these reduce the risk of a crash between them by at least 50\%~\cite{van2021safety}.
+
+\subsection*{Near Miss Incidents}
+Aldred and Crossweller define \textit{near miss incidents}\footnote{In the remainder of this thesis, we will also refer to them as ‘‘incidents’’.} as non-injury accidents that can be frightening and/or annoying~\cite{aldred2015investigating}.
+Consequently, incidents can be regarded as multi-participant accidents, wherein a collision between the cyclist and the other participant is either averted or is so mild, that neither the participants, nor their belongings sustain any harm.
+
+Incidents can be classified into one of the following eight categories:~\cite{aldred2015investigating,aldred2016cycling,aldred2018predictors}
+Close Pass, someone pulling in or out, near left/right hook, someone approaching head-on, tailgating, near-dooring, dodging an obstacle, and “other”.
+Nevertheless, even if such incidents do not result in injuries or fatalities, they are still detrimental for the well-being of cyclists and by extension, to that of society as a whole.
+Incidents, particularly those perceived as ‘‘very scary’’ by the cyclists, can induce stress, which may contribute to a detrimental mental state and an increased risk of developing further illnesses.~\cite{yaribeygi2017impact}.
+Additionally, prospective cyclists may be dissuaded by the prospect of injury, which incidents may exacerbate.~\cite{aldred2015investigating}.
+
+Two main approaches can be taken to prevent incidents: infrastructural and behavioral changes.
+The former involves physically separating cycling traffic from motorized vehicle traffic, for example, by installing metal or concrete barriers between the car and cycling lanes.
+The latter can be achieved through educational campaigns can be started to improve the driving behavior of motorized vehicle drivers.
+Additionally, the existing laws, that should prevent incidents, such as close passes, could be enforced more rigorously and strictly. 
 
 %\subsection*{Bicycle Helmets}
 %TODO
 
 \section{Crowdsourcing and Crowdsensing}
 \label{sec:crowdsourcing_crowdsensing_background}
-Crowdsourcing and crowdsensing have emerged as successful approaches to solving tasks in a fast and cost-efficient way and gathering big amounts of data in a short time respectively.
+Crowdsourcing and crowdsensing have emerged as successful approaches for solving tasks in a fast and cost-efficient way and gathering big amounts of data in a short time respectively.
 
 \subsection*{Crowdsourcing}
 ``Crowdsourcing'' is a combination of the words \textit{crowd} and \textit{outsourcing}~\cite{howe2006rise}.
-\textit{Crowd} refers to an often larger group of individuals, to which a task is transferred, whereas outsourcing refers to a practice where an entity does not fulfill a task in-house on its own, but hires people from outside to solve a task for them.
+\textit{Crowd} refers to an often large group of individuals, to which a task is transferred, whereas outsourcing refers to a practice where an entity does not fulfill a task in-house on its own, but hires people from outside to solve a task for them.
 Crowdsourcing comes in many shapes and forms and can be found in many different areas, from transportation to financing, from social media to natural crisis relief, etc.
 A very common form of crowdsourcing is the so-called mobile crowdsourcing.
-The difference is that in mobile crowdsourcing the the people fulfilling the task usually do not have to be stationary, but rather mobile, because the task at hand demands movement or being in a specific location to be fulfilled~\cite{phuttharak2018review}.
+In mobile crowdsourcing the people fulfilling the task usually do not have to be stationary, but rather mobile, because the task at hand demands movement or being in a specific location to be fulfilled~\cite{phuttharak2018review}.
 In the latter case, a smartphone or a hardware device fitted with sensors has to be used by the participants to fulfill the task.
 For the remainder of this work, we will use the terms crowdsourcing and mobile crowdsourcing interchangeably.
 
-Figure~\ref{fig:crowdsourcing} shows the key elements of crowdsourcing.
+Figure~\ref{fig:crowdsourcing_architecture} shows the key elements of crowdsourcing.
 In the top layer, the application user (e.g., a ride-hailing app user) requests a task (e.g., a trip from location A to location B).
 The data processing platform layer receives this task and determines to whom (e.g., which taxi drivers) to allocate it.
 Then, the crowd (e.g., the taxi driver, that accepts the task) carries it out.
 After that, the data processing layer receives the result (e.g., the arrival of the customer at the destination), processes and aggregates it, and then sends the end result to the application (e.g., invoice).
 In crowdsourcing, it is also possible and sometimes even necessary that the crowd has to collaborate to fulfill the task (e.g., multiple taxi drivers transporting a large group of customers from A to B).
 
-\begin{figure}[htbp]
+\begin{figure}%[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{fig/crowdsourcing.pdf}
   \caption{Crowdsourcing architecture consist of three layers: Application, Data Processing and Crowd}
+  \label{fig:crowdsourcing_architecture}
 \end{figure}
-\label{fig:crowdsourcing}
 
 There are different aspects that characterize a crowdsourcing application: \textit{degree of human involvement}, \textit{location relevance}, \textit{knowledge requirement}, \textit{participation incentive}, and \textit{data flow}~\cite{ray2023survey,kong2019mobile}.
 
 There are two types of \textit{degree of human involvement}: Opportunistic and Participatory.
-The former describes that the participant does not actively operate the smartphone or device, while in the latter, he/she has to give further input on the smartphone or device.
+The former describes that the participant does not actively operate the smartphone or device, while in the latter case, they have to give further input on the smartphone or device.
 The \textit{degree of human involvement} is a continuum, where each crowdsourcing application can have different levels of human involvement.
 
 \textit{Location relevance} refers to the importance of solving a task in a particular location.
@@ -138,8 +156,8 @@ A high \textit{knowledge requirement} may make it necessary to distinctively all
 
 The \textit{participation incentive} can vary from project to project and also from participant to participant.
 There are basically two types of incentives: intrinsic and extrinsic.
-A participant with an intrinsic incentive engages with a crowdsourcing project, because he/she can identify with the problem the project wants to solve or simply likes to to perform the task.
-There can also be extrinsic motivations such as getting paid in cash or with coupons or gaining social credits for it.
+Participant with an intrinsic incentive engage with a crowdsourcing project, because they can identify with the problem the project wants to solve or simply enjoy performing the task.
+There can also be extrinsic motivations such as getting paid or gaining social credits for it.
 It is very much possible, that participants have both intrinsic \textit{and} extrinsic incentives to contribute to a project.
 
 The \textit{data flow} is a technical aspect of the crowdsourcing project.
@@ -152,7 +170,7 @@ A hybrid form is also possible, where the crowd or the crowd's devices process t
 \subsection*{Crowdsensing}
 As in ``crowdsourcing'' the crowd in ``crowdsensing'' refers to a group of people, who voluntarily take over a task.
 However, in crowd\textit{sensing}, the task at hand is mainly gathering data for the client, or in other words, \textit{sensing}.
-Due to the similar nature of both, the architecture of crowdsensing projects is usually very similar to that of crowdsourcing projects (see Figure~\ref{fig:crowdsourcing}).
+Due to the similar nature of both, the architecture of crowdsensing projects is usually very similar to that of crowdsourcing projects (see Figure~\ref{fig:crowdsourcing_architecture}).
 The main difference from a software architectural view is that the participants usually do not collaborate and thus there is no need for the smartphones and devices in the crowd to communicate with each other.
 
 The characterization is also very similar, although there is usually no \textit{knowledge requirement} aspect in \textit{crowdsensing} projects.
@@ -161,7 +179,7 @@ However, there are two additional aspects, that can be used to characterize: \te
 There are mainly three \textit{application types}: environmental applications, infrastructure applications, and social applications~\cite{ganti2011mobile}.
 
 In \textit{environmental applications}, the goal of the crowdsensing project is to gather data about the \textit{natural} environment.
-Examples of \textit{environmental applications} are projects to measure air pollution~\cite{hasenfratz2012participatory,sivaraman2013hazewatch,liu2018third} or monitor water quality~\cite{minkman2015citizen,rapousis2016performance,shang2023crowdwatersens}.
+Examples of \textit{environmental applications} are projects measuring air pollution~\cite{hasenfratz2012participatory,sivaraman2013hazewatch,liu2018third} or monitoring water quality~\cite{minkman2015citizen,rapousis2016performance,shang2023crowdwatersens}.
 
 \textit{infrastructure applications} are about gaining insights into the state of public infrastructure.
 Common use cases are gathering data about car parking spaces~\cite{villanueva2015crowdsensing,coric2013crowdsensing,rinne2014mobile} or traffic flow~\cite{wang2018city,li2019privacy,mei2020towards}.
@@ -177,29 +195,28 @@ When the smartphone or device that collects the data sends the collected data to
 
 \section{Citizen Science}
 \label{sec:citizen_science_background}
-Although the term Citizen Science was coined by Irwin~\cite{irwin1995citizen} and Bonney~\cite{bonney1996citizen} in the mid-90s, the concept is much older.
-For example, the National Audubon Society's project called ``Christmas Bird Count'', where everyone is invited to participate in counting birds and report their findings.
-It has run since the year 1900 and can be considered as the first Citizen Science project~\cite{silvertown2009new}.
-This can be considered as Citizen Science because it is a scientific endeavor, where anyone can participate, which is the broadest way to describe Citizen Science.
+Although the term Citizen Science was coined by Irwin~\cite{irwin2002citizen} and Bonney~\cite{bonney1996citizen} in the mid-90s, the concept is much older.
+For example, the National Audubon Society's project called ``Christmas Bird Count'', where everyone is invited to participate in counting birds and report their findings, has run since the year 1900 and can be considered as the first Citizen Science project~\cite{silvertown2009new}.
+This can be considered Citizen Science because it is a scientific endeavor, where anyone can participate, which is the broadest way to describe Citizen Science.
 However, since the emergence of the term ``Citizen Science'', different definitions have been proposed by different scientific, social, and political parties~\cite{heigl2019toward,ecsa2015ten,us2016crowdsourcing} and there is an active discussion of what can be considered a Citizen Science Project and what cannot~\cite{haklay2021citizen}. 
 
-Haklay et al. compiled a list of 32 definitions for Citizen Science from different reference sources, citizen science associations, global multinational organizations, and different governmental bodies~\cite{haklay2021citizen}.
+Haklay et al.~\cite{haklay2021citizen} compiled a list of 32 definitions for Citizen Science from different reference sources, citizen science associations, global multinational organizations, and different governmental bodies.
 One of their key findings is that although most definitions have descriptive, instrumental, and normative elements, the weighting can differ according to the goals of the proposing party of the definition.
-\textit{National Geographic} has for example a more descriptive definition:
-\begin{quote}
-\textit{Citizen science is the practice of public participation and collaboration in scientific research to increase scientific knowledge. Through citizen science, people share and contribute to data monitoring and collection programs.}
-\end{quote}
+\textit{National Geographic}, for example, has a more descriptive definition:
+\begin{quotation}
+\textit{``Citizen science is the practice of public participation and collaboration in scientific research to increase scientific knowledge. Through citizen science, people share and contribute to data monitoring and collection programs.''}~\cite{ullrich2024citizen}
+\end{quotation}
 After a broad description of what Citizen Science is, it underlines ``data monitoring and collection'' which is not surprising for an environmental-focused organization.
 
-The \textit{US National Institutes of Health} chooses a more instrumentalist approach when defining Citizen Science:
-\begin{quote}
-\textit{Citizen science efforts are driven by community concerns. These community-led projects may involve a partnership with an academic or research institution, where both parties work together to collect and share data. The goal is to address a community concern through collaborative research and to translate the research findings into public health action that benefits the community.}
-\end{quote}
+The \textit{National Institute of Environmental Health Sciences} chooses a more instrumentalist approach when defining Citizen Science:
+\begin{quotation}
+\textit{``Citizen science efforts are driven by community concerns. These community-led projects may involve a partnership with an academic or research institution, where both parties work together to collect and share data. The goal is to address a community concern through collaborative research and to translate the research findings into public health action that benefits the community.''}~\cite{national2022community}
+\end{quotation}
 The last sentence of their definition clearly puts a focus on public health, which is not understandable from their point of view.
 There are also definitions that try to be normative, such as the definition from UNESCO:
-\begin{quote}
-\textit{[Citizen Science:] The participation of a range of non-scientific stakeholders in the scientific process. At its most inclusive and most innovative, citizen science involves citizen volunteers as partners in the entire scientific process, including determining research themes, questions, methodologies, and means of disseminating results.}
-\end{quote}
+\begin{quotation}
+\textit{``[Citizen Science:] The participation of a range of non-scientific stakeholders in the scientific process. At its most inclusive and most innovative, citizen science involves citizen volunteers as partners in the entire scientific process, including determining research themes, questions, methodologies, and means of disseminating results.''}~\cite{vohland2021science}
+\end{quotation}
 It is remarkable that this definition mentions inclusiveness and voluntarism.
 
 Eitzel et al.~\cite{eitzel2017citizen} also analyze different definitions of Citizen Science and identify three categories: Citizen Science as a \textit{tool}, a \textit{movement}, or a \textit{social capacity}.
@@ -207,7 +224,7 @@ Accordingly, Citizen Science can be seen as a \textit{tool} to help answer a res
 On the other hand, Citizen Science can also be seen as a \textit{movement} to democratize science and thus increase the trust of society in science.
 Finally, Citizen Science can be seen as a \textit{social capacity} to increase evidence-based decision-making.
 
-The European Citizen Science Association (ECSA)~\footnote{https://www.ecsa.ngo/} contributes the ten principles of citizen science~\cite{ecsa2015ten}:
+The European Citizen Science Association~\footnote{https://www.ecsa.ngo/} contributes the ten principles of citizen science~\cite{ecsa2015ten}:
 
 \begin{enumerate}
 \item \textit{Citizen science projects actively involve citizens in scientific endeavour that generates new
@@ -241,8 +258,22 @@ attribution, and the environmental impact of any activities.}
 The plethora of different definitions, guidelines, and principles show that Citizen Science is a broad term that can be interpreted according to the circumstances.
 This, however, is also a benefit, since it allows different projects to label themselves as Citizen Science and get funding from different organizations and national institutions.
 
+\section{Summary}
+\label{sec:summary_background}
+To summarize, there are four topics that we have described in this chapter.
+Cycling comfort and cycling safety, which we introduced in the first two sections of this chapter, deal with factors that affect the comfort and safety during cycling.
+These factors also reinforce or mitigate each other.
+For example, a higher cycling safety, or rather the subjective perceiving of cycling safety, improves the cycling comfort.
+And in reverse, a smooth cycling experience, e.g., achieved by a bicycle lane consisting of well-maintained, smooth tarmac, not only increases the cycling comfort, but also makes solitary accidents less likely and thus increases cycling safety.
 
+In the second chapter we described Crowdsourcing and Crowdsensing, which are two ways of utilizing the ``crowd'' to achieve a goal.
+In Crowdsourcing, the goal can be very diverse and the degree of the crowd's involvement can vary from simply be part of one step, or being involved in many tasks.
+In contrast, Crowdsensing is usually limited to gathering data with the help of the crowd.
+Finally, we focused on Citizen Science in the third section of this chapter.
+There we discussed different perspectives on Citizen Science, that different research field and varying types of stakeholders such as the society, state institutions and research groups have.
+Citizen Science can, depending on the use case, be utilized for different purposes, such as secure funding, attract more participants and help organize a project by giving a structure.
 
+For a examination of the classification of our work with respect to the distinctions between crowdsourcing, crowdsensing, and citizen science, please refer to~\Cref{subsec:data_acquisition}.
 
 %
 %% There are MANY definitions. https://doi.org/10.1073/pnas.1909278116 and https://doi.org/10.5281/zenodo.3552753 compiled lists of them.
